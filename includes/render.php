@@ -27,9 +27,10 @@ add_action('wp_enqueue_scripts', function () {
         $id      = get_queried_object_id();
         $bd      = (string) get_post_meta($id, '_breakdance_data', true);
         $content = (string) get_post_field('post_content', $id);
-        $needles = apply_filters('martin_dv_detect_needles', ['VyberBytu', 'Vyber_Bytu', 'martin_vyber_bytu']);
+        // Slug Breakdance elementu je MartinDV\Vyberbytu, shortcode martin_vyber_bytu.
+        $needles = apply_filters('martin_dv_detect_needles', ['Vyberbytu', 'martin_vyber_bytu']);
         foreach ($needles as $needle) {
-            if (strpos($bd, $needle) !== false || strpos($content, $needle) !== false) {
+            if (stripos($bd, $needle) !== false || stripos($content, $needle) !== false) {
                 $load = true;
                 break;
             }

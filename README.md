@@ -32,7 +32,7 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 | `martin_dv_unit_slug` | `byty` | URL slug jednotek (po změně uložit trvalé odkazy) |
 | `martin_dv_dispositions` | 1+kk … 6+kk | seznam dispozic v ACF |
 | `martin_dv_load_everywhere` | `false` | načíst CSS/JS na všech stránkách |
-| `martin_dv_detect_needles` | `VyberBytu`, … | podle čeho se pozná stránka s výběrem (CSS do `<head>`) |
+| `martin_dv_detect_needles` | `Vyberbytu`, `martin_vyber_bytu` | podle čeho se pozná stránka s výběrem (CSS do `<head>`) |
 
 ## Verze
 
