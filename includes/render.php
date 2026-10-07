@@ -221,7 +221,7 @@ function render_project(int $project_id, array $args = []): string
         ];
         if ($prices) {
             /* translators: %s: nejnižší cena */
-            $lines[] = sprintf(__('od %s Kč', 'martin-dev-vyber-bytu'), number_format_i18n(min($prices)));
+            $lines[] = sprintf(__('od %s Kč', 'martin-dev-vyber-bytu'), num(min($prices)));
         }
         return $lines;
     };

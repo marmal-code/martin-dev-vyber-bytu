@@ -146,6 +146,10 @@
   {% if design.legenda.zaobleni.style %}border-radius: {{ design.legenda.zaobleni.style }};{% endif %}
 }
 
+%%SELECTOR%% .martin-dv .martin-dv__tip .martin-dv__tip-price {
+  {{ macros.typography(design.bublina.cena, globalSettings) }}
+}
+
 {# ---- Tabulka ---- #}
 %%SELECTOR%% .martin-dv .martin-dv__table th {
   {{ macros.typography(design.tabulka.hlavicka, globalSettings) }}

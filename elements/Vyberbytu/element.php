@@ -459,7 +459,12 @@ class Vyberbytu extends \Breakdance\Elements\Element
       ), c(
         "bublina",
         "Bublina",
-        [c(
+        [getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Cena",
+        "cena",
+        ['type' => 'popout']
+      ), c(
         "pozadi",
         "Pozadí",
         [],

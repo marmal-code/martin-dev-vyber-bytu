@@ -84,6 +84,7 @@
 }
 .martin-dv__tip strong { display: block; font-size: 1.05em; margin-bottom: 2px; }
 .martin-dv__tip span { display: block; }
+.martin-dv__tip .martin-dv__tip-price { font-weight: 700; margin: 8px 0; }
 .martin-dv__tip em { display: block; font-style: normal; font-size: .9em; opacity: .65; margin-top: 4px; }
 
 /* boční panel */

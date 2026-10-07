@@ -130,7 +130,7 @@
         var h = '<strong>' + esc(u.label) + (u.disp ? ' · ' + esc(u.disp) : '') + '</strong>';
         if (S.tip_area && u.areaTxt) h += '<span>' + esc(D.i18n.area) + ': ' + esc(u.areaTxt) + '</span>';
         if (S.tip_outdoor && u.outTxt) h += '<span>' + esc(u.outTxt) + '</span>';
-        if (S.tip_price && u.priceTxt) h += '<span>' + esc(u.priceTxt) + '</span>';
+        if (S.tip_price && u.priceTxt) h += '<span class="martin-dv__tip-price">' + esc(u.priceTxt) + '</span>';
         if (S.tip_status) h += '<span><span class="martin-dv__status" data-status="' + esc(u.status) + '">' + esc(u.statusLabel) + '</span></span>';
         if (u.clickable) h += '<em>' + esc(D.i18n.clickUnit) + '</em>';
         return h;

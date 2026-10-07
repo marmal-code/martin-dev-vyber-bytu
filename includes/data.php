@@ -232,10 +232,19 @@ function translate_id(int $id): int
     return $t ? (int) $t : $id;
 }
 
+/**
+ * number_format_i18n() vrací mezeru jako HTML entitu &nbsp; – pro výpis přes JS (bublina, karta)
+ * ji převedeme na skutečný znak nezlomitelné mezery.
+ */
+function num($n, int $decimals = 0): string
+{
+    return html_entity_decode(number_format_i18n($n, $decimals), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
 function fmt_num($n): string
 {
     $n = (float) $n;
-    return number_format_i18n($n, (floor($n) == $n) ? 0 : 1);
+    return num($n, (floor($n) == $n) ? 0 : 1);
 }
 
 function fmt_area($n): string
@@ -277,7 +286,7 @@ function unit_info(int $id, array $settings): ?array
         $price_txt = __('Cena na dotaz', 'martin-dev-vyber-bytu');
     } elseif ($price > 0) {
         /* translators: %s: cena */
-        $price_txt = sprintf(__('%s Kč', 'martin-dev-vyber-bytu'), number_format_i18n($price));
+        $price_txt = sprintf(__('%s Kč', 'martin-dev-vyber-bytu'), num($price));
     } else {
         $price_txt = '';
     }
@@ -328,7 +337,7 @@ function format_accessory_price(string $price): string
     $price = trim($price);
     if (preg_match('/^\d[\d\s.]*$/u', $price)) {
         /* translators: %s: cena */
-        return sprintf(__('%s Kč', 'martin-dev-vyber-bytu'), number_format_i18n((int) preg_replace('/\D/', '', $price)));
+        return sprintf(__('%s Kč', 'martin-dev-vyber-bytu'), num((int) preg_replace('/\D/', '', $price)));
     }
     return $price;
 }
