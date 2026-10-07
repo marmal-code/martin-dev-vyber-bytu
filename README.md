@@ -1,0 +1,39 @@
+# Martin – Výběr bytů
+
+WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce nebo vizualizaci domu podlaží, v půdorysu podlaží pak jednotku (byt, ateliér, sklep, garáž, parkovací stání) a klikem přejde na její detail.
+
+- **Jednotky** jsou CPT `martin_dv_jednotka` s vlastní URL (`/byty/…`) a ACF poli (`dv_cislo`, `dv_stav`, `dv_cena` …). Detail se staví Breakdance šablonou s dynamickými daty.
+- **Projekty** (CPT `martin_dv_projekt`) obsahují pohledy (dům, areál, strany budovy) a podlaží s obkreslenými oblastmi.
+- Víc budov a pohledů: oblast v pohledu může vést na podlaží nebo na další pohled.
+- Mezonety: stejnou jednotku lze obkreslit ve více podlažích.
+- Barvy a písmo se berou z Breakdance Global Settings.
+- Výstup: Breakdance element (Element Studio, viz `docs/breakdance-element.md`) nebo shortcode `[martin_vyber_bytu id="123"]`.
+- Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
+
+## Požadavky
+
+- WordPress 6.5+, PHP 7.4+ (doporučeno 8.2/8.3)
+- ACF nebo ACF Pro
+- Breakdance 2.8+ (pro element; shortcode funguje i bez něj)
+
+## Instalace
+
+1. Nahrát složku `martin-dev-vyber-bytu` do `wp-content/plugins/` a aktivovat.
+2. Nastavení → Trvalé odkazy → Uložit.
+3. Výběr bytů → Projekty → Přidat projekt.
+4. Výběr bytů → Přidat jednotku (u každé vybrat projekt).
+5. V projektu: obrázek pohledu → oblasti podlaží → půdorysy → oblasti jednotek.
+6. Vytvořit Breakdance element podle `docs/breakdance-element.md`.
+
+## Filtry
+
+| Filtr | Výchozí | Účel |
+|---|---|---|
+| `martin_dv_unit_slug` | `byty` | URL slug jednotek (po změně uložit trvalé odkazy) |
+| `martin_dv_dispositions` | 1+kk … 6+kk | seznam dispozic v ACF |
+| `martin_dv_load_everywhere` | `false` | načíst CSS/JS na všech stránkách |
+| `martin_dv_detect_needles` | `VyberBytu`, … | podle čeho se pozná stránka s výběrem (CSS do `<head>`) |
+
+## Verze
+
+- **0.1.0** – první verze: CPT, ACF pole, editor oblastí, frontend, shortcode, saving location pro Element Studio.

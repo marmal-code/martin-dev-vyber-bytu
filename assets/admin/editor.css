@@ -1,0 +1,64 @@
+/* Martin – Výběr bytů: editor v administraci */
+#martin-dv-editor-box .inside { margin: 0; padding: 0; }
+.mdv { display: grid; grid-template-columns: 200px minmax(0, 1fr) 280px; min-height: 420px; }
+@media (max-width: 1500px) { .mdv { grid-template-columns: 190px minmax(0, 1fr); } .mdv-insp { grid-column: 2; border-left: 0 !important; border-top: 1px solid #dcdcde; } }
+@media (max-width: 900px) { .mdv { grid-template-columns: minmax(0, 1fr); } .mdv-insp { grid-column: 1; } .mdv-nav { border-right: 0 !important; border-bottom: 1px solid #dcdcde; } }
+
+.mdv-nav { border-right: 1px solid #dcdcde; padding: 10px; background: #f6f7f7; display: flex; flex-direction: column; gap: 2px; }
+.mdv-h { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #646970; padding: 12px 8px 4px; }
+.mdv-navrow { display: flex; gap: 2px; align-items: stretch; }
+.mdv-navbtn { flex: 1; display: flex; justify-content: space-between; gap: 6px; align-items: baseline; text-align: left; border: 0; background: none; padding: 7px 8px; border-radius: 4px; cursor: pointer; font-size: 13px; color: #1d2327; min-width: 0; }
+.mdv-navbtn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mdv-navbtn small { color: #646970; font-size: 11px; flex-shrink: 0; }
+.mdv-navbtn:hover { background: #fff; }
+.mdv-navbtn.on { background: #2271b1; color: #fff; }
+.mdv-navbtn.on small { color: #e0ecf6; }
+.mdv-order { display: flex; }
+.mdv-order button { border: 0; background: none; cursor: pointer; color: #646970; padding: 0 4px; font-size: 12px; }
+.mdv-order button:disabled { opacity: .3; cursor: default; }
+.mdv-add { border: 0; background: none; text-align: left; color: #2271b1; cursor: pointer; padding: 6px 8px; font-size: 13px; }
+
+.mdv-main { padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.mdv-title strong { display: block; font-size: 16px; }
+.mdv-kicker { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #646970; }
+.mdv-help, .mdv-hint { margin: 0; color: #50575e; font-size: 12.5px; }
+.mdv-hint { color: #1d2327; }
+.mdv-tb { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.mdv-seg { display: inline-flex; border: 1px solid #8c8f94; border-radius: 3px; overflow: hidden; }
+.mdv-seg button { border: 0; background: #fff; padding: 0 10px; min-height: 30px; cursor: pointer; font-size: 13px; }
+.mdv-seg button + button { border-left: 1px solid #8c8f94; }
+.mdv-seg button.on { background: #1d2327; color: #fff; }
+.mdv-seg button:disabled { opacity: .5; cursor: default; }
+
+.mdv-stage { position: relative; width: 100%; max-width: 100%; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 4px; overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: none; }
+.mdv-stage.draw { cursor: crosshair; }
+.mdv-stage img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: fill; pointer-events: none; }
+.mdv-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mdv-empty { display: grid; place-items: center; text-align: center; padding: 20px; color: #646970; }
+.mdv-ap { fill: #2271b1; fill-opacity: .15; stroke: #2271b1; stroke-width: 1.5; vector-effect: non-scaling-stroke; cursor: pointer; }
+.mdv-ap.on { fill-opacity: .35; stroke-width: 3; }
+.mdv-stage.draw .mdv-ap { pointer-events: none; fill-opacity: .07; }
+.mdv-draft { fill: #00a32a; fill-opacity: .15; stroke: #00a32a; stroke-width: 2.5; stroke-dasharray: 6 4; vector-effect: non-scaling-stroke; }
+.mdv-label { position: absolute; transform: translate(-50%, -50%); background: #fff; border: 1px solid #c3c4c7; font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 10px; pointer-events: none; white-space: nowrap; }
+.mdv-handle { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; border: 2px solid #2271b1; cursor: move; z-index: 2; box-sizing: border-box; }
+.mdv-handle-d { border-color: #00a32a; cursor: pointer; }
+.mdv-handle.first { width: 18px; height: 18px; margin: -9px 0 0 -9px; background: #00a32a; }
+
+.mdv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mdv-chip { border: 1px solid #c3c4c7; background: #fff; border-radius: 12px; padding: 3px 10px; font-size: 12px; cursor: pointer; }
+.mdv-chip.on { border-color: #2271b1; background: #f0f6fc; color: #2271b1; font-weight: 600; }
+.mdv-chip.warn { border-style: dashed; color: #b32d2e; }
+.mdv-chip-add { color: #2271b1; }
+.mdv-chip:disabled { opacity: .5; cursor: default; }
+
+.mdv-insp { border-left: 1px solid #dcdcde; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.mdv-fld { display: flex; flex-direction: column; gap: 4px; }
+.mdv-fld > span { font-weight: 600; font-size: 12.5px; }
+.mdv-fld small { color: #646970; }
+.mdv-fld select, .mdv-fld input[type=text] { width: 100%; max-width: 100%; }
+.mdv-check { display: flex; gap: 6px; align-items: flex-start; }
+.mdv-check input { margin-top: 2px; }
+.mdv-group { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #f0f0f1; }
+.mdv-settings { display: flex; flex-direction: column; gap: 12px; max-width: 560px; }
+.mdv-row { display: flex; gap: 16px; }
+.mdv-danger { color: #b32d2e !important; border-color: #b32d2e !important; }
