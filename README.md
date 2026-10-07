@@ -7,7 +7,7 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 - Víc budov a pohledů: oblast v pohledu může vést na podlaží nebo na další pohled.
 - Mezonety: stejnou jednotku lze obkreslit ve více podlažích.
 - Barvy a písmo se berou z Breakdance Global Settings.
-- Výstup: Breakdance element (Element Studio, viz `docs/breakdance-element.md`) nebo shortcode `[martin_vyber_bytu id="123"]`.
+- Výstup: Breakdance element **Vyberbytu** (Add → Dynamic; vzniklo v Element Studiu, viz `docs/breakdance-element.md`) nebo shortcode `[martin_vyber_bytu id="123"]`.
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
 
 ## Požadavky
@@ -36,4 +36,5 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 
 ## Verze
 
+- **0.2.0** – Breakdance element „Vyberbytu“ (slug `MartinDV\Vyberbytu`, kategorie Dynamic) ve složce `elements/`, `ssr.php` napojený na plugin.
 - **0.1.0** – první verze: CPT, ACF pole, editor oblastí, frontend, shortcode, saving location pro Element Studio.

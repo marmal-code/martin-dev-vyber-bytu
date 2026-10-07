@@ -1,4 +1,6 @@
-# Breakdance element „Výběr bytů“ (Breakdance 2.8)
+# Breakdance element „Vyberbytu“ (Breakdance 2.8)
+
+**Stav:** element je hotový ve `elements/Vyberbytu/` (slug `MartinDV\Vyberbytu`). Postup níže slouží jen jako záznam, jak vznikl. Element Studio neumí upravit `ssr.php` – ten se mění jen v pluginu.
 
 Element se vytváří v Element Studiu a ES ho uloží jako PHP soubory do složky `elements/` tohoto pluginu. Pak je součástí repozitáře a cestuje s pluginem na další weby.
 
