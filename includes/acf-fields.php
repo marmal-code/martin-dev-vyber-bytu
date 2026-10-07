@@ -53,7 +53,7 @@ add_action('acf/init', function () {
             ],
             [
                 'key' => 'field_martin_dv_podlazi', 'name' => 'dv_podlazi', 'label' => __('Podlaží (text)', 'martin-dev-vyber-bytu'),
-                'type' => 'text', 'instructions' => __('Např. „2. NP“ nebo u mezonetu „3.–4. NP“. Prázdné = doplní se podle výkresu.', 'martin-dev-vyber-bytu'),
+                'type' => 'text', 'instructions' => __('Např. „2. NP“ nebo u mezonetu „3.–4. NP“. U domů nech prázdné. Prázdné = doplní se podle výkresu.', 'martin-dev-vyber-bytu'),
                 'wrapper' => ['width' => '33'],
             ],
             [
@@ -65,7 +65,7 @@ add_action('acf/init', function () {
                 'type' => 'select', 'choices' => outdoor_types(), 'allow_null' => 1, 'return_format' => 'label', 'wrapper' => ['width' => '33'],
             ],
             [
-                'key' => 'field_martin_dv_venkovni_plocha', 'name' => 'dv_venkovni_plocha', 'label' => __('Venkovní plocha (m²)', 'martin-dev-vyber-bytu'),
+                'key' => 'field_martin_dv_venkovni_plocha', 'name' => 'dv_venkovni_plocha', 'label' => __('Venkovní plocha / pozemek (m²)', 'martin-dev-vyber-bytu'),
                 'type' => 'number', 'step' => 0.1, 'min' => 0, 'wrapper' => ['width' => '33'],
             ],
             [

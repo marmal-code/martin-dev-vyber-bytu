@@ -128,13 +128,29 @@
 
 /* tabulka */
 .martin-dv__table { display: grid; gap: 12px; }
-.martin-dv__table-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
 .martin-dv__table-title { margin: 0; }
-.martin-dv__filters { display: flex; flex-wrap: wrap; gap: 8px; }
-.martin-dv__filters select {
-  font: inherit; font-size: .875em; color: inherit; padding: 7px 10px;
-  border: 1px solid var(--martin-dv-line); border-radius: 6px; background: var(--martin-dv-surface);
+.martin-dv__filters {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  padding: 14px 16px; background: var(--martin-dv-surface);
+  border: 1px solid var(--martin-dv-line); border-radius: 14px;
 }
+.martin-dv .martin-dv__fpill {
+  font: inherit; font-size: .9375em; font-weight: 700; line-height: 1.2; cursor: pointer;
+  padding: 11px 20px; border-radius: 999px; color: inherit;
+  background: color-mix(in srgb, currentColor 5%, var(--martin-dv-surface));
+  border: 1px solid var(--martin-dv-line);
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+.martin-dv .martin-dv__fpill:hover { border-color: var(--martin-dv-accent); }
+.martin-dv .martin-dv__fpill.is-active {
+  background: var(--bde-headings-color, #2c3440); border-color: var(--bde-headings-color, #2c3440); color: #fff;
+}
+
+/* úvod projektu */
+.martin-dv__intro { display: grid; gap: 12px; max-width: 72ch; }
+.martin-dv__project-title { margin: 0; }
+.martin-dv__project-desc > :first-child { margin-top: 0; }
+.martin-dv__project-desc > :last-child { margin-bottom: 0; }
 .martin-dv__table-wrap { overflow-x: auto; border: 1px solid var(--martin-dv-line); border-radius: var(--martin-dv-radius); }
 .martin-dv table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: .9375em; margin: 0; }
 .martin-dv th {

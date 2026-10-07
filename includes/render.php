@@ -60,11 +60,12 @@ function ensure_assets(): string
 /* ---------- Shortcode ---------- */
 
 add_shortcode('martin_vyber_bytu', function ($atts) {
-    $atts = shortcode_atts(['id' => 0, 'tabulka' => ''], $atts, 'martin_vyber_bytu');
-    $args = [];
-    if ($atts['tabulka'] === 'ne') {
-        $args['hide_table'] = true;
-    }
+    $atts = shortcode_atts(['id' => 0, 'tabulka' => '', 'nazev' => '', 'popis' => ''], $atts, 'martin_vyber_bytu');
+    $args = [
+        'hide_table' => $atts['tabulka'] === 'ne',
+        'hide_title' => $atts['nazev'] === 'ne',
+        'hide_desc'  => $atts['popis'] === 'ne',
+    ];
     return render_project(absint($atts['id']), $args);
 });
 
@@ -175,6 +176,28 @@ function render_project(int $project_id, array $args = []): string
             }
         }
     }
+    // Jednotky obkreslené přímo v pohledu (rodinné a řadové domy na fotce areálu).
+    $view_units = [];   // view id => [unit ids]
+    foreach ($views as $vid => $v) {
+        $view_units[$vid] = [];
+        foreach ($v['areas'] as $a) {
+            if (!$a['target'] || $a['target']['type'] !== 'unit') {
+                continue;
+            }
+            $tid = translate_id((int) $a['target']['id']);
+            if (!isset($units[$tid])) {
+                $info = unit_info((int) $a['target']['id'], $s);
+                if (!$info) {
+                    continue;
+                }
+                $units[$tid] = $info;
+            }
+            if (!in_array($tid, $view_units[$vid], true)) {
+                $view_units[$vid][] = $tid;
+            }
+        }
+    }
+
     foreach ($units as $id => &$u) {
         if ($u['floorTxt'] === '') {
             $u['floorTxt'] = implode(', ', array_map(function ($fid) use ($floors) {
@@ -210,7 +233,7 @@ function render_project(int $project_id, array $args = []): string
     $view_floors = [];
     foreach ($views as $vid => $v) {
         $view_floors[$vid] = [];
-        $ids               = [];
+        $ids               = $view_units[$vid];
         foreach ($v['areas'] as $a) {
             if ($a['target'] && $a['target']['type'] === 'floor' && isset($floors[$a['target']['id']])) {
                 $fid = $a['target']['id'];
@@ -237,6 +260,19 @@ function render_project(int $project_id, array $args = []): string
 
     $h .= '<div class="martin-dv' . ($s['show_outlines'] ? ' martin-dv--outlines' : '') . '" id="' . esc_attr($uid) . '" data-martin-dv style="' . esc_attr($style) . '">';
 
+    /* úvod projektu: název + popis (obsah editoru projektu) */
+    $intro = '';
+    if (empty($args['hide_title'])) {
+        $intro .= '<h2 class="martin-dv__project-title">' . esc_html(get_the_title($project_id)) . '</h2>';
+    }
+    $desc = trim((string) get_post_field('post_content', $project_id));
+    if ($desc !== '' && empty($args['hide_desc'])) {
+        $intro .= '<div class="martin-dv__project-desc">' . wpautop(wp_kses_post($desc)) . '</div>';
+    }
+    if ($intro !== '') {
+        $h .= '<div class="martin-dv__intro">' . $intro . '</div>';
+    }
+
     /* legenda */
     $present = array_unique(array_column($units, 'status'));
     if ($present) {
@@ -258,6 +294,13 @@ function render_project(int $project_id, array $args = []): string
         $seen  = [];
         foreach ($v['areas'] as $a) {
             $t = $a['target'];
+            if ($t && $t['type'] === 'unit') {
+                $tid = translate_id((int) $t['id']);
+                if (isset($units[$tid])) {
+                    $areas .= unit_area_html($units[$tid], $tid, $a['poly']);
+                }
+                continue;
+            }
             if (!$t || ($t['type'] === 'floor' && !isset($floors[$t['id']])) || ($t['type'] === 'view' && !isset($views[$t['id']]))) {
                 continue;
             }
@@ -286,7 +329,10 @@ function render_project(int $project_id, array $args = []): string
             . '<div class="martin-dv__bar">' . $back . '<h3 class="martin-dv__title">' . esc_html($v['name']) . '</h3></div>'
             . '<div class="martin-dv__layout">'
             . stage_html($v, $areas, $vid === $start)
-            . '<div class="martin-dv__side"><p class="martin-dv__hint">' . esc_html__('Najeďte na část domu a kliknutím ji otevřete.', 'martin-dev-vyber-bytu') . '</p>' . $list . '</div>'
+            . '<div class="martin-dv__side">'
+            . ($list ? '<p class="martin-dv__hint">' . esc_html__('Najeďte na část domu a kliknutím ji otevřete.', 'martin-dev-vyber-bytu') . '</p>' . $list : '')
+            . ($view_units[$vid] ? '<div class="martin-dv__card" data-dv-card>' . summary_card_html(__('Projekt', 'martin-dev-vyber-bytu'), $v['name'], $keys['view:' . $vid]['lines'], __('Najeďte myší na dům nebo jednotku v obrázku. Na telefonu klepněte jednou pro údaje, podruhé pro otevření detailu.', 'martin-dev-vyber-bytu')) . '</div>' : '')
+            . '</div>'
             . '</div></section>';
     }
 
@@ -301,23 +347,9 @@ function render_project(int $project_id, array $args = []): string
             if (!isset($units[$tid])) {
                 continue;
             }
-            $u     = $units[$tid];
-            $key   = 'unit:' . $tid;
-            $aria  = trim($u['label'] . ', ' . implode(', ', array_filter([$u['disp'], $u['areaTxt'], $u['statusLabel']])), ', ');
-            $poly  = '<polygon points="' . esc_attr(poly_points($a['poly'])) . '"></polygon>';
-            if ($u['clickable']) {
-                $areas .= '<a class="martin-dv__area martin-dv__area--unit" href="' . esc_url($u['url']) . '" data-dv-key="' . esc_attr($key) . '" data-status="' . esc_attr($u['status']) . '" aria-label="' . esc_attr($aria) . '">' . $poly . '</a>';
-            } else {
-                $areas .= '<g class="martin-dv__area martin-dv__area--unit is-disabled" data-dv-key="' . esc_attr($key) . '" data-status="' . esc_attr($u['status']) . '" role="img" aria-label="' . esc_attr($aria) . '">' . $poly . '</g>';
-            }
+            $areas .= unit_area_html($units[$tid], $tid, $a['poly']);
         }
-        $lines   = $keys['floor:' . $fid]['lines'];
-        $summary = '<p class="martin-dv__kicker">' . esc_html__('Podlaží', 'martin-dev-vyber-bytu') . '</p>'
-            . '<h4 class="martin-dv__card-title">' . esc_html($f['name']) . '</h4>';
-        foreach ($lines as $line) {
-            $summary .= '<p>' . esc_html($line) . '</p>';
-        }
-        $summary .= '<p class="martin-dv__hint">' . esc_html__('Najeďte myší na jednotku v půdorysu. Na telefonu klepněte jednou pro údaje, podruhé pro otevření detailu.', 'martin-dev-vyber-bytu') . '</p>';
+        $summary = summary_card_html(__('Podlaží', 'martin-dev-vyber-bytu'), $f['name'], $keys['floor:' . $fid]['lines'], __('Najeďte myší na jednotku v půdorysu. Na telefonu klepněte jednou pro údaje, podruhé pro otevření detailu.', 'martin-dev-vyber-bytu'));
 
         $h .= '<section class="martin-dv__panel" data-dv-panel="floor:' . esc_attr($fid) . '" id="' . esc_attr($uid . '-floor-' . $fid) . '" hidden>'
             . '<div class="martin-dv__bar">' . $back . '<h3 class="martin-dv__title">' . esc_html($f['name']) . '</h3><div class="martin-dv__pills" data-dv-pills></div></div>'
@@ -329,7 +361,7 @@ function render_project(int $project_id, array $args = []): string
 
     /* tabulka */
     if ($s['show_table'] && $units) {
-        $h .= table_html($units, $floors, $floor_units, $unit_floors);
+        $h .= table_html($units, $floors, $floor_units, $unit_floors, $view_units);
     }
 
     $h .= '<div class="martin-dv__tip" aria-hidden="true" hidden></div>';
@@ -361,9 +393,6 @@ function render_project(int $project_id, array $args = []): string
             'price'      => __('Cena', 'martin-dev-vyber-bytu'),
             'acc'        => __('Příslušenství k dokoupení', 'martin-dev-vyber-bytu'),
             'soldHint'   => __('Tato jednotka je prodaná.', 'martin-dev-vyber-bytu'),
-            'tableAll'   => __('Přehled jednotek', 'martin-dev-vyber-bytu'),
-            /* translators: %s: název podlaží */
-            'tableFloor' => __('Jednotky – %s', 'martin-dev-vyber-bytu'),
         ],
     ];
     $h .= '<script type="application/json" class="martin-dv__data">' . wp_json_encode($json, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) . '</script>';
@@ -393,66 +422,128 @@ function stage_html(array $item, string $areas, bool $eager): string
         . '</div>';
 }
 
-function table_html(array $units, array $floors, array $floor_units, array $unit_floors): string
+/** Plocha polygonu jednotky (odkaz na detail, nebo neaktivní u prodané). */
+function unit_area_html(array $u, int $id, array $poly): string
 {
-    // Pořadí řádků: podle podlaží shora dolů, jednotka jen jednou (mezonet).
+    $key  = 'unit:' . $id;
+    $aria = trim($u['label'] . ', ' . implode(', ', array_filter([$u['disp'], $u['areaTxt'], $u['statusLabel']])), ', ');
+    $pg   = '<polygon points="' . esc_attr(poly_points($poly)) . '"></polygon>';
+    if ($u['clickable']) {
+        return '<a class="martin-dv__area martin-dv__area--unit" href="' . esc_url($u['url']) . '" data-dv-key="' . esc_attr($key) . '" data-status="' . esc_attr($u['status']) . '" aria-label="' . esc_attr($aria) . '">' . $pg . '</a>';
+    }
+    return '<g class="martin-dv__area martin-dv__area--unit is-disabled" data-dv-key="' . esc_attr($key) . '" data-status="' . esc_attr($u['status']) . '" role="img" aria-label="' . esc_attr($aria) . '">' . $pg . '</g>';
+}
+
+function summary_card_html(string $kicker, string $title, array $lines, string $hint): string
+{
+    $h = '<p class="martin-dv__kicker">' . esc_html($kicker) . '</p><h4 class="martin-dv__card-title">' . esc_html($title) . '</h4>';
+    foreach ($lines as $line) {
+        $h .= '<p>' . esc_html($line) . '</p>';
+    }
+    return $h . '<p class="martin-dv__hint">' . esc_html($hint) . '</p>';
+}
+
+/** Společný název pro „všechny“: byty / domy / jednotky podle toho, co projekt obsahuje. */
+function collection_labels(array $types): array
+{
+    $houses = ['rodinny_dum', 'dvojdum', 'radovy_dum'];
+    if ($types && !array_diff($types, ['byt'])) {
+        return [__('Všechny byty', 'martin-dev-vyber-bytu'), __('Přehled bytů', 'martin-dev-vyber-bytu')];
+    }
+    if ($types && !array_diff($types, $houses)) {
+        return [__('Všechny domy', 'martin-dev-vyber-bytu'), __('Přehled domů', 'martin-dev-vyber-bytu')];
+    }
+    return [__('Všechny jednotky', 'martin-dev-vyber-bytu'), __('Přehled jednotek', 'martin-dev-vyber-bytu')];
+}
+
+function table_html(array $units, array $floors, array $floor_units, array $unit_floors, array $view_units = []): string
+{
+    // Pořadí řádků: podle podlaží shora dolů, pak jednotky z pohledů; každá jednotka jen jednou (mezonet).
     $order = [];
     foreach ($floor_units as $ids) {
         foreach ($ids as $id) {
             $order[$id] = true;
         }
     }
-
-    $types = $disps = $sts = [];
-    foreach (array_keys($order) as $id) {
-        $types[$units[$id]['type']] = $units[$id]['typeLabel'];
-        if ($units[$id]['disp'] !== '') {
-            $disps[$units[$id]['disp']] = $units[$id]['disp'];
+    foreach ($view_units as $ids) {
+        foreach ($ids as $id) {
+            $order[$id] = true;
         }
-        $sts[$units[$id]['status']] = $units[$id]['statusLabel'];
     }
-    ksort($disps);
+    $ids = array_keys($order);
 
-    $select = function ($name, $all, $options) {
-        if (count($options) < 2) {
-            return '';
+    $types = $disps = $floor_opts = [];
+    $has_sold = $show_floor = false;
+    foreach ($ids as $id) {
+        $u                    = $units[$id];
+        $types[$u['type']]    = $u['typeLabel'];
+        if ($u['disp'] !== '') {
+            $disps[$u['disp']] = $u['disp'];
         }
-        $o = '<option value="">' . esc_html($all) . '</option>';
-        foreach ($options as $val => $label) {
-            $o .= '<option value="' . esc_attr($val) . '">' . esc_html($label) . '</option>';
+        if ($u['status'] !== 'volny') {
+            $has_sold = true;
         }
-        return '<select data-dv-filter="' . esc_attr($name) . '" aria-label="' . esc_attr($all) . '">' . $o . '</select>';
+        if ($u['floorTxt'] !== '') {
+            $show_floor = true;
+        }
+    }
+    ksort($disps, SORT_NATURAL);
+    foreach ($floors as $fid => $f) {
+        if (!empty($floor_units[$fid])) {
+            $floor_opts[$fid] = trim(explode(' –', $f['name'])[0]);
+        }
+    }
+    [$all_label, $title] = collection_labels(array_keys($types));
+
+    $pill = function (string $group, string $value, string $label, bool $active = false) {
+        return '<button type="button" class="martin-dv__fpill' . ($active ? ' is-active' : '') . '" data-dv-fgroup="' . esc_attr($group) . '" data-dv-fvalue="' . esc_attr($value) . '" aria-pressed="' . ($active ? 'true' : 'false') . '">' . esc_html($label) . '</button>';
     };
+    $pills = $pill('all', '', $all_label, true);
+    if (count($types) > 1) {
+        foreach ($types as $val => $label) {
+            $pills .= $pill('type', $val, $label);
+        }
+    }
+    if (count($disps) > 1) {
+        foreach ($disps as $val => $label) {
+            $pills .= $pill('disp', $val, $label);
+        }
+    }
+    if (count($floor_opts) > 1) {
+        foreach ($floor_opts as $val => $label) {
+            $pills .= $pill('floor', $val, $label);
+        }
+    }
+    if ($has_sold) {
+        $pills .= $pill('status', 'volny', __('Jen volné', 'martin-dev-vyber-bytu'));
+    }
 
-    $h = '<div class="martin-dv__table">'
-        . '<div class="martin-dv__table-head"><h3 class="martin-dv__table-title" data-dv-table-title>' . esc_html__('Přehled jednotek', 'martin-dev-vyber-bytu') . '</h3>'
-        . '<div class="martin-dv__filters">'
-        . $select('type', __('Všechny typy', 'martin-dev-vyber-bytu'), $types)
-        . $select('disp', __('Všechny dispozice', 'martin-dev-vyber-bytu'), $disps)
-        . $select('status', __('Všechny stavy', 'martin-dev-vyber-bytu'), $sts)
-        . '</div></div>'
+    $cols = 5 + ($show_floor ? 1 : 0);
+    $h    = '<div class="martin-dv__table">'
+        . '<h3 class="martin-dv__table-title">' . esc_html($title) . '</h3>'
+        . '<div class="martin-dv__filters" role="group" aria-label="' . esc_attr__('Filtr', 'martin-dev-vyber-bytu') . '">' . $pills . '</div>'
         . '<div class="martin-dv__table-wrap"><table><thead><tr>'
         . '<th>' . esc_html__('Jednotka', 'martin-dev-vyber-bytu') . '</th>'
-        . '<th>' . esc_html__('Podlaží', 'martin-dev-vyber-bytu') . '</th>'
+        . ($show_floor ? '<th>' . esc_html__('Podlaží', 'martin-dev-vyber-bytu') . '</th>' : '')
         . '<th>' . esc_html__('Dispozice', 'martin-dev-vyber-bytu') . '</th>'
         . '<th>' . esc_html__('Plocha', 'martin-dev-vyber-bytu') . '</th>'
         . '<th>' . esc_html__('Cena', 'martin-dev-vyber-bytu') . '</th>'
         . '<th>' . esc_html__('Stav', 'martin-dev-vyber-bytu') . '</th>'
         . '</tr></thead><tbody>';
 
-    foreach (array_keys($order) as $id) {
+    foreach ($ids as $id) {
         $u    = $units[$id];
         $name = $u['clickable'] ? '<a href="' . esc_url($u['url']) . '">' . esc_html($u['label']) . '</a>' : esc_html($u['label']);
         $h   .= '<tr data-dv-key="unit:' . (int) $id . '" data-type="' . esc_attr($u['type']) . '" data-disp="' . esc_attr($u['disp']) . '" data-status="' . esc_attr($u['status']) . '" data-floors="' . esc_attr(implode(' ', $unit_floors[$id] ?? [])) . '">'
             . '<td class="martin-dv__cell-name">' . $name . '</td>'
-            . '<td>' . esc_html($u['floorTxt']) . '</td>'
+            . ($show_floor ? '<td>' . esc_html($u['floorTxt'] ?: '—') . '</td>' : '')
             . '<td>' . esc_html($u['disp'] ?: '—') . '</td>'
             . '<td>' . esc_html($u['areaTxt'] ?: '—') . '</td>'
             . '<td>' . esc_html($u['priceTxt'] ?: '—') . '</td>'
             . '<td><span class="martin-dv__status" data-status="' . esc_attr($u['status']) . '">' . esc_html($u['statusLabel']) . '</span></td>'
             . '</tr>';
     }
-    $h .= '<tr class="martin-dv__empty-row" hidden><td colspan="6">' . esc_html__('Filtru neodpovídá žádná jednotka.', 'martin-dev-vyber-bytu') . '</td></tr>';
+    $h .= '<tr class="martin-dv__empty-row" hidden><td colspan="' . $cols . '">' . esc_html__('Filtru neodpovídá žádná jednotka.', 'martin-dev-vyber-bytu') . '</td></tr>';
     $h .= '</tbody></table></div></div>';
 
     return $h;

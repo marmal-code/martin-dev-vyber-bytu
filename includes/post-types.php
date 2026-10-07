@@ -51,8 +51,8 @@ function register_post_types(): void
         'public'       => false,
         'show_ui'      => true,
         'show_in_menu' => 'edit.php?post_type=' . PT_UNIT,
-        'supports'     => ['title'],
-        'show_in_rest' => false,
+        'supports'     => ['title', 'editor'],
+        'show_in_rest' => false, // klasický editor: obsah = popis projektu nad výběrem
     ]);
 }
 add_action('init', __NAMESPACE__ . '\\register_post_types');

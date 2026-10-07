@@ -23,7 +23,7 @@
     root.querySelectorAll('[data-dv-card]').forEach(function (c) { c.__summary = c.innerHTML; });
 
     var tip = root.querySelector('.martin-dv__tip');
-    var tableTitle = root.querySelector('[data-dv-table-title]');
+    var filter = { type: '', disp: '', floor: '', status: '' };
     var rows = Array.prototype.slice.call(root.querySelectorAll('tbody tr[data-dv-key]'));
     var emptyRow = root.querySelector('.martin-dv__empty-row');
 
@@ -50,6 +50,7 @@
       renderPills(panels[key]);
       setHover(null);
       hideTip();
+      setFloorFilter(key.indexOf('floor:') === 0 ? key.slice(6) : '');
       applyTable();
     }
 
@@ -169,27 +170,39 @@
       placeTip(e, key, stage);
     }
 
-    /* ---------- tabulka ---------- */
+    /* ---------- tabulka + filtr ---------- */
+    function syncPills() {
+      var any = false;
+      root.querySelectorAll('[data-dv-fgroup]').forEach(function (b) {
+        var g = b.getAttribute('data-dv-fgroup');
+        var on = g === 'all' ? false : filter[g] === b.getAttribute('data-dv-fvalue');
+        if (on) any = true;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      var all = root.querySelector('[data-dv-fgroup="all"]');
+      if (all) { all.classList.toggle('is-active', !any); all.setAttribute('aria-pressed', any ? 'false' : 'true'); }
+    }
+
     function applyTable() {
       if (!rows.length) return;
-      var floorId = current && current.indexOf('floor:') === 0 ? current.slice(6) : null;
-      var f = {};
-      root.querySelectorAll('[data-dv-filter]').forEach(function (s) { f[s.getAttribute('data-dv-filter')] = s.value; });
       var visible = 0;
       rows.forEach(function (r) {
-        var ok = (!floorId || (' ' + r.getAttribute('data-floors') + ' ').indexOf(' ' + floorId + ' ') !== -1) &&
-          (!f.type || r.getAttribute('data-type') === f.type) &&
-          (!f.disp || r.getAttribute('data-disp') === f.disp) &&
-          (!f.status || r.getAttribute('data-status') === f.status);
+        var ok = (!filter.floor || (' ' + r.getAttribute('data-floors') + ' ').indexOf(' ' + filter.floor + ' ') !== -1) &&
+          (!filter.type || r.getAttribute('data-type') === filter.type) &&
+          (!filter.disp || r.getAttribute('data-disp') === filter.disp) &&
+          (!filter.status || r.getAttribute('data-status') === filter.status);
         r.hidden = !ok;
         if (ok) visible++;
       });
       if (emptyRow) emptyRow.hidden = visible > 0;
-      if (tableTitle) {
-        tableTitle.textContent = floorId && D.floors[floorId]
-          ? D.i18n.tableFloor.replace('%s', D.floors[floorId].name)
-          : D.i18n.tableAll;
-      }
+      syncPills();
+    }
+
+    function setFloorFilter(floorId) {
+      // Při procházení podlaží se tabulka sama přepne na dané podlaží (jen když pro něj existuje tlačítko).
+      var has = floorId && root.querySelector('[data-dv-fgroup="floor"][data-dv-fvalue="' + q(floorId) + '"]');
+      filter.floor = has ? floorId : '';
     }
 
     /* ---------- události ---------- */
@@ -205,6 +218,13 @@
     root.addEventListener('click', function (e) {
       var t = e.target, el;
       if (t.closest('[data-dv-back]')) { back(); return; }
+      if ((el = t.closest('[data-dv-fgroup]'))) {
+        var g = el.getAttribute('data-dv-fgroup');
+        if (g === 'all') { filter = { type: '', disp: '', floor: '', status: '' }; }
+        else { var v = el.getAttribute('data-dv-fvalue'); filter[g] = filter[g] === v ? '' : v; }
+        applyTable();
+        return;
+      }
       if ((el = t.closest('[data-dv-pill]'))) { show(el.getAttribute('data-dv-pill'), false); return; }
       if ((el = t.closest('[data-dv-go]'))) {
         e.preventDefault();
@@ -230,9 +250,6 @@
       }
     });
 
-    root.addEventListener('change', function (e) {
-      if (e.target.hasAttribute('data-dv-filter')) applyTable();
-    });
 
     /* ---------- start (podpora odkazu #id-floor-xyz) ---------- */
     var startKey = D.start;

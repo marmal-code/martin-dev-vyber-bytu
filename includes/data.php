@@ -15,6 +15,9 @@ function unit_types(): array
 {
     return [
         'byt'      => __('Byt', 'martin-dev-vyber-bytu'),
+        'rodinny_dum' => __('Rodinný dům', 'martin-dev-vyber-bytu'),
+        'dvojdum'  => __('Dvojdům', 'martin-dev-vyber-bytu'),
+        'radovy_dum' => __('Řadový dům', 'martin-dev-vyber-bytu'),
         'atelier'  => __('Ateliér', 'martin-dev-vyber-bytu'),
         'nebytovy' => __('Nebytový prostor', 'martin-dev-vyber-bytu'),
         'sklep'    => __('Sklep', 'martin-dev-vyber-bytu'),
@@ -39,6 +42,8 @@ function outdoor_types(): array
         'lodzie'       => __('Lodžie', 'martin-dev-vyber-bytu'),
         'terasa'       => __('Terasa', 'martin-dev-vyber-bytu'),
         'predzahradka' => __('Předzahrádka', 'martin-dev-vyber-bytu'),
+        'zahrada'      => __('Zahrada', 'martin-dev-vyber-bytu'),
+        'pozemek'      => __('Pozemek', 'martin-dev-vyber-bytu'),
     ];
 }
 
@@ -54,7 +59,7 @@ function unit_accessories(): array
 
 function dispositions(): array
 {
-    $list = ['1+kk', '1+1', '2+kk', '2+1', '3+kk', '3+1', '4+kk', '4+1', '5+kk', '5+1', '6+kk'];
+    $list = ['1+kk', '1+1', '2+kk', '2+1', '3+kk', '3+1', '4+kk', '4+1', '5+kk', '5+1', '6+kk', '6+1', '7+kk', '7+1'];
     return apply_filters('martin_dv_dispositions', array_combine($list, $list));
 }
 
@@ -181,7 +186,7 @@ function sanitize_project_data(array $in): array
             }
             $target = null;
             if (!empty($a['target']) && is_array($a['target'])
-                && in_array($a['target']['type'] ?? '', ['floor', 'view'], true)
+                && in_array($a['target']['type'] ?? '', ['floor', 'view', 'unit'], true)
                 && ($tid = clean_id($a['target']['id'] ?? ''))) {
                 $target = ['type' => $a['target']['type'], 'id' => $tid];
             }

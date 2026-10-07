@@ -22,6 +22,36 @@
   {% if design.oblasti.jednotky_pruhlednost is defined and design.oblasti.jednotky_pruhlednost is not null and design.oblasti.jednotky_pruhlednost != '' %}--martin-dv-unit-opacity: {{ design.oblasti.jednotky_pruhlednost / 100 }};{% endif %}
 }
 
+{# ---- Úvod projektu ---- #}
+%%SELECTOR%% .martin-dv .martin-dv__project-title {
+  {{ macros.typography(design.uvod.nazev, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv .martin-dv__project-desc,
+%%SELECTOR%% .martin-dv .martin-dv__project-desc p {
+  {{ macros.typography(design.uvod.popis, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv .martin-dv__intro {
+  {% if design.uvod.sirka.style %}max-width: {{ design.uvod.sirka.style }};{% endif %}
+  {% if design.uvod.mezera.style %}margin-bottom: {{ design.uvod.mezera.style }};{% endif %}
+}
+
+{# ---- Filtr tabulky ---- #}
+%%SELECTOR%% .martin-dv .martin-dv__filters {
+  {% if design.filtr.box_pozadi %}background: {{ design.filtr.box_pozadi }};{% endif %}
+  {% if design.filtr.box_ramecek %}border-color: {{ design.filtr.box_ramecek }};{% endif %}
+  {% if design.filtr.box_zaobleni.style %}border-radius: {{ design.filtr.box_zaobleni.style }};{% endif %}
+}
+%%SELECTOR%% .martin-dv .martin-dv__fpill {
+  {{ macros.typography(design.filtr.tlacitko, globalSettings) }}
+  {% if design.filtr.pozadi %}background: {{ design.filtr.pozadi }};{% endif %}
+  {% if design.filtr.ramecek %}border-color: {{ design.filtr.ramecek }};{% endif %}
+  {% if design.filtr.zaobleni.style %}border-radius: {{ design.filtr.zaobleni.style }};{% endif %}
+}
+%%SELECTOR%% .martin-dv .martin-dv__fpill.is-active {
+  {% if design.filtr.aktivni_pozadi %}background: {{ design.filtr.aktivni_pozadi }}; border-color: {{ design.filtr.aktivni_pozadi }};{% endif %}
+  {% if design.filtr.aktivni_text %}color: {{ design.filtr.aktivni_text }};{% endif %}
+}
+
 {# ---- Nadpisy ---- #}
 %%SELECTOR%% .martin-dv .martin-dv__title {
   {{ macros.typography(design.nadpisy.panel, globalSettings) }}

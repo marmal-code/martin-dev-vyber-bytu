@@ -143,6 +143,40 @@ class Vyberbytu extends \Breakdance\Elements\Element
       "spacing",
        ['type' => 'popout']
      ), c(
+        "uvod",
+        "Úvod projektu",
+        [getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Název projektu",
+        "nazev",
+        ['type' => 'popout']
+      ), getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Popis projektu",
+        "popis",
+        ['type' => 'popout']
+      ), c(
+        "sirka",
+        "Max. šířka popisu",
+        [],
+        ['type' => 'unit', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "mezera",
+        "Mezera pod úvodem",
+        [],
+        ['type' => 'unit', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
         "barvy",
         "Barvy",
         [c(
@@ -519,6 +553,83 @@ class Vyberbytu extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
+        "filtr",
+        "Filtr tabulky",
+        [c(
+        "box_pozadi",
+        "Rámeček filtru – pozadí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "box_ramecek",
+        "Rámeček filtru – čára",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "box_zaobleni",
+        "Rámeček filtru – zaoblení",
+        [],
+        ['type' => 'unit', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Tlačítka – písmo",
+        "tlacitko",
+        ['type' => 'popout']
+      ), c(
+        "pozadi",
+        "Tlačítka – pozadí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "ramecek",
+        "Tlačítka – rámeček",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "aktivni_pozadi",
+        "Aktivní – pozadí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "aktivni_text",
+        "Aktivní – text",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "zaobleni",
+        "Tlačítka – zaoblení",
+        [],
+        ['type' => 'unit', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
         "tabulka",
         "Tabulka",
         [getPresetSection(
@@ -591,6 +702,22 @@ class Vyberbytu extends \Breakdance\Elements\Element
         false,
         [],
         
+      ), c(
+        "skryt_nazev",
+        "Skrýt název projektu",
+        [],
+        ['type' => 'toggle', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "skryt_popis",
+        "Skrýt popis projektu",
+        [],
+        ['type' => 'toggle', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,

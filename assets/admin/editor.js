@@ -55,6 +55,7 @@
     if (U.ctx.type === 'view') {
       var t = a.target;
       if (!t) return T.noTarget;
+      if (t.type === 'unit') { var un = unitById(parseInt(t.id, 10)); return un ? un.short : T.noTarget; }
       var l = list(t.type);
       for (var i = 0; i < l.length; i++) { if (l[i].id === t.id) return l[i].name || T.unnamed; }
       return T.noTarget;
@@ -185,7 +186,18 @@
         h += '<optgroup label="' + esc(T.views) + '">' + S.views.filter(function (v) { return v.id !== o.id; }).map(function (v) {
           var k = 'view:' + v.id;
           return '<option value="' + esc(k) + '"' + (k === val ? ' selected' : '') + '>' + esc(v.name || T.unnamed) + '</option>';
-        }).join('') + '</optgroup></select></label>';
+        }).join('') + '</optgroup>';
+        if (units.length) {
+          h += '<optgroup label="' + esc(T.units) + '">' + units.map(function (u) {
+            var k = 'unit:' + u.id;
+            return '<option value="' + esc(k) + '"' + (k === val ? ' selected' : '') + '>' + esc(u.label) + '</option>';
+          }).join('') + '</optgroup>';
+        }
+        h += '</select></label>';
+        if (a.target && a.target.type === 'unit') {
+          var tu = unitById(parseInt(a.target.id, 10));
+          if (tu && tu.edit) h += '<p><a href="' + esc(tu.edit) + '" target="_blank" rel="noopener">' + esc(T.editUnit) + ' ↗</a></p>';
+        }
       } else {
         h += '<label class="mdv-fld"><span>' + esc(T.unit) + '</span><select data-area="unit"><option value="0">' + esc(T.chooseUnit) + '</option>' +
           units.map(function (u) { return '<option value="' + u.id + '"' + (u.id === a.unit ? ' selected' : '') + '>' + esc(u.label) + '</option>'; }).join('') +

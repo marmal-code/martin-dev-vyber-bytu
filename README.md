@@ -9,7 +9,7 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 - Víc budov a pohledů: oblast v pohledu může vést na podlaží nebo na další pohled.
 - Mezonety: stejnou jednotku lze obkreslit ve více podlažích.
 - Barvy a písmo se berou z Breakdance Global Settings.
-- Výstup: Breakdance element **Marmal – Výběr bytů** (Add → Dynamic, slug `MartinDV\Vyberbytu`; vzniklo v Element Studiu, viz `docs/breakdance-element.md`) nebo shortcode `[martin_vyber_bytu id="123"]`.
+- Výstup: Breakdance element **Marmal – Výběr bytů** (Add → Dynamic, slug `MartinDV\Vyberbytu`; vzniklo v Element Studiu, viz `docs/breakdance-element.md`) nebo shortcode `[martin_vyber_bytu id="123"]` (volitelně `tabulka="ne" nazev="ne" popis="ne"`).
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
 
 ## Požadavky
@@ -47,6 +47,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
+- **0.7.0** – filtr tabulky jako tlačítka (typ / dispozice / podlaží / jen volné), popis projektu (obsah editoru projektu) nad výběrem, typy Rodinný dům / Dvojdům / Řadový dům, venkovní plocha Zahrada / Pozemek, oblast v pohledu může vést přímo na jednotku; Design tab: Úvod projektu, Filtr tabulky; přepínače Skrýt název / popis.
 - **0.6.0** – automatické aktualizace z GitHubu (Plugin Update Checker + GitHub Action release).
 - **0.5.0** – přejmenování na „Marmal – Výběr bytů“ (autor Martin Malý – marmal.cz), Design tab: barvy štítků stavu (pozadí + text pro volný / rezervovaný / prodaný).
 - **0.4.0** – příslušenství: zaškrtávátko + cena u každé položky, vlastní položky (ACF Pro opakovač / 3 řádky v ACF free), shortcode `[martin_dv_prislusenstvi]` pro detail; Design tab: zvýraznění na obrázku, seznam vedle obrázku, tlačítka podlaží, rámečky a zaoblení karty a bubliny.
