@@ -16,7 +16,7 @@ add_action('admin_notices', function () {
         return;
     }
     echo '<div class="notice notice-warning"><p>'
-        . esc_html__('Plugin Výběr bytů potřebuje Advanced Custom Fields (ACF nebo ACF Pro) pro úpravu údajů jednotek.', 'martin-dev-vyber-bytu')
+        . esc_html__('Plugin Marmal – Výběr bytů potřebuje Advanced Custom Fields (ACF nebo ACF Pro) pro úpravu údajů jednotek.', 'martin-dev-vyber-bytu')
         . '</p></div>';
 });
 

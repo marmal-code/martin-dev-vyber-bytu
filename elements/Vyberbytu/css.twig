@@ -93,6 +93,20 @@
   {% if design.bublina.zaobleni.style %}border-radius: {{ design.bublina.zaobleni.style }};{% endif %}
 }
 
+{# ---- Štítky stavu (tabulka, karta, bublina) ---- #}
+%%SELECTOR%% .martin-dv .martin-dv__status[data-status="volny"] {
+  {% if design.stavy.volny_pozadi %}background: {{ design.stavy.volny_pozadi }};{% endif %}
+  {% if design.stavy.volny_text %}color: {{ design.stavy.volny_text }};{% endif %}
+}
+%%SELECTOR%% .martin-dv .martin-dv__status[data-status="rezervovany"] {
+  {% if design.stavy.rezervovany_pozadi %}background: {{ design.stavy.rezervovany_pozadi }};{% endif %}
+  {% if design.stavy.rezervovany_text %}color: {{ design.stavy.rezervovany_text }};{% endif %}
+}
+%%SELECTOR%% .martin-dv .martin-dv__status[data-status="prodany"] {
+  {% if design.stavy.prodany_pozadi %}background: {{ design.stavy.prodany_pozadi }};{% endif %}
+  {% if design.stavy.prodany_text %}color: {{ design.stavy.prodany_text }};{% endif %}
+}
+
 {# ---- Tabulka ---- #}
 %%SELECTOR%% .martin-dv .martin-dv__table th {
   {{ macros.typography(design.tabulka.hlavicka, globalSettings) }}

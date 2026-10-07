@@ -1,4 +1,6 @@
-# Martin – Výběr bytů
+# Marmal – Výběr bytů
+
+Autor: Martin Malý – [marmal.cz](https://marmal.cz)
 
 WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce nebo vizualizaci domu podlaží, v půdorysu podlaží pak jednotku (byt, ateliér, sklep, garáž, parkovací stání) a klikem přejde na její detail.
 
@@ -7,7 +9,7 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 - Víc budov a pohledů: oblast v pohledu může vést na podlaží nebo na další pohled.
 - Mezonety: stejnou jednotku lze obkreslit ve více podlažích.
 - Barvy a písmo se berou z Breakdance Global Settings.
-- Výstup: Breakdance element **Vyberbytu** (Add → Dynamic; vzniklo v Element Studiu, viz `docs/breakdance-element.md`) nebo shortcode `[martin_vyber_bytu id="123"]`.
+- Výstup: Breakdance element **Marmal – Výběr bytů** (Add → Dynamic, slug `MartinDV\Vyberbytu`; vzniklo v Element Studiu, viz `docs/breakdance-element.md`) nebo shortcode `[martin_vyber_bytu id="123"]`.
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
 
 ## Požadavky
@@ -37,6 +39,7 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 
 ## Verze
 
+- **0.5.0** – přejmenování na „Marmal – Výběr bytů“ (autor Martin Malý – marmal.cz), Design tab: barvy štítků stavu (pozadí + text pro volný / rezervovaný / prodaný).
 - **0.4.0** – příslušenství: zaškrtávátko + cena u každé položky, vlastní položky (ACF Pro opakovač / 3 řádky v ACF free), shortcode `[martin_dv_prislusenstvi]` pro detail; Design tab: zvýraznění na obrázku, seznam vedle obrázku, tlačítka podlaží, rámečky a zaoblení karty a bubliny.
 - **0.3.0** – volitelné příslušenství k dokoupení (ACF `dv_prislusenstvi`, `dv_prislusenstvi_poznamka`), tabulka bez venkovní plochy, Design tab elementu: barvy, nadpisy, karta, bublina, tabulka.
 - **0.2.0** – Breakdance element „Vyberbytu“ (slug `MartinDV\Vyberbytu`, kategorie Dynamic) ve složce `elements/`, `ssr.php` napojený na plugin.

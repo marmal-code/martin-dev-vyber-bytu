@@ -35,7 +35,7 @@ class Vyberbytu extends \Breakdance\Elements\Element
 
     static function name()
     {
-        return 'Vyberbytu';
+        return 'Marmal – Výběr bytů';
     }
 
     static function className()
@@ -454,6 +454,62 @@ class Vyberbytu extends \Breakdance\Elements\Element
         "Zaoblení rohů",
         [],
         ['type' => 'unit', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
+        "stavy",
+        "Štítky stavu",
+        [c(
+        "volny_pozadi",
+        "Volný – pozadí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "volny_text",
+        "Volný – text",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "rezervovany_pozadi",
+        "Rezervovaný – pozadí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "rezervovany_text",
+        "Rezervovaný – text",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "prodany_pozadi",
+        "Prodaný – pozadí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "prodany_text",
+        "Prodaný – text",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
         false,
         false,
         [],

@@ -10,7 +10,7 @@
  */
 
 if (!function_exists('\MartinDV\render_project')) {
-    echo '<p>Plugin „Martin – Výběr bytů“ není aktivní.</p>';
+    echo '<p>Plugin „Marmal – Výběr bytů“ není aktivní.</p>';
     return;
 }
 

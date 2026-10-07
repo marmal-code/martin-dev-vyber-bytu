@@ -1,9 +1,11 @@
 <?php
 /**
- * Plugin Name:       Martin – Výběr bytů
+ * Plugin Name:       Marmal – Výběr bytů
+ * Plugin URI:        https://marmal.cz
  * Description:       Interaktivní výběr podlaží a jednotek (byty, sklepy, garáže) na obrázku domu a půdorysech. CPT Jednotky s ACF poli, Breakdance element a shortcode.
- * Version:           0.4.0
- * Author:            Martin
+ * Version:           0.5.0
+ * Author:            Martin Malý – marmal.cz
+ * Author URI:        https://marmal.cz
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Text Domain:       martin-dev-vyber-bytu
@@ -17,7 +19,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-const VERSION    = '0.4.0';
+const VERSION    = '0.5.0';
 const PT_UNIT    = 'martin_dv_jednotka';
 const PT_PROJECT = 'martin_dv_projekt';
 const META_DATA  = '_martin_dv_data';

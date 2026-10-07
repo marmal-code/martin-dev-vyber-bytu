@@ -22,7 +22,7 @@ add_action('breakdance_loaded', function () {
         \Breakdance\Util\getDirectoryPathRelativeToPluginFolder(dirname(MARTIN_DV_FILE)) . '/elements',
         'MartinDV',
         'element',
-        'Výběr bytů – elementy',
+        'Marmal – Výběr bytů',
         false
     );
 }, 9);
