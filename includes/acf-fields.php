@@ -77,6 +77,17 @@ add_action('acf/init', function () {
                 'type' => 'true_false', 'ui' => 1, 'wrapper' => ['width' => '33'],
             ],
             [
+                'key' => 'field_martin_dv_prislusenstvi', 'name' => 'dv_prislusenstvi', 'label' => __('Volitelné příslušenství k dokoupení', 'martin-dev-vyber-bytu'),
+                'type' => 'checkbox', 'choices' => unit_accessories(), 'layout' => 'horizontal', 'return_format' => 'label',
+                'instructions' => __('Zaškrtni jen to, co si kupující k této jednotce může připlatit.', 'martin-dev-vyber-bytu'),
+                'wrapper' => ['width' => '50'],
+            ],
+            [
+                'key' => 'field_martin_dv_prislusenstvi_poznamka', 'name' => 'dv_prislusenstvi_poznamka', 'label' => __('Poznámka k příslušenství', 'martin-dev-vyber-bytu'),
+                'type' => 'text', 'instructions' => __('Nepovinné, např. „Garáž +350 000 Kč, sklep +60 000 Kč“.', 'martin-dev-vyber-bytu'),
+                'wrapper' => ['width' => '50'],
+            ],
+            [
                 'key' => 'field_martin_dv_pudorys', 'name' => 'dv_pudorys', 'label' => __('Půdorys jednotky', 'martin-dev-vyber-bytu'),
                 'type' => 'image', 'return_format' => 'id', 'preview_size' => 'medium', 'wrapper' => ['width' => '50'],
             ],

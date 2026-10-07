@@ -30,11 +30,13 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 | Filtr | Výchozí | Účel |
 |---|---|---|
 | `martin_dv_unit_slug` | `byty` | URL slug jednotek (po změně uložit trvalé odkazy) |
+| `martin_dv_accessories` | stání, garáž, sklepní kóje | volby příslušenství k dokoupení |
 | `martin_dv_dispositions` | 1+kk … 6+kk | seznam dispozic v ACF |
 | `martin_dv_load_everywhere` | `false` | načíst CSS/JS na všech stránkách |
 | `martin_dv_detect_needles` | `Vyberbytu`, `martin_vyber_bytu` | podle čeho se pozná stránka s výběrem (CSS do `<head>`) |
 
 ## Verze
 
+- **0.3.0** – volitelné příslušenství k dokoupení (ACF `dv_prislusenstvi`, `dv_prislusenstvi_poznamka`), tabulka bez venkovní plochy, Design tab elementu: barvy, nadpisy, karta, bublina, tabulka.
 - **0.2.0** – Breakdance element „Vyberbytu“ (slug `MartinDV\Vyberbytu`, kategorie Dynamic) ve složce `elements/`, `ssr.php` napojený na plugin.
 - **0.1.0** – první verze: CPT, ACF pole, editor oblastí, frontend, shortcode, saving location pro Element Studio.

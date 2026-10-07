@@ -42,6 +42,16 @@ function outdoor_types(): array
     ];
 }
 
+/** Volitelné příslušenství k dokoupení (zaškrtává se u každé jednotky zvlášť). */
+function unit_accessories(): array
+{
+    return apply_filters('martin_dv_accessories', [
+        'parkovaci_stani' => __('Parkovací stání', 'martin-dev-vyber-bytu'),
+        'garaz'           => __('Garáž', 'martin-dev-vyber-bytu'),
+        'sklep'           => __('Sklepní kóje', 'martin-dev-vyber-bytu'),
+    ]);
+}
+
 function dispositions(): array
 {
     $list = ['1+kk', '1+1', '2+kk', '2+1', '3+kk', '3+1', '4+kk', '4+1', '5+kk', '5+1', '6+kk'];
@@ -263,7 +273,19 @@ function unit_info(int $id, array $settings): ?array
         $price_txt = '';
     }
 
+    $acc_all  = unit_accessories();
+    $acc_raw  = $m('dv_prislusenstvi');
+    $acc_keys = is_array($acc_raw) ? $acc_raw : ($acc_raw !== '' ? (array) maybe_unserialize($acc_raw) : []);
+    $acc      = [];
+    foreach ($acc_keys as $k) {
+        if (isset($acc_all[$k])) {
+            $acc[] = $acc_all[$k];
+        }
+    }
+
     return [
+        'accTxt'      => implode(', ', $acc),
+        'accNote'     => trim((string) $m('dv_prislusenstvi_poznamka')),
         'id'          => $pid,
         'num'         => $num !== '' ? $num : get_the_title($pid),
         'label'       => $label,

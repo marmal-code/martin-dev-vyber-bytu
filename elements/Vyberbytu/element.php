@@ -147,19 +147,172 @@ class Vyberbytu extends \Breakdance\Elements\Element
         "Barvy",
         [c(
         "akcent",
-        "Barva zvýraznění",
+        "Barva zvýraznění a volných",
         [],
         ['type' => 'color', 'layout' => 'inline'],
         false,
         false,
         [],
-        
+      ), c(
+        "rezervovany",
+        "Rezervované",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "prodany",
+        "Prodané",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "text",
+        "Barva textu",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
       )],
         ['type' => 'section'],
         false,
         false,
         [],
-        
+      ), c(
+        "nadpisy",
+        "Nadpisy",
+        [getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Nadpis pohledu / podlaží",
+        "panel",
+        ['type' => 'popout']
+      ), getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Nadpis tabulky",
+        "tabulka",
+        ['type' => 'popout']
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
+        "karta",
+        "Karta jednotky",
+        [c(
+        "pozadi",
+        "Pozadí karty",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Číslo jednotky",
+        "nadpis",
+        ['type' => 'popout']
+      ), getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Údaje",
+        "text",
+        ['type' => 'popout']
+      ), c(
+        "tlacitko_pozadi",
+        "Tlačítko – pozadí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "tlacitko_text",
+        "Tlačítko – text",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
+        "bublina",
+        "Bublina",
+        [c(
+        "pozadi",
+        "Pozadí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "text",
+        "Text",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
+        "tabulka",
+        "Tabulka",
+        [getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Záhlaví sloupců",
+        "hlavicka",
+        ['type' => 'popout']
+      ), getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Buňky",
+        "bunky",
+        ['type' => 'popout']
+      ), getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Jednotka (odkaz)",
+        "jednotka",
+        ['type' => 'popout']
+      ), c(
+        "jednotka_hover",
+        "Jednotka – barva po najetí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "ramecek",
+        "Barva čar a rámečku",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "radek_hover",
+        "Řádek – pozadí po najetí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
       )];
     }
 
@@ -273,6 +426,6 @@ class Vyberbytu extends \Breakdance\Elements\Element
 
     static function propertyPathsToSsrElementWhenValueChanges()
     {
-        return ['content.shortcode.full_shortcode', 'content.projekt', 'design.barvy'];
+        return ['content.projekt'];
     }
 }

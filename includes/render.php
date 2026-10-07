@@ -336,6 +336,7 @@ function render_project(int $project_id, array $args = []): string
             'disp'       => __('Dispozice', 'martin-dev-vyber-bytu'),
             'floor'      => __('Podlaží', 'martin-dev-vyber-bytu'),
             'price'      => __('Cena', 'martin-dev-vyber-bytu'),
+            'acc'        => __('Příslušenství k dokoupení', 'martin-dev-vyber-bytu'),
             'soldHint'   => __('Tato jednotka je prodaná.', 'martin-dev-vyber-bytu'),
             'tableAll'   => __('Přehled jednotek', 'martin-dev-vyber-bytu'),
             /* translators: %s: název podlaží */
@@ -412,7 +413,6 @@ function table_html(array $units, array $floors, array $floor_units, array $unit
         . '<th>' . esc_html__('Podlaží', 'martin-dev-vyber-bytu') . '</th>'
         . '<th>' . esc_html__('Dispozice', 'martin-dev-vyber-bytu') . '</th>'
         . '<th>' . esc_html__('Plocha', 'martin-dev-vyber-bytu') . '</th>'
-        . '<th>' . esc_html__('Venkovní plocha', 'martin-dev-vyber-bytu') . '</th>'
         . '<th>' . esc_html__('Cena', 'martin-dev-vyber-bytu') . '</th>'
         . '<th>' . esc_html__('Stav', 'martin-dev-vyber-bytu') . '</th>'
         . '</tr></thead><tbody>';
@@ -425,12 +425,11 @@ function table_html(array $units, array $floors, array $floor_units, array $unit
             . '<td>' . esc_html($u['floorTxt']) . '</td>'
             . '<td>' . esc_html($u['disp'] ?: '—') . '</td>'
             . '<td>' . esc_html($u['areaTxt'] ?: '—') . '</td>'
-            . '<td>' . esc_html($u['outTxt'] ?: '—') . '</td>'
             . '<td>' . esc_html($u['priceTxt'] ?: '—') . '</td>'
             . '<td><span class="martin-dv__status" data-status="' . esc_attr($u['status']) . '">' . esc_html($u['statusLabel']) . '</span></td>'
             . '</tr>';
     }
-    $h .= '<tr class="martin-dv__empty-row" hidden><td colspan="7">' . esc_html__('Filtru neodpovídá žádná jednotka.', 'martin-dev-vyber-bytu') . '</td></tr>';
+    $h .= '<tr class="martin-dv__empty-row" hidden><td colspan="6">' . esc_html__('Filtru neodpovídá žádná jednotka.', 'martin-dev-vyber-bytu') . '</td></tr>';
     $h .= '</tbody></table></div></div>';
 
     return $h;

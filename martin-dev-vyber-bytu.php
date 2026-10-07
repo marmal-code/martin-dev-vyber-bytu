@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Martin – Výběr bytů
  * Description:       Interaktivní výběr podlaží a jednotek (byty, sklepy, garáže) na obrázku domu a půdorysech. CPT Jednotky s ACF poli, Breakdance element a shortcode.
- * Version:           0.2.0
+ * Version:           0.3.0
  * Author:            Martin
  * Requires at least: 6.5
  * Requires PHP:      7.4
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-const VERSION    = '0.2.0';
+const VERSION    = '0.3.0';
 const PT_UNIT    = 'martin_dv_jednotka';
 const PT_PROJECT = 'martin_dv_projekt';
 const META_DATA  = '_martin_dv_data';

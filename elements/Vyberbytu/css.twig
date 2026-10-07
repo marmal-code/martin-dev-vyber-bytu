@@ -7,3 +7,61 @@
   {{ macros.typography(design.typography, globalSettings)  }}
   {{ macros.spacing_margin_y(design.spacing) }}
 }
+
+{# ---- Barvy: !important, aby přebily barvy z nastavení projektu (inline styl) ---- #}
+%%SELECTOR%% .martin-dv {
+  {% if design.barvy.akcent %}--martin-dv-accent: {{ design.barvy.akcent }} !important;{% endif %}
+  {% if design.barvy.rezervovany %}--martin-dv-reserved: {{ design.barvy.rezervovany }} !important;{% endif %}
+  {% if design.barvy.prodany %}--martin-dv-sold: {{ design.barvy.prodany }} !important;{% endif %}
+  {% if design.barvy.text %}color: {{ design.barvy.text }};{% endif %}
+  {% if design.tabulka.ramecek %}--martin-dv-line: {{ design.tabulka.ramecek }} !important;{% endif %}
+}
+
+{# ---- Nadpisy ---- #}
+%%SELECTOR%% .martin-dv .martin-dv__title {
+  {{ macros.typography(design.nadpisy.panel, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv .martin-dv__table-title {
+  {{ macros.typography(design.nadpisy.tabulka, globalSettings) }}
+}
+
+{# ---- Karta jednotky ---- #}
+%%SELECTOR%% .martin-dv .martin-dv__card {
+  {% if design.karta.pozadi %}background: {{ design.karta.pozadi }};{% endif %}
+}
+%%SELECTOR%% .martin-dv .martin-dv__card-title {
+  {{ macros.typography(design.karta.nadpis, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv .martin-dv__card p,
+%%SELECTOR%% .martin-dv .martin-dv__dl {
+  {{ macros.typography(design.karta.text, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv .martin-dv__btn {
+  {% if design.karta.tlacitko_pozadi %}background: {{ design.karta.tlacitko_pozadi }};{% endif %}
+  {% if design.karta.tlacitko_text %}color: {{ design.karta.tlacitko_text }};{% endif %}
+}
+
+{# ---- Bublina ---- #}
+%%SELECTOR%% .martin-dv .martin-dv__tip {
+  {% if design.bublina.pozadi %}background: {{ design.bublina.pozadi }};{% endif %}
+  {% if design.bublina.text %}color: {{ design.bublina.text }};{% endif %}
+}
+
+{# ---- Tabulka ---- #}
+%%SELECTOR%% .martin-dv .martin-dv__table th {
+  {{ macros.typography(design.tabulka.hlavicka, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv .martin-dv__table td {
+  {{ macros.typography(design.tabulka.bunky, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv .martin-dv__table .martin-dv__cell-name,
+%%SELECTOR%% .martin-dv .martin-dv__table .martin-dv__cell-name a {
+  {{ macros.typography(design.tabulka.jednotka, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv .martin-dv__table .martin-dv__cell-name a:hover,
+%%SELECTOR%% .martin-dv .martin-dv__table .martin-dv__cell-name a:focus-visible {
+  {% if design.tabulka.jednotka_hover %}color: {{ design.tabulka.jednotka_hover }};{% endif %}
+}
+%%SELECTOR%% .martin-dv .martin-dv__table tbody tr.is-hover {
+  {% if design.tabulka.radek_hover %}background: {{ design.tabulka.radek_hover }};{% endif %}
+}

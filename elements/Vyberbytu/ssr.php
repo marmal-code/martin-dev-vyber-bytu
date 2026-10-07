@@ -4,7 +4,7 @@
  * Element Studio tento soubor neupravuje – mění se jen tady v pluginu.
  *
  * Content → projekt → projekt_id (number), skryt_tabulku (toggle)
- * Design  → barvy   → akcent (color)
+ * Barvy a typografie z Design tabu řeší css.twig (přebíjí nastavení projektu).
  *
  * @var array $propertiesData
  */
@@ -14,12 +14,7 @@ if (!function_exists('\MartinDV\render_project')) {
     return;
 }
 
-$martin_dv_args = [
-    'hide_table' => !empty($propertiesData['content']['projekt']['skryt_tabulku']),
-    'accent'     => (string) ($propertiesData['design']['barvy']['akcent'] ?? ''),
-];
-
 echo \MartinDV\render_project(
     absint($propertiesData['content']['projekt']['projekt_id'] ?? 0),
-    $martin_dv_args
+    ['hide_table' => !empty($propertiesData['content']['projekt']['skryt_tabulku'])]
 );
