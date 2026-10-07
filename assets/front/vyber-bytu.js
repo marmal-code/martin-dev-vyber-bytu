@@ -98,9 +98,12 @@
         '<span class="martin-dv__status" data-status="' + esc(u.status) + '">' + esc(u.statusLabel) + '</span></div>' +
         '<dl class="martin-dv__dl">' +
         row(D.i18n.disp, u.disp) + row(D.i18n.floor, u.floorTxt) + row(D.i18n.area, u.areaTxt) +
-        (u.outLabel ? row(u.outLabel, u.outAreaTxt || '✓') : '') + row(D.i18n.price, u.priceTxt) + row(D.i18n.acc, u.accTxt) +
+        (u.outLabel ? row(u.outLabel, u.outAreaTxt || '✓') : '') + row(D.i18n.price, u.priceTxt) +
         '</dl>' +
-        (u.accTxt && u.accNote ? '<p class="martin-dv__note">' + esc(u.accNote) + '</p>' : '') +
+        (u.acc && u.acc.length
+          ? '<div class="martin-dv__acc"><p class="martin-dv__acc-title">' + esc(D.i18n.acc) + '</p><dl class="martin-dv__dl">' +
+            u.acc.map(function (a) { return row(a.label, a.price); }).join('') + '</dl></div>'
+          : '') +
         (u.clickable
           ? '<a class="martin-dv__btn" href="' + esc(u.url) + '">' + esc(D.settings.button_text) + ' →</a>'
           : '<p class="martin-dv__hint">' + esc(D.i18n.soldHint) + '</p>');

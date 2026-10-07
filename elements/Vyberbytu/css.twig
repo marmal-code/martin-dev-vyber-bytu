@@ -8,13 +8,18 @@
   {{ macros.spacing_margin_y(design.spacing) }}
 }
 
-{# ---- Barvy: !important, aby přebily barvy z nastavení projektu (inline styl) ---- #}
+{# ---- Barvy a zvýraznění: !important, aby přebily barvy z nastavení projektu (inline styl) ---- #}
 %%SELECTOR%% .martin-dv {
   {% if design.barvy.akcent %}--martin-dv-accent: {{ design.barvy.akcent }} !important;{% endif %}
   {% if design.barvy.rezervovany %}--martin-dv-reserved: {{ design.barvy.rezervovany }} !important;{% endif %}
   {% if design.barvy.prodany %}--martin-dv-sold: {{ design.barvy.prodany }} !important;{% endif %}
   {% if design.barvy.text %}color: {{ design.barvy.text }};{% endif %}
   {% if design.tabulka.ramecek %}--martin-dv-line: {{ design.tabulka.ramecek }} !important;{% endif %}
+  {% if design.oblasti.barva %}--martin-dv-hl: {{ design.oblasti.barva }};{% endif %}
+  {% if design.oblasti.pruhlednost is defined and design.oblasti.pruhlednost is not null and design.oblasti.pruhlednost != '' %}--martin-dv-hl-opacity: {{ design.oblasti.pruhlednost / 100 }};{% endif %}
+  {% if design.oblasti.obrys %}--martin-dv-hl-stroke: {{ design.oblasti.obrys }};{% endif %}
+  {% if design.oblasti.obrys_sirka.style %}--martin-dv-hl-stroke-width: {{ design.oblasti.obrys_sirka.style }};{% endif %}
+  {% if design.oblasti.jednotky_pruhlednost is defined and design.oblasti.jednotky_pruhlednost is not null and design.oblasti.jednotky_pruhlednost != '' %}--martin-dv-unit-opacity: {{ design.oblasti.jednotky_pruhlednost / 100 }};{% endif %}
 }
 
 {# ---- Nadpisy ---- #}
@@ -25,18 +30,57 @@
   {{ macros.typography(design.nadpisy.tabulka, globalSettings) }}
 }
 
-{# ---- Karta jednotky ---- #}
+{# ---- Seznam vedle obrázku ---- #}
+%%SELECTOR%% .martin-dv .martin-dv__side > .martin-dv__hint {
+  {{ macros.typography(design.seznam.napoveda, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv a.martin-dv__target {
+  {% if design.seznam.pozadi %}background: {{ design.seznam.pozadi }};{% endif %}
+  {% if design.seznam.ramecek %}border-color: {{ design.seznam.ramecek }};{% endif %}
+  {% if design.seznam.zaobleni.style %}border-radius: {{ design.seznam.zaobleni.style }};{% endif %}
+}
+%%SELECTOR%% .martin-dv a.martin-dv__target.is-hover,
+%%SELECTOR%% .martin-dv a.martin-dv__target:focus-visible {
+  {% if design.seznam.pozadi_hover %}background: {{ design.seznam.pozadi_hover }};{% endif %}
+  {% if design.seznam.ramecek_hover %}border-color: {{ design.seznam.ramecek_hover }};{% endif %}
+}
+%%SELECTOR%% .martin-dv a.martin-dv__target strong {
+  {{ macros.typography(design.seznam.nazev, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv a.martin-dv__target small {
+  {{ macros.typography(design.seznam.popis, globalSettings) }}
+}
+
+{# ---- Tlačítka podlaží a Zpět ---- #}
+%%SELECTOR%% .martin-dv .martin-dv__back,
+%%SELECTOR%% .martin-dv .martin-dv__pill {
+  {% if design.tlacitka.pozadi %}background: {{ design.tlacitka.pozadi }};{% endif %}
+  {% if design.tlacitka.text %}color: {{ design.tlacitka.text }};{% endif %}
+  {% if design.tlacitka.ramecek %}border-color: {{ design.tlacitka.ramecek }};{% endif %}
+}
+%%SELECTOR%% .martin-dv .martin-dv__pill.is-active {
+  {% if design.tlacitka.aktivni_pozadi %}background: {{ design.tlacitka.aktivni_pozadi }}; border-color: {{ design.tlacitka.aktivni_pozadi }};{% endif %}
+  {% if design.tlacitka.aktivni_text %}color: {{ design.tlacitka.aktivni_text }};{% endif %}
+}
+
+{# ---- Karta jednotky / podlaží ---- #}
 %%SELECTOR%% .martin-dv .martin-dv__card {
   {% if design.karta.pozadi %}background: {{ design.karta.pozadi }};{% endif %}
+  {% if design.karta.ramecek %}border-color: {{ design.karta.ramecek }};{% endif %}
+  {% if design.karta.zaobleni.style %}border-radius: {{ design.karta.zaobleni.style }};{% endif %}
+}
+%%SELECTOR%% .martin-dv .martin-dv__card .martin-dv__kicker,
+%%SELECTOR%% .martin-dv .martin-dv__card .martin-dv__acc-title {
+  {{ macros.typography(design.karta.popisek, globalSettings) }}
 }
 %%SELECTOR%% .martin-dv .martin-dv__card-title {
   {{ macros.typography(design.karta.nadpis, globalSettings) }}
 }
-%%SELECTOR%% .martin-dv .martin-dv__card p,
-%%SELECTOR%% .martin-dv .martin-dv__dl {
+%%SELECTOR%% .martin-dv .martin-dv__card p:not(.martin-dv__kicker):not(.martin-dv__acc-title),
+%%SELECTOR%% .martin-dv .martin-dv__card .martin-dv__dl {
   {{ macros.typography(design.karta.text, globalSettings) }}
 }
-%%SELECTOR%% .martin-dv .martin-dv__btn {
+%%SELECTOR%% .martin-dv a.martin-dv__btn {
   {% if design.karta.tlacitko_pozadi %}background: {{ design.karta.tlacitko_pozadi }};{% endif %}
   {% if design.karta.tlacitko_text %}color: {{ design.karta.tlacitko_text }};{% endif %}
 }
@@ -45,6 +89,8 @@
 %%SELECTOR%% .martin-dv .martin-dv__tip {
   {% if design.bublina.pozadi %}background: {{ design.bublina.pozadi }};{% endif %}
   {% if design.bublina.text %}color: {{ design.bublina.text }};{% endif %}
+  {% if design.bublina.ramecek %}border: 1px solid {{ design.bublina.ramecek }};{% endif %}
+  {% if design.bublina.zaobleni.style %}border-radius: {{ design.bublina.zaobleni.style }};{% endif %}
 }
 
 {# ---- Tabulka ---- #}

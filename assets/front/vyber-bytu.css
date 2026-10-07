@@ -62,11 +62,14 @@
   vector-effect: non-scaling-stroke; stroke-linejoin: round;
   transition: fill-opacity .18s, stroke-opacity .18s;
 }
-.martin-dv__area--nav { --c: var(--martin-dv-accent); }
+.martin-dv__area--nav { --c: var(--martin-dv-hl, var(--martin-dv-accent)); }
 .martin-dv--outlines .martin-dv__area--nav polygon { fill-opacity: .08; stroke-opacity: .55; }
-.martin-dv__area--unit polygon { fill-opacity: .26; stroke-opacity: .85; }
+.martin-dv__area--unit polygon { fill-opacity: var(--martin-dv-unit-opacity, .26); stroke-opacity: .85; }
 .martin-dv__area.is-hover polygon,
-.martin-dv__area:focus-visible polygon { fill-opacity: .5; stroke-opacity: 1; stroke-width: 3; }
+.martin-dv__area:focus-visible polygon {
+  fill-opacity: var(--martin-dv-hl-opacity, .5); stroke-opacity: 1;
+  stroke: var(--martin-dv-hl-stroke, var(--c)); stroke-width: var(--martin-dv-hl-stroke-width, 3px);
+}
 .martin-dv__area:focus-visible polygon { stroke-width: 4; }
 .martin-dv__area.is-selected polygon { fill-opacity: .6; stroke-opacity: 1; stroke-width: 3.5; }
 .martin-dv__area.is-disabled { cursor: not-allowed; }
@@ -100,7 +103,9 @@
 }
 
 /* karta jednotky */
-.martin-dv__card { display: grid; gap: 10px; padding: 18px; border-radius: var(--martin-dv-radius); background: var(--martin-dv-soft); }
+.martin-dv__card { display: grid; gap: 10px; padding: 18px; border: 1px solid transparent; border-radius: var(--martin-dv-radius); background: var(--martin-dv-soft); }
+.martin-dv__acc { display: grid; gap: 6px; padding-top: 10px; border-top: 1px solid var(--martin-dv-line); }
+.martin-dv__acc-title { font-size: .75em; letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
 .martin-dv__card p { margin: 0; }
 .martin-dv__kicker { font-size: .75em; letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
 .martin-dv__card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
@@ -144,7 +149,6 @@
 /* Silnější selektor, aby přebil globální barvu a podtržení odkazů z Breakdance. */
 .martin-dv .martin-dv__table .martin-dv__cell-name a { color: inherit; text-decoration: none; }
 .martin-dv .martin-dv__table .martin-dv__cell-name a:hover { color: var(--martin-dv-accent); }
-.martin-dv__note { font-size: .8125em; opacity: .75; }
 
 @media (prefers-reduced-motion: reduce) {
   .martin-dv__area polygon, .martin-dv__target { transition: none; }

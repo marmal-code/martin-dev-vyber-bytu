@@ -68,6 +68,29 @@ add_shortcode('martin_vyber_bytu', function ($atts) {
     return render_project(absint($atts['id']), $args);
 });
 
+/**
+ * [martin_dv_prislusenstvi] – seznam příslušenství k dokoupení na detailu jednotky.
+ * Bez atributu bere aktuální příspěvek (Breakdance šablona detailu), jinak id="123".
+ * Když jednotka nic nemá, nevypíše nic.
+ */
+add_shortcode('martin_dv_prislusenstvi', function ($atts) {
+    $atts = shortcode_atts(['id' => 0], $atts, 'martin_dv_prislusenstvi');
+    $id   = absint($atts['id']) ?: get_the_ID();
+    if (!$id || get_post_type($id) !== PT_UNIT) {
+        return '';
+    }
+    $list = unit_accessory_list($id);
+    if (!$list) {
+        return '';
+    }
+    $h = '<ul class="martin-dv-acc">';
+    foreach ($list as $item) {
+        $h .= '<li><span class="martin-dv-acc__label">' . esc_html($item['label']) . '</span> '
+            . '<span class="martin-dv-acc__price">' . esc_html($item['price']) . '</span></li>';
+    }
+    return $h . '</ul>';
+});
+
 /* ---------- Render ---------- */
 
 /** Hláška jen pro přihlášené editory (návštěvník nevidí nic). */

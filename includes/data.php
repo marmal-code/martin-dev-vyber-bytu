@@ -273,19 +273,10 @@ function unit_info(int $id, array $settings): ?array
         $price_txt = '';
     }
 
-    $acc_all  = unit_accessories();
-    $acc_raw  = $m('dv_prislusenstvi');
-    $acc_keys = is_array($acc_raw) ? $acc_raw : ($acc_raw !== '' ? (array) maybe_unserialize($acc_raw) : []);
-    $acc      = [];
-    foreach ($acc_keys as $k) {
-        if (isset($acc_all[$k])) {
-            $acc[] = $acc_all[$k];
-        }
-    }
+    $acc = unit_accessory_list($pid);
 
     return [
-        'accTxt'      => implode(', ', $acc),
-        'accNote'     => trim((string) $m('dv_prislusenstvi_poznamka')),
+        'acc'         => $acc,
         'id'          => $pid,
         'num'         => $num !== '' ? $num : get_the_title($pid),
         'label'       => $label,
@@ -320,4 +311,51 @@ function image_src(array $image): ?array
     $w = (int) ($src[1] ?: $image['w']);
     $h = (int) ($src[2] ?: $image['h']);
     return ['url' => $src[0], 'w' => $w, 'h' => $h];
+}
+
+/** Cena příslušenství: čisté číslo se naformátuje („350000“ → „350 000 Kč“), jinak se vypíše, jak je napsaná. */
+function format_accessory_price(string $price): string
+{
+    $price = trim($price);
+    if (preg_match('/^\d[\d\s.]*$/u', $price)) {
+        /* translators: %s: cena */
+        return sprintf(__('%s Kč', 'martin-dev-vyber-bytu'), number_format_i18n((int) preg_replace('/\D/', '', $price)));
+    }
+    return $price;
+}
+
+/**
+ * Seznam příslušenství k dokoupení: [['label' => 'Garáž', 'price' => '350 000 Kč'], …]
+ * Položka se zobrazí, jen když je zaškrtnutá (u vlastních vyplněný název) A má cenu.
+ */
+function unit_accessory_list(int $post_id): array
+{
+    $out = [];
+    foreach (unit_accessories() as $key => $label) {
+        $price = trim((string) get_post_meta($post_id, 'dv_acc_' . $key . '_cena', true));
+        if (get_post_meta($post_id, 'dv_acc_' . $key, true) && $price !== '') {
+            $out[] = ['label' => $label, 'price' => format_accessory_price($price)];
+        }
+    }
+
+    // ACF Pro opakovač: počet řádků je v hlavním meta poli, hodnoty v dv_acc_vlastni_{i}_nazev / _cena.
+    $rows = (int) get_post_meta($post_id, 'dv_acc_vlastni', true);
+    for ($i = 0; $i < min($rows, 50); $i++) {
+        $name  = trim((string) get_post_meta($post_id, 'dv_acc_vlastni_' . $i . '_nazev', true));
+        $price = trim((string) get_post_meta($post_id, 'dv_acc_vlastni_' . $i . '_cena', true));
+        if ($name !== '' && $price !== '') {
+            $out[] = ['label' => $name, 'price' => format_accessory_price($price)];
+        }
+    }
+
+    // ACF free: 3 pevné řádky.
+    for ($i = 1; $i <= 3; $i++) {
+        $name  = trim((string) get_post_meta($post_id, 'dv_acc_slot' . $i . '_nazev', true));
+        $price = trim((string) get_post_meta($post_id, 'dv_acc_slot' . $i . '_cena', true));
+        if ($name !== '' && $price !== '') {
+            $out[] = ['label' => $name, 'price' => format_accessory_price($price)];
+        }
+    }
+
+    return $out;
 }
