@@ -1,0 +1,47 @@
+# Při každém pushi do „main“ zkontroluje verzi v hlavičce martin-dev-vyber-bytu.php.
+# Když je nová (tag vX.Y.Z ještě neexistuje), vytvoří GitHub Release s balíčkem
+# martin-dev-vyber-bytu.zip. Weby si ho pak samy stáhnou jako aktualizaci.
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Zjistit verzi
+        id: v
+        run: |
+          VERSION=$(grep -m1 -E '^\s*\*\s*Version:' martin-dev-vyber-bytu.php | sed -E 's/.*Version:\s*//' | tr -d '[:space:]')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Sestavit ZIP
+        if: steps.v.outputs.exists == 'false'
+        run: |
+          mkdir -p dist/martin-dev-vyber-bytu
+          rsync -a --exclude '.git' --exclude '.github' --exclude 'dist' --exclude 'demo' --exclude '.gitignore' ./ dist/martin-dev-vyber-bytu/
+          cd dist && zip -qr martin-dev-vyber-bytu.zip martin-dev-vyber-bytu
+
+      - name: Vydat release
+        if: steps.v.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.v.outputs.version }}" dist/martin-dev-vyber-bytu.zip \
+            --title "v${{ steps.v.outputs.version }}" \
+            --notes "$(git log -1 --pretty=%B)"

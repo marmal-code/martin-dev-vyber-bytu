@@ -27,6 +27,14 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 5. V projektu: obrázek pohledu → oblasti podlaží → půdorysy → oblasti jednotek.
 6. Vytvořit Breakdance element podle `docs/breakdance-element.md`.
 
+## Automatické aktualizace
+
+1. Zvyš `Version:` v hlavičce `martin-dev-vyber-bytu.php` (a konstantu `VERSION`) a pushni do `main`.
+2. GitHub Action (`.github/workflows/release.yml`) vydá release `vX.Y.Z` se souborem `martin-dev-vyber-bytu.zip`.
+3. Weby se na GitHub ptají dvakrát denně (knihovna Plugin Update Checker v `lib/`). Nová verze se ukáže v Pluginech; se zapnutými automatickými aktualizacemi se nainstaluje sama. Hned vynutíš kontrolu odkazem „Check for updates“ u pluginu.
+
+Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-config.php` konstantu `MARTIN_DV_GITHUB_TOKEN` (fine-grained token, Contents: Read-only).
+
 ## Filtry
 
 | Filtr | Výchozí | Účel |
@@ -39,6 +47,7 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 
 ## Verze
 
+- **0.6.0** – automatické aktualizace z GitHubu (Plugin Update Checker + GitHub Action release).
 - **0.5.0** – přejmenování na „Marmal – Výběr bytů“ (autor Martin Malý – marmal.cz), Design tab: barvy štítků stavu (pozadí + text pro volný / rezervovaný / prodaný).
 - **0.4.0** – příslušenství: zaškrtávátko + cena u každé položky, vlastní položky (ACF Pro opakovač / 3 řádky v ACF free), shortcode `[martin_dv_prislusenstvi]` pro detail; Design tab: zvýraznění na obrázku, seznam vedle obrázku, tlačítka podlaží, rámečky a zaoblení karty a bubliny.
 - **0.3.0** – volitelné příslušenství k dokoupení (ACF `dv_prislusenstvi`, `dv_prislusenstvi_poznamka`), tabulka bez venkovní plochy, Design tab elementu: barvy, nadpisy, karta, bublina, tabulka.
