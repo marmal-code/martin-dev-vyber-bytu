@@ -497,6 +497,35 @@ class Vyberbytu extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
+        "legenda",
+        "Legenda stavů",
+        [getPresetSection(
+        "EssentialElements\\typography_with_effects_and_align",
+        "Text legendy",
+        "text",
+        ['type' => 'popout']
+      ), c(
+        "ctverec",
+        "Velikost čtverečku",
+        [],
+        ['type' => 'unit', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "zaobleni",
+        "Zaoblení čtverečku",
+        [],
+        ['type' => 'unit', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
         "stavy",
         "Štítky stavu",
         [c(
@@ -637,6 +666,14 @@ class Vyberbytu extends \Breakdance\Elements\Element
         "Záhlaví sloupců",
         "hlavicka",
         ['type' => 'popout']
+      ), c(
+        "hlavicka_pozadi",
+        "Záhlaví – pozadí",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
       ), getPresetSection(
         "EssentialElements\\typography_with_effects_and_align",
         "Buňky",

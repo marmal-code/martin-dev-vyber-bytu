@@ -47,6 +47,7 @@
       selKey = null;
       Object.keys(panels).forEach(function (k) { panels[k].hidden = k !== key; });
       panels[key].querySelectorAll('[data-dv-back]').forEach(function (b) { b.hidden = !stack.length; });
+      panels[key].querySelectorAll('.martin-dv__bar--view').forEach(function (b) { b.hidden = !stack.length; });
       renderPills(panels[key]);
       setHover(null);
       hideTip();

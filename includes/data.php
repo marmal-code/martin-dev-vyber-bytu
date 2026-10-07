@@ -74,6 +74,8 @@ function default_settings(): array
         'tip_price'      => true,
         'tip_status'     => true,
         'button_text'    => '',
+        'hint_view'      => '',
+        'hint_floor'     => '',
         'color_accent'   => '',
         'color_reserved' => '#d39b2a',
         'color_sold'     => '#9aa0a8',
@@ -206,6 +208,8 @@ function sanitize_project_data(array $in): array
         }
     }
     $out['settings']['button_text']    = sanitize_text_field($s['button_text'] ?? '');
+    $out['settings']['hint_view']      = sanitize_text_field($s['hint_view'] ?? '');
+    $out['settings']['hint_floor']     = sanitize_text_field($s['hint_floor'] ?? '');
     $out['settings']['color_accent']   = sanitize_css_color($s['color_accent'] ?? '');
     $out['settings']['color_reserved'] = sanitize_css_color($s['color_reserved'] ?? '') ?: '#d39b2a';
     $out['settings']['color_sold']     = sanitize_css_color($s['color_sold'] ?? '') ?: '#9aa0a8';

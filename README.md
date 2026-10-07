@@ -47,6 +47,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
+- **0.8.0** – bez nadpisu pohledu nad obrázkem, legenda stavů (vždy všechny) pod seznamem v bočním panelu, texty nápověd v nastavení projektu, tmavé záhlaví tabulky; Design tab: Legenda stavů, Tabulka → pozadí záhlaví.
 - **0.7.0** – filtr tabulky jako tlačítka (typ / dispozice / podlaží / jen volné), popis projektu (obsah editoru projektu) nad výběrem, typy Rodinný dům / Dvojdům / Řadový dům, venkovní plocha Zahrada / Pozemek, oblast v pohledu může vést přímo na jednotku; Design tab: Úvod projektu, Filtr tabulky; přepínače Skrýt název / popis.
 - **0.6.0** – automatické aktualizace z GitHubu (Plugin Update Checker + GitHub Action release).
 - **0.5.0** – přejmenování na „Marmal – Výběr bytů“ (autor Martin Malý – marmal.cz), Design tab: barvy štítků stavu (pozadí + text pro volný / rezervovaný / prodaný).

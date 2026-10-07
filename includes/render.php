@@ -273,17 +273,19 @@ function render_project(int $project_id, array $args = []): string
         $h .= '<div class="martin-dv__intro">' . $intro . '</div>';
     }
 
-    /* legenda */
-    $present = array_unique(array_column($units, 'status'));
-    if ($present) {
-        $h .= '<div class="martin-dv__legend">';
+    /* legenda – v bočním panelu pod seznamem / kartou */
+    $legend = '';
+    if ($units) {
+        $legend = '<div class="martin-dv__legend">';
         foreach (statuses() as $key => $label) {
-            if (in_array($key, $present, true)) {
-                $h .= '<span data-status="' . esc_attr($key) . '"><i></i>' . esc_html($label) . '</span>';
-            }
+            $legend .= '<span data-status="' . esc_attr($key) . '"><i></i>' . esc_html($label) . '</span>';
         }
-        $h .= '</div>';
+        $legend .= '</div>';
     }
+
+    /* texty nápověd (nastavení projektu → Nastavení zobrazení) */
+    $hint_view = $s['hint_view'] !== '' ? $s['hint_view'] : __('Najeďte na část domu a kliknutím ji otevřete.', 'martin-dev-vyber-bytu');
+    $hint_unit = $s['hint_floor'] !== '' ? $s['hint_floor'] : __('Najeďte myší na jednotku. Na telefonu klepněte jednou pro údaje, podruhé pro otevření detailu.', 'martin-dev-vyber-bytu');
 
     $back = '<button type="button" class="martin-dv__back" data-dv-back hidden>← ' . esc_html__('Zpět', 'martin-dev-vyber-bytu') . '</button>';
 
@@ -326,12 +328,13 @@ function render_project(int $project_id, array $args = []): string
         }
 
         $h .= '<section class="martin-dv__panel" data-dv-panel="view:' . esc_attr($vid) . '" id="' . esc_attr($uid . '-view-' . $vid) . '"' . ($vid === $start ? '' : ' hidden') . '>'
-            . '<div class="martin-dv__bar">' . $back . '<h3 class="martin-dv__title">' . esc_html($v['name']) . '</h3></div>'
+            . '<div class="martin-dv__bar martin-dv__bar--view" hidden>' . $back . '</div>'
             . '<div class="martin-dv__layout">'
             . stage_html($v, $areas, $vid === $start)
             . '<div class="martin-dv__side">'
-            . ($list ? '<p class="martin-dv__hint">' . esc_html__('Najeďte na část domu a kliknutím ji otevřete.', 'martin-dev-vyber-bytu') . '</p>' . $list : '')
-            . ($view_units[$vid] ? '<div class="martin-dv__card" data-dv-card>' . summary_card_html(__('Projekt', 'martin-dev-vyber-bytu'), $v['name'], $keys['view:' . $vid]['lines'], __('Najeďte myší na dům nebo jednotku v obrázku. Na telefonu klepněte jednou pro údaje, podruhé pro otevření detailu.', 'martin-dev-vyber-bytu')) . '</div>' : '')
+            . ($list ? '<p class="martin-dv__hint">' . esc_html($hint_view) . '</p><div class="martin-dv__targets">' . $list . '</div>' : '')
+            . ($view_units[$vid] ? '<div class="martin-dv__card" data-dv-card>' . summary_card_html(__('Projekt', 'martin-dev-vyber-bytu'), $v['name'], $keys['view:' . $vid]['lines'], $hint_unit) . '</div>' : '')
+            . $legend
             . '</div>'
             . '</div></section>';
     }
@@ -349,13 +352,13 @@ function render_project(int $project_id, array $args = []): string
             }
             $areas .= unit_area_html($units[$tid], $tid, $a['poly']);
         }
-        $summary = summary_card_html(__('Podlaží', 'martin-dev-vyber-bytu'), $f['name'], $keys['floor:' . $fid]['lines'], __('Najeďte myší na jednotku v půdorysu. Na telefonu klepněte jednou pro údaje, podruhé pro otevření detailu.', 'martin-dev-vyber-bytu'));
+        $summary = summary_card_html(__('Podlaží', 'martin-dev-vyber-bytu'), $f['name'], $keys['floor:' . $fid]['lines'], $hint_unit);
 
         $h .= '<section class="martin-dv__panel" data-dv-panel="floor:' . esc_attr($fid) . '" id="' . esc_attr($uid . '-floor-' . $fid) . '" hidden>'
             . '<div class="martin-dv__bar">' . $back . '<h3 class="martin-dv__title">' . esc_html($f['name']) . '</h3><div class="martin-dv__pills" data-dv-pills></div></div>'
             . '<div class="martin-dv__layout">'
             . stage_html($f, $areas, false)
-            . '<div class="martin-dv__side"><div class="martin-dv__card" data-dv-card>' . $summary . '</div></div>'
+            . '<div class="martin-dv__side"><div class="martin-dv__card" data-dv-card>' . $summary . '</div>' . $legend . '</div>'
             . '</div></section>';
     }
 

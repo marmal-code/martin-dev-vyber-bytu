@@ -137,9 +137,19 @@
   {% if design.stavy.prodany_text %}color: {{ design.stavy.prodany_text }};{% endif %}
 }
 
+{# ---- Legenda stavů ---- #}
+%%SELECTOR%% .martin-dv .martin-dv__legend {
+  {{ macros.typography(design.legenda.text, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv .martin-dv__legend i {
+  {% if design.legenda.ctverec.style %}width: {{ design.legenda.ctverec.style }}; height: {{ design.legenda.ctverec.style }};{% endif %}
+  {% if design.legenda.zaobleni.style %}border-radius: {{ design.legenda.zaobleni.style }};{% endif %}
+}
+
 {# ---- Tabulka ---- #}
 %%SELECTOR%% .martin-dv .martin-dv__table th {
   {{ macros.typography(design.tabulka.hlavicka, globalSettings) }}
+  {% if design.tabulka.hlavicka_pozadi %}background: {{ design.tabulka.hlavicka_pozadi }};{% endif %}
 }
 %%SELECTOR%% .martin-dv .martin-dv__table td {
   {{ macros.typography(design.tabulka.bunky, globalSettings) }}

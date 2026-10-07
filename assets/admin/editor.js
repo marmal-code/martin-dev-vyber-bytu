@@ -158,6 +158,8 @@
       '<div class="mdv-group"><span class="mdv-kicker">' + esc(T.setTip) + '</span>' +
       check('tip_area', T.tipArea) + check('tip_outdoor', T.tipOutdoor) + check('tip_price', T.tipPrice) + check('tip_status', T.tipStatus) + '</div>' +
       '<label class="mdv-fld"><span>' + esc(T.buttonText) + '</span><input type="text" data-set="button_text" value="' + esc(s.button_text) + '" placeholder="' + esc(T.buttonPh) + '"></label>' +
+      '<label class="mdv-fld"><span>' + esc(T.hintView) + '</span><input type="text" data-set="hint_view" value="' + esc(s.hint_view) + '" placeholder="' + esc(T.hintViewPh) + '"><small>' + esc(T.hintHelp) + '</small></label>' +
+      '<label class="mdv-fld"><span>' + esc(T.hintFloor) + '</span><input type="text" data-set="hint_floor" value="' + esc(s.hint_floor) + '" placeholder="' + esc(T.hintFloorPh) + '"><small>' + esc(T.hintHelp) + '</small></label>' +
       '<div class="mdv-group"><span class="mdv-kicker">' + esc(T.colors) + '</span>' +
       '<label class="mdv-fld"><span>' + esc(T.accent) + '</span><input type="text" data-set="color_accent" value="' + esc(s.color_accent) + '" placeholder="var(--bde-brand-primary-color)"><small>' + esc(T.accentHelp) + '</small></label>' +
       '<div class="mdv-row"><label class="mdv-fld"><span>' + esc(T.reserved) + '</span><input type="color" data-set="color_reserved" value="' + esc(s.color_reserved) + '"></label>' +
