@@ -119,6 +119,11 @@ function render_project(int $project_id, array $args = []): string
     if (!$project_id || get_post_type($project_id) !== PT_PROJECT) {
         return editor_notice(__('Výběr bytů: zadejte platné ID projektu (Výběr bytů → Projekty).', 'martin-dev-vyber-bytu'));
     }
+    // Nepublikovaný projekt (koncept, soukromý, v koši) vidí jen ten, kdo ho smí upravovat –
+    // shortcode s cizím ID tak nezveřejní rozpracovaný projekt.
+    if (get_post_status($project_id) !== 'publish' && !current_user_can('edit_post', $project_id)) {
+        return editor_notice(__('Výběr bytů: projekt není publikovaný.', 'martin-dev-vyber-bytu'));
+    }
 
     $data = get_project_data($project_id);
     $s    = $data['settings'];
