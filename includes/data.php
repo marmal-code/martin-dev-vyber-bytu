@@ -115,6 +115,49 @@ function sanitize_table_columns($cols): array
     return $out;
 }
 
+/**
+ * Číslo podlaží z názvu: „1 NP“, „2. NP“, „3.NP“ → 1, 2, 3; „1 PP“, „1. PP“ → -1;
+ * „přízemí“ → 0. Když se číslo vyčíst nedá, vrací null.
+ */
+function floor_level(string $name): ?int
+{
+    $n = mb_strtolower($name, 'UTF-8');
+    if (preg_match('/(-?\d+)\s*\.?\s*(np|pp|podla[žz]í|patro)?/u', $n, $m)) {
+        $level = (int) $m[1];
+        if (($m[2] ?? '') === 'pp') {
+            $level = -abs($level);
+        }
+        return $level;
+    }
+    if (strpos($n, 'přízemí') !== false || strpos($n, 'prizemi') !== false) {
+        return 0;
+    }
+    return null;
+}
+
+/**
+ * ID podlaží seřazená od nejnižšího. Podlaží bez čísla v názvu jdou na konec v pořadí editoru.
+ *
+ * @param array $floors id => ['name' => …] v pořadí editoru
+ */
+function floors_by_level(array $floors): array
+{
+    $ids   = array_keys($floors);
+    $index = array_flip($ids);
+    usort($ids, function ($a, $b) use ($floors, $index) {
+        $la = floor_level((string) $floors[$a]['name']);
+        $lb = floor_level((string) $floors[$b]['name']);
+        if ($la === null || $lb === null) {
+            if ($la !== $lb) {
+                return $la === null ? 1 : -1;
+            }
+            return $index[$a] <=> $index[$b];
+        }
+        return [$la, $index[$a]] <=> [$lb, $index[$b]];
+    });
+    return $ids;
+}
+
 function default_settings(): array
 {
     return [
@@ -128,6 +171,7 @@ function default_settings(): array
         'button_text'    => '',
         'table_columns'  => default_table_columns(),
         'table_detail'   => '',
+        'table_sort'     => 'auto',
         'hint_view'      => '',
         'hint_floor'     => '',
         'color_accent'   => '',
@@ -264,6 +308,7 @@ function sanitize_project_data(array $in): array
     $out['settings']['button_text']    = sanitize_text_field($s['button_text'] ?? '');
     $out['settings']['table_columns']  = sanitize_table_columns($s['table_columns'] ?? null);
     $out['settings']['table_detail']   = sanitize_text_field($s['table_detail'] ?? '');
+    $out['settings']['table_sort']     = in_array($s['table_sort'] ?? '', ['auto', 'editor'], true) ? $s['table_sort'] : 'auto';
     $out['settings']['hint_view']      = sanitize_text_field($s['hint_view'] ?? '');
     $out['settings']['hint_floor']     = sanitize_text_field($s['hint_floor'] ?? '');
     $out['settings']['color_accent']   = sanitize_css_color($s['color_accent'] ?? '');

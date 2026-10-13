@@ -466,19 +466,45 @@ function collection_labels(array $types): array
 
 function table_html(array $units, array $floors, array $floor_units, array $unit_floors, array $view_units = [], array $settings = []): string
 {
-    // Pořadí řádků: podle podlaží shora dolů, pak jednotky z pohledů; každá jednotka jen jednou (mezonet).
+    $sort_auto   = ($settings['table_sort'] ?? 'auto') !== 'editor';
+    $floor_order = $sort_auto ? floors_by_level($floors) : array_keys($floors);
+
+    // Pořadí v editoru: podlaží ze seznamu vlevo, v nich pořadí obkreslení, pak jednotky z pohledů.
+    // Každá jednotka jen jednou (mezonet u prvního nalezeného podlaží).
     $order = [];
-    foreach ($floor_units as $ids) {
-        foreach ($ids as $id) {
+    foreach ($floor_order as $fid) {
+        foreach ($floor_units[$fid] ?? [] as $id) {
             $order[$id] = true;
         }
     }
-    foreach ($view_units as $ids) {
-        foreach ($ids as $id) {
+    foreach ($view_units as $vids) {
+        foreach ($vids as $id) {
             $order[$id] = true;
         }
     }
     $ids = array_keys($order);
+
+    // Automaticky: od nejnižšího podlaží (mezonet podle svého nejnižšího), pak přirozeně podle čísla jednotky.
+    if ($sort_auto) {
+        $rank = array_flip($floor_order);
+        $key  = [];
+        foreach ($ids as $id) {
+            $r = PHP_INT_MAX;
+            foreach ($unit_floors[$id] ?? [] as $fid) {
+                if (isset($rank[$fid])) {
+                    $r = min($r, $rank[$fid]);
+                }
+            }
+            $key[$id] = $r;
+        }
+        usort($ids, function ($a, $b) use ($key, $units) {
+            if ($key[$a] !== $key[$b]) {
+                return $key[$a] <=> $key[$b];
+            }
+            $c = strnatcasecmp((string) $units[$a]['num'], (string) $units[$b]['num']);
+            return $c !== 0 ? $c : strnatcasecmp((string) $units[$a]['label'], (string) $units[$b]['label']);
+        });
+    }
 
     $types = $disps = $floor_opts = [];
     $has_sold = $show_floor = false;
@@ -496,9 +522,9 @@ function table_html(array $units, array $floors, array $floor_units, array $unit
         }
     }
     ksort($disps, SORT_NATURAL);
-    foreach ($floors as $fid => $f) {
+    foreach ($floor_order as $fid) {
         if (!empty($floor_units[$fid])) {
-            $floor_opts[$fid] = trim(explode(' –', $f['name'])[0]);
+            $floor_opts[$fid] = trim(explode(' –', $floors[$fid]['name'])[0]);
         }
     }
     [$all_label, $title] = collection_labels(array_keys($types));

@@ -162,6 +162,10 @@
     }).join('');
     return '<div class="mdv-group"><span class="mdv-kicker">' + esc(T.tableCols) + '</span><p class="mdv-help">' + esc(T.tableColsHelp) + '</p>' +
       '<ul class="mdv-cols">' + rows + '</ul>' +
+      '<label class="mdv-fld"><span>' + esc(T.tableSort) + '</span><select data-set="table_sort">' +
+      '<option value="auto"' + (S.settings.table_sort !== 'editor' ? ' selected' : '') + '>' + esc(T.tableSortAuto) + '</option>' +
+      '<option value="editor"' + (S.settings.table_sort === 'editor' ? ' selected' : '') + '>' + esc(T.tableSortEd) + '</option>' +
+      '</select><small>' + esc(T.tableSortHelp) + '</small></label>' +
       '<label class="mdv-fld"><span>' + esc(T.tableDetail) + '</span><input type="text" data-set="table_detail" value="' + esc(S.settings.table_detail || '') + '" placeholder="' + esc(T.tableDetailPh) + '"></label></div>';
   }
 
