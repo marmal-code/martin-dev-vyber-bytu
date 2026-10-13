@@ -47,6 +47,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
+- **0.9.0** – nastavení tabulky v projektu: výběr a pořadí sloupců (Jednotka, Typ, Podlaží, Dispozice, Plocha, Venkovní plocha, Cena, Stav, Detail), nový sloupec Detail s odkazem na jednotku a vlastním textem; Design tab: Tabulka → Detail (písmo, pozadí, text, hover, zaoblení); bezpečnostní kontrola PHPCS WordPress Security bez nálezů.
 - **0.8.2** – bezpečnost: nepublikovaný projekt (koncept, soukromý) se na webu nevykreslí – vidí ho jen ten, kdo ho smí upravovat.
 - **0.8.1** – oprava „&nbsp;“ v cenách a plochách v bublině a kartě; cena v bublině tučně s odsazením 8 px; Design tab: Bublina → Cena.
 - **0.8.0** – bez nadpisu pohledu nad obrázkem, legenda stavů (vždy všechny) pod seznamem v bočním panelu, texty nápověd v nastavení projektu, tmavé záhlaví tabulky; Design tab: Legenda stavů, Tabulka → pozadí záhlaví.

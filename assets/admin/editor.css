@@ -62,3 +62,6 @@
 .mdv-settings { display: flex; flex-direction: column; gap: 12px; max-width: 560px; }
 .mdv-row { display: flex; gap: 16px; }
 .mdv-danger { color: #b32d2e !important; border-color: #b32d2e !important; }
+.mdv-cols { list-style: none; margin: 0; padding: 0; border: 1px solid #dcdcde; border-radius: 4px; }
+.mdv-col { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 10px; margin: 0; }
+.mdv-col + .mdv-col { border-top: 1px solid #f0f0f1; }

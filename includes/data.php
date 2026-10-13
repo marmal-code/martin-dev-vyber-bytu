@@ -63,6 +63,58 @@ function dispositions(): array
     return apply_filters('martin_dv_dispositions', array_combine($list, $list));
 }
 
+/** Sloupce tabulky jednotek (klíč => popisek). Pořadí = výchozí pořadí. */
+function table_columns(): array
+{
+    return [
+        'jednotka'  => __('Jednotka', 'martin-dev-vyber-bytu'),
+        'typ'       => __('Typ', 'martin-dev-vyber-bytu'),
+        'podlazi'   => __('Podlaží', 'martin-dev-vyber-bytu'),
+        'dispozice' => __('Dispozice', 'martin-dev-vyber-bytu'),
+        'plocha'    => __('Plocha', 'martin-dev-vyber-bytu'),
+        'venkovni'  => __('Venkovní plocha / pozemek', 'martin-dev-vyber-bytu'),
+        'cena'      => __('Cena', 'martin-dev-vyber-bytu'),
+        'stav'      => __('Stav', 'martin-dev-vyber-bytu'),
+        'detail'    => __('Detail (odkaz)', 'martin-dev-vyber-bytu'),
+    ];
+}
+
+/** Výchozí nastavení sloupců: [['key' => 'jednotka', 'on' => true], …] */
+function default_table_columns(): array
+{
+    $off = ['typ', 'venkovni'];
+    $out = [];
+    foreach (array_keys(table_columns()) as $key) {
+        $out[] = ['key' => $key, 'on' => !in_array($key, $off, true)];
+    }
+    return $out;
+}
+
+/** Sloupce jen z pevného seznamu, v pořadí z nastavení; chybějící se doplní na konec vypnuté. */
+function sanitize_table_columns($cols): array
+{
+    $all = table_columns();
+    if (!is_array($cols) || !$cols) {
+        return default_table_columns();
+    }
+    $out  = [];
+    $seen = [];
+    foreach (array_slice($cols, 0, 30) as $c) {
+        $key = is_array($c) ? (string) ($c['key'] ?? '') : '';
+        if (!isset($all[$key]) || isset($seen[$key])) {
+            continue;
+        }
+        $seen[$key] = true;
+        $out[]      = ['key' => $key, 'on' => !empty($c['on'])];
+    }
+    foreach (array_keys($all) as $key) {
+        if (!isset($seen[$key])) {
+            $out[] = ['key' => $key, 'on' => false];
+        }
+    }
+    return $out;
+}
+
 function default_settings(): array
 {
     return [
@@ -74,6 +126,8 @@ function default_settings(): array
         'tip_price'      => true,
         'tip_status'     => true,
         'button_text'    => '',
+        'table_columns'  => default_table_columns(),
+        'table_detail'   => '',
         'hint_view'      => '',
         'hint_floor'     => '',
         'color_accent'   => '',
@@ -208,6 +262,8 @@ function sanitize_project_data(array $in): array
         }
     }
     $out['settings']['button_text']    = sanitize_text_field($s['button_text'] ?? '');
+    $out['settings']['table_columns']  = sanitize_table_columns($s['table_columns'] ?? null);
+    $out['settings']['table_detail']   = sanitize_text_field($s['table_detail'] ?? '');
     $out['settings']['hint_view']      = sanitize_text_field($s['hint_view'] ?? '');
     $out['settings']['hint_floor']     = sanitize_text_field($s['hint_floor'] ?? '');
     $out['settings']['color_accent']   = sanitize_css_color($s['color_accent'] ?? '');

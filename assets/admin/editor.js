@@ -34,6 +34,9 @@
   S.views.concat(S.floors).forEach(function (o) { o.areas = Array.isArray(o.areas) ? o.areas : []; });
   if (!S.start) S.start = S.views[0].id;
   S.settings = Object.assign({}, CFG.defaults, S.settings || {});
+  if (!Array.isArray(S.settings.table_columns) || !S.settings.table_columns.length) {
+    S.settings.table_columns = JSON.parse(JSON.stringify(CFG.defaults.table_columns || []));
+  }
 
   var U = { ctx: { type: 'view', id: S.start }, sel: null, mode: 'select', draft: [], drag: null };
 
@@ -150,6 +153,18 @@
     return '<label class="mdv-check"><input type="checkbox" data-set="' + key + '"' + (S.settings[key] ? ' checked' : '') + '> <span>' + esc(label) + '</span></label>';
   }
 
+  function columnsHTML() {
+    var cols = S.settings.table_columns, labels = CFG.columns || {};
+    var rows = cols.map(function (c, i) {
+      return '<li class="mdv-col"><label class="mdv-check"><input type="checkbox" data-col="' + i + '"' + (c.on ? ' checked' : '') + '> <span>' + esc(labels[c.key] || c.key) + '</span></label>' +
+        '<span class="mdv-order"><button type="button" data-act="colUp" data-i="' + i + '" aria-label="' + esc(T.up) + '"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
+        '<button type="button" data-act="colDown" data-i="' + i + '" aria-label="' + esc(T.down) + '"' + (i === cols.length - 1 ? ' disabled' : '') + '>↓</button></span></li>';
+    }).join('');
+    return '<div class="mdv-group"><span class="mdv-kicker">' + esc(T.tableCols) + '</span><p class="mdv-help">' + esc(T.tableColsHelp) + '</p>' +
+      '<ul class="mdv-cols">' + rows + '</ul>' +
+      '<label class="mdv-fld"><span>' + esc(T.tableDetail) + '</span><input type="text" data-set="table_detail" value="' + esc(S.settings.table_detail || '') + '" placeholder="' + esc(T.tableDetailPh) + '"></label></div>';
+  }
+
   function settingsHTML() {
     var s = S.settings;
     return '<div class="mdv-title"><span class="mdv-kicker">' + esc(T.project) + '</span><strong>' + esc(T.settings) + '</strong></div>' +
@@ -157,6 +172,7 @@
       check('show_table', T.setTable) + check('sold_clickable', T.setSold) + check('show_outlines', T.setOutlines) +
       '<div class="mdv-group"><span class="mdv-kicker">' + esc(T.setTip) + '</span>' +
       check('tip_area', T.tipArea) + check('tip_outdoor', T.tipOutdoor) + check('tip_price', T.tipPrice) + check('tip_status', T.tipStatus) + '</div>' +
+      columnsHTML() +
       '<label class="mdv-fld"><span>' + esc(T.buttonText) + '</span><input type="text" data-set="button_text" value="' + esc(s.button_text) + '" placeholder="' + esc(T.buttonPh) + '"></label>' +
       '<label class="mdv-fld"><span>' + esc(T.hintView) + '</span><input type="text" data-set="hint_view" value="' + esc(s.hint_view) + '" placeholder="' + esc(T.hintViewPh) + '"><small>' + esc(T.hintHelp) + '</small></label>' +
       '<label class="mdv-fld"><span>' + esc(T.hintFloor) + '</span><input type="text" data-set="hint_floor" value="' + esc(s.hint_floor) + '" placeholder="' + esc(T.hintFloorPh) + '"><small>' + esc(T.hintHelp) + '</small></label>' +
@@ -347,6 +363,12 @@
         }
         break;
       case 'delObj': deleteObj(); break;
+      case 'colUp':
+      case 'colDown': {
+        var ci = +el.getAttribute('data-i'), cj = ci + (act === 'colUp' ? -1 : 1), cl = S.settings.table_columns;
+        if (cj >= 0 && cj < cl.length) { var tmp = cl[ci]; cl[ci] = cl[cj]; cl[cj] = tmp; renderMain(); }
+        break;
+      }
     }
   });
 
@@ -383,6 +405,12 @@
   function onField(e) {
     var t = e.target;
     var o = ctxObj();
+    if (t.hasAttribute('data-col')) {
+      var col = S.settings.table_columns[+t.getAttribute('data-col')];
+      if (col) col.on = t.checked;
+      sync();
+      return;
+    }
     if (t.hasAttribute('data-set')) {
       var k = t.getAttribute('data-set');
       S.settings[k] = t.type === 'checkbox' ? t.checked : t.value;

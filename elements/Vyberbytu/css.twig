@@ -169,3 +169,15 @@
 %%SELECTOR%% .martin-dv .martin-dv__table tbody tr.is-hover {
   {% if design.tabulka.radek_hover %}background: {{ design.tabulka.radek_hover }};{% endif %}
 }
+
+%%SELECTOR%% .martin-dv .martin-dv__table a.martin-dv__detail-btn {
+  {{ macros.typography(design.tabulka.detail, globalSettings) }}
+  {% if design.tabulka.detail_pozadi %}background: {{ design.tabulka.detail_pozadi }};{% endif %}
+  {% if design.tabulka.detail_text %}color: {{ design.tabulka.detail_text }};{% endif %}
+  {% if design.tabulka.detail_zaobleni.style %}border-radius: {{ design.tabulka.detail_zaobleni.style }};{% endif %}
+}
+%%SELECTOR%% .martin-dv .martin-dv__table a.martin-dv__detail-btn:hover,
+%%SELECTOR%% .martin-dv .martin-dv__table a.martin-dv__detail-btn:focus-visible {
+  {% if design.tabulka.detail_pozadi_hover %}background: {{ design.tabulka.detail_pozadi_hover }}; filter: none;{% endif %}
+  {% if design.tabulka.detail_text %}color: {{ design.tabulka.detail_text }};{% endif %}
+}

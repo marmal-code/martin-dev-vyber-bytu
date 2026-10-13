@@ -14,7 +14,7 @@ if (!function_exists('\MartinDV\render_project')) {
     return;
 }
 
-echo \MartinDV\render_project(
+$martin_dv_html = \MartinDV\render_project(
     absint($propertiesData['content']['projekt']['projekt_id'] ?? 0),
     [
         'hide_table' => !empty($propertiesData['content']['projekt']['skryt_tabulku']),
@@ -22,3 +22,5 @@ echo \MartinDV\render_project(
         'hide_desc'  => !empty($propertiesData['content']['projekt']['skryt_popis']),
     ]
 );
+// render_project() vrací hotové HTML, ve kterém je každá hodnota escapovaná (esc_html/esc_attr/esc_url, data přes wp_json_encode).
+echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

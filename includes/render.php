@@ -369,7 +369,7 @@ function render_project(int $project_id, array $args = []): string
 
     /* tabulka */
     if ($s['show_table'] && $units) {
-        $h .= table_html($units, $floors, $floor_units, $unit_floors, $view_units);
+        $h .= table_html($units, $floors, $floor_units, $unit_floors, $view_units, $s);
     }
 
     $h .= '<div class="martin-dv__tip" aria-hidden="true" hidden></div>';
@@ -464,7 +464,7 @@ function collection_labels(array $types): array
     return [__('Všechny jednotky', 'martin-dev-vyber-bytu'), __('Přehled jednotek', 'martin-dev-vyber-bytu')];
 }
 
-function table_html(array $units, array $floors, array $floor_units, array $unit_floors, array $view_units = []): string
+function table_html(array $units, array $floors, array $floor_units, array $unit_floors, array $view_units = [], array $settings = []): string
 {
     // Pořadí řádků: podle podlaží shora dolů, pak jednotky z pohledů; každá jednotka jen jednou (mezonet).
     $order = [];
@@ -526,32 +526,70 @@ function table_html(array $units, array $floors, array $floor_units, array $unit
         $pills .= $pill('status', 'volny', __('Jen volné', 'martin-dev-vyber-bytu'));
     }
 
-    $cols = 5 + ($show_floor ? 1 : 0);
-    $h    = '<div class="martin-dv__table">'
+    // Sloupce podle nastavení projektu (pořadí + zapnuté); Podlaží se skryje, když ho žádná jednotka nemá.
+    $labels  = table_columns();
+    $columns = [];
+    foreach (sanitize_table_columns($settings['table_columns'] ?? null) as $c) {
+        if ($c['on'] && ($c['key'] !== 'podlazi' || $show_floor)) {
+            $columns[] = $c['key'];
+        }
+    }
+    if (!$columns) {
+        $columns = ['jednotka'];
+    }
+    $detail_txt = ($settings['table_detail'] ?? '') !== '' ? $settings['table_detail'] : __('Detail', 'martin-dev-vyber-bytu');
+    $head_txt   = ['detail' => '', 'venkovni' => __('Venkovní plocha', 'martin-dev-vyber-bytu')];
+
+    $h = '<div class="martin-dv__table">'
         . '<h3 class="martin-dv__table-title">' . esc_html($title) . '</h3>'
         . '<div class="martin-dv__filters" role="group" aria-label="' . esc_attr__('Filtr', 'martin-dev-vyber-bytu') . '">' . $pills . '</div>'
-        . '<div class="martin-dv__table-wrap"><table><thead><tr>'
-        . '<th>' . esc_html__('Jednotka', 'martin-dev-vyber-bytu') . '</th>'
-        . ($show_floor ? '<th>' . esc_html__('Podlaží', 'martin-dev-vyber-bytu') . '</th>' : '')
-        . '<th>' . esc_html__('Dispozice', 'martin-dev-vyber-bytu') . '</th>'
-        . '<th>' . esc_html__('Plocha', 'martin-dev-vyber-bytu') . '</th>'
-        . '<th>' . esc_html__('Cena', 'martin-dev-vyber-bytu') . '</th>'
-        . '<th>' . esc_html__('Stav', 'martin-dev-vyber-bytu') . '</th>'
-        . '</tr></thead><tbody>';
+        . '<div class="martin-dv__table-wrap"><table><thead><tr>';
+    foreach ($columns as $col) {
+        $th = $head_txt[$col] ?? $labels[$col];
+        $h .= '<th class="martin-dv__col-' . esc_attr($col) . '">' . ($th === '' ? '<span class="screen-reader-text">' . esc_html($labels[$col]) . '</span>' : esc_html($th)) . '</th>';
+    }
+    $h .= '</tr></thead><tbody>';
 
     foreach ($ids as $id) {
-        $u    = $units[$id];
-        $name = $u['clickable'] ? '<a href="' . esc_url($u['url']) . '">' . esc_html($u['label']) . '</a>' : esc_html($u['label']);
-        $h   .= '<tr data-dv-key="unit:' . (int) $id . '" data-type="' . esc_attr($u['type']) . '" data-disp="' . esc_attr($u['disp']) . '" data-status="' . esc_attr($u['status']) . '" data-floors="' . esc_attr(implode(' ', $unit_floors[$id] ?? [])) . '">'
-            . '<td class="martin-dv__cell-name">' . $name . '</td>'
-            . ($show_floor ? '<td>' . esc_html($u['floorTxt'] ?: '—') . '</td>' : '')
-            . '<td>' . esc_html($u['disp'] ?: '—') . '</td>'
-            . '<td>' . esc_html($u['areaTxt'] ?: '—') . '</td>'
-            . '<td>' . esc_html($u['priceTxt'] ?: '—') . '</td>'
-            . '<td><span class="martin-dv__status" data-status="' . esc_attr($u['status']) . '">' . esc_html($u['statusLabel']) . '</span></td>'
-            . '</tr>';
+        $u  = $units[$id];
+        $h .= '<tr data-dv-key="unit:' . (int) $id . '" data-type="' . esc_attr($u['type']) . '" data-disp="' . esc_attr($u['disp']) . '" data-status="' . esc_attr($u['status']) . '" data-floors="' . esc_attr(implode(' ', $unit_floors[$id] ?? [])) . '">';
+        foreach ($columns as $col) {
+            switch ($col) {
+                case 'jednotka':
+                    $cell = $u['clickable'] ? '<a href="' . esc_url($u['url']) . '">' . esc_html($u['label']) . '</a>' : esc_html($u['label']);
+                    $h   .= '<td class="martin-dv__cell-name">' . $cell . '</td>';
+                    break;
+                case 'typ':
+                    $h .= '<td>' . esc_html($u['typeLabel']) . '</td>';
+                    break;
+                case 'podlazi':
+                    $h .= '<td>' . esc_html($u['floorTxt'] ?: '—') . '</td>';
+                    break;
+                case 'dispozice':
+                    $h .= '<td>' . esc_html($u['disp'] ?: '—') . '</td>';
+                    break;
+                case 'plocha':
+                    $h .= '<td>' . esc_html($u['areaTxt'] ?: '—') . '</td>';
+                    break;
+                case 'venkovni':
+                    $h .= '<td>' . esc_html($u['outTxt'] ?: '—') . '</td>';
+                    break;
+                case 'cena':
+                    $h .= '<td class="martin-dv__cell-price">' . esc_html($u['priceTxt'] ?: '—') . '</td>';
+                    break;
+                case 'stav':
+                    $h .= '<td><span class="martin-dv__status" data-status="' . esc_attr($u['status']) . '">' . esc_html($u['statusLabel']) . '</span></td>';
+                    break;
+                case 'detail':
+                    $h .= '<td class="martin-dv__cell-detail">' . ($u['clickable']
+                        ? '<a class="martin-dv__detail-btn" href="' . esc_url($u['url']) . '" aria-label="' . esc_attr($detail_txt . ' – ' . $u['label']) . '">' . esc_html($detail_txt) . ' <span aria-hidden="true">→</span></a>'
+                        : '—') . '</td>';
+                    break;
+            }
+        }
+        $h .= '</tr>';
     }
-    $h .= '<tr class="martin-dv__empty-row" hidden><td colspan="' . $cols . '">' . esc_html__('Filtru neodpovídá žádná jednotka.', 'martin-dev-vyber-bytu') . '</td></tr>';
+    $h .= '<tr class="martin-dv__empty-row" hidden><td colspan="' . count($columns) . '">' . esc_html__('Filtru neodpovídá žádná jednotka.', 'martin-dev-vyber-bytu') . '</td></tr>';
     $h .= '</tbody></table></div></div>';
 
     return $h;

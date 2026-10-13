@@ -25,9 +25,9 @@ function editor_box(\WP_Post $post): void
 function embed_box(\WP_Post $post): void
 {
     $id = (int) $post->ID;
-    echo '<p><strong>' . esc_html__('ID projektu:', 'martin-dev-vyber-bytu') . '</strong> <code>' . $id . '</code></p>';
+    echo '<p><strong>' . esc_html__('ID projektu:', 'martin-dev-vyber-bytu') . '</strong> <code>' . esc_html((string) $id) . '</code></p>';
     echo '<p>' . esc_html__('Breakdance: Add → element „Výběr bytů“ → Content → ID projektu.', 'martin-dev-vyber-bytu') . '</p>';
-    echo '<p>' . esc_html__('Shortcode:', 'martin-dev-vyber-bytu') . '<br><code>[martin_vyber_bytu id="' . $id . '"]</code></p>';
+    echo '<p>' . esc_html__('Shortcode:', 'martin-dev-vyber-bytu') . '<br><code>' . esc_html('[martin_vyber_bytu id="' . $id . '"]') . '</code></p>';
     echo '<p><a href="' . esc_url(admin_url('post-new.php?post_type=' . PT_UNIT . '&martin_dv_projekt=' . $id)) . '">+ ' . esc_html__('Přidat jednotku do projektu', 'martin-dev-vyber-bytu') . '</a></p>';
 }
 
@@ -92,6 +92,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
     $cfg = [
         'data'       => editor_payload((int) $post->ID),
         'defaults'   => default_settings(),
+        'columns'    => table_columns(),
         'units'      => editor_units((int) $post->ID),
         'newUnitUrl' => admin_url('post-new.php?post_type=' . PT_UNIT . '&martin_dv_projekt=' . (int) $post->ID),
         'projectId'  => (int) $post->ID,
@@ -156,6 +157,10 @@ add_action('admin_enqueue_scripts', function ($hook) {
             'tipStatus'    => __('Stav', 'martin-dev-vyber-bytu'),
             'buttonText'   => __('Text tlačítka u jednotky', 'martin-dev-vyber-bytu'),
             'buttonPh'     => __('Detail jednotky', 'martin-dev-vyber-bytu'),
+            'tableCols'    => __('Sloupce tabulky', 'martin-dev-vyber-bytu'),
+            'tableColsHelp'=> __('Zaškrtni sloupce, které se mají zobrazit, a šipkami urči jejich pořadí (shora = zleva). Podlaží se samo skryje u projektů bez podlaží.', 'martin-dev-vyber-bytu'),
+            'tableDetail'  => __('Text odkazu ve sloupci Detail', 'martin-dev-vyber-bytu'),
+            'tableDetailPh'=> __('Detail', 'martin-dev-vyber-bytu'),
             'hintView'     => __('Text nápovědy nad seznamem podlaží', 'martin-dev-vyber-bytu'),
             'hintViewPh'   => __('Najeďte na část domu a kliknutím ji otevřete.', 'martin-dev-vyber-bytu'),
             'hintFloor'    => __('Text nápovědy v kartě podlaží / jednotky', 'martin-dev-vyber-bytu'),

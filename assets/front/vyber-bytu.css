@@ -168,6 +168,14 @@
 /* Silnější selektor, aby přebil globální barvu a podtržení odkazů z Breakdance. */
 .martin-dv .martin-dv__table .martin-dv__cell-name a { color: inherit; text-decoration: none; }
 .martin-dv .martin-dv__table .martin-dv__cell-name a:hover { color: var(--martin-dv-accent); }
+.martin-dv .martin-dv__table .martin-dv__cell-detail { text-align: right; white-space: nowrap; }
+.martin-dv .martin-dv__table a.martin-dv__detail-btn {
+  display: inline-block; padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: .875em;
+  text-decoration: none; color: #fff; background: var(--martin-dv-accent); transition: filter .15s;
+}
+.martin-dv .martin-dv__table a.martin-dv__detail-btn:hover,
+.martin-dv .martin-dv__table a.martin-dv__detail-btn:focus-visible { filter: brightness(1.08); color: #fff; }
+.martin-dv .screen-reader-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) {
   .martin-dv__area polygon, .martin-dv__target { transition: none; }
