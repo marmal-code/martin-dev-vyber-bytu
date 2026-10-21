@@ -9,7 +9,7 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 - Víc budov a pohledů: oblast v pohledu může vést na podlaží nebo na další pohled.
 - Mezonety: stejnou jednotku lze obkreslit ve více podlažích.
 - Barvy a písmo se berou z Breakdance Global Settings.
-- Výstup: Breakdance element **Marmal – Výběr bytů** (Add → Dynamic, slug `MartinDV\Vyberbytu`; vzniklo v Element Studiu, viz `docs/breakdance-element.md`) nebo shortcode `[martin_vyber_bytu id="123"]` (volitelně `tabulka="ne" nazev="ne" popis="ne"`).
+- Výstup: Breakdance element **Marmal – Výběr bytů** (Add → Dynamic, slug `MartinDV\Vyberbytu`; vzniklo v Element Studiu, viz `docs/breakdance-element.md`) nebo shortcode `[martin_vyber_bytu id="123"]` (volitelně `jen_tabulka="ano" tabulka="ne" nazev="ne" popis="ne"`).
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
 
 ## Požadavky
@@ -47,6 +47,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
+- **0.12.0** – režim „jen tabulka s filtrem“ (bez obrázků domu a půdorysů): v elementu Content → Projekt → Zobrazit jen tabulku s filtrem, v shortcodu `jen_tabulka="ano"`; má přednost před Skrýt tabulku.
 - **0.11.0** – při najetí myší na obrázek (pohled i půdorys) se zbytek obrázku ztmaví (výchozí 50 % černá) a klikací oblasti se jemně zvýrazní; prodané jednotky bez odkazu zůstávají ztmavené; Design tab: Zvýraznění na obrázku → Ztmavení okolí při najetí (%), Barva ztmavení, Zvýraznění klikacích oblastí při najetí (%).
 - **0.10.0** – řazení tabulky: výchozí od nejnižšího podlaží (číslo z názvu – NP, PP záporně, přízemí 0; bez čísla na konec) a uvnitř přirozeně podle čísla jednotky; mezonet u nejnižšího podlaží; stejné pořadí tlačítek podlaží ve filtru; přepínač Řazení tabulky (automaticky / podle pořadí v editoru).
 - **0.9.0** – nastavení tabulky v projektu: výběr a pořadí sloupců (Jednotka, Typ, Podlaží, Dispozice, Plocha, Venkovní plocha, Cena, Stav, Detail), nový sloupec Detail s odkazem na jednotku a vlastním textem; Design tab: Tabulka → Detail (písmo, pozadí, text, hover, zaoblení); bezpečnostní kontrola PHPCS WordPress Security bez nálezů.

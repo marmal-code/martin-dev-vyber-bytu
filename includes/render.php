@@ -60,8 +60,9 @@ function ensure_assets(): string
 /* ---------- Shortcode ---------- */
 
 add_shortcode('martin_vyber_bytu', function ($atts) {
-    $atts = shortcode_atts(['id' => 0, 'tabulka' => '', 'nazev' => '', 'popis' => ''], $atts, 'martin_vyber_bytu');
+    $atts = shortcode_atts(['id' => 0, 'tabulka' => '', 'nazev' => '', 'popis' => '', 'jen_tabulka' => ''], $atts, 'martin_vyber_bytu');
     $args = [
+        'only_table' => $atts['jen_tabulka'] === 'ano',
         'hide_table' => $atts['tabulka'] === 'ne',
         'hide_title' => $atts['nazev'] === 'ne',
         'hide_desc'  => $atts['popis'] === 'ne',
@@ -112,7 +113,8 @@ function poly_points(array $poly): string
 
 /**
  * @param int   $project_id ID projektu (CPT martin_dv_projekt)
- * @param array $args       hide_table (bool), accent (CSS barva – přebije Global Settings)
+ * @param array $args       only_table (bool – jen tabulka s filtrem, bez obrázků), hide_table, hide_title, hide_desc (bool),
+ *                          accent (CSS barva – přebije Global Settings)
  */
 function render_project(int $project_id, array $args = []): string
 {
@@ -127,7 +129,10 @@ function render_project(int $project_id, array $args = []): string
 
     $data = get_project_data($project_id);
     $s    = $data['settings'];
-    if (!empty($args['hide_table'])) {
+    $only_table = !empty($args['only_table']);
+    if ($only_table) {
+        $s['show_table'] = true; // „jen tabulka“ má přednost před „skrýt tabulku“
+    } elseif (!empty($args['hide_table'])) {
         $s['show_table'] = false;
     }
     if ($s['button_text'] === '') {
@@ -263,7 +268,7 @@ function render_project(int $project_id, array $args = []): string
         $style .= '--martin-dv-accent:' . $accent . ';';
     }
 
-    $h .= '<div class="martin-dv' . ($s['show_outlines'] ? ' martin-dv--outlines' : '') . '" id="' . esc_attr($uid) . '" data-martin-dv style="' . esc_attr($style) . '">';
+    $h .= '<div class="martin-dv' . ($s['show_outlines'] ? ' martin-dv--outlines' : '') . ($only_table ? ' martin-dv--table-only' : '') . '" id="' . esc_attr($uid) . '" data-martin-dv style="' . esc_attr($style) . '">';
 
     /* úvod projektu: název + popis (obsah editoru projektu) */
     $intro = '';
@@ -294,8 +299,8 @@ function render_project(int $project_id, array $args = []): string
 
     $back = '<button type="button" class="martin-dv__back" data-dv-back hidden>← ' . esc_html__('Zpět', 'martin-dev-vyber-bytu') . '</button>';
 
-    /* pohledy */
-    foreach ($views as $vid => $v) {
+    /* pohledy (v režimu „jen tabulka“ se obrázky nevykreslí) */
+    foreach ($only_table ? [] : $views as $vid => $v) {
         $areas = '';
         $cut   = []; // polygony klikacích oblastí – vyříznou se ze ztmavení při najetí
         $list  = '';
@@ -350,7 +355,7 @@ function render_project(int $project_id, array $args = []): string
     }
 
     /* podlaží */
-    foreach ($floors as $fid => $f) {
+    foreach ($only_table ? [] : $floors as $fid => $f) {
         $areas = '';
         $cut   = [];
         foreach ($f['areas'] as $a) {
@@ -381,6 +386,9 @@ function render_project(int $project_id, array $args = []): string
         $h .= table_html($units, $floors, $floor_units, $unit_floors, $view_units, $s);
     }
 
+    if ($only_table && !$units) {
+        $h .= '<p class="martin-dv__empty">' . esc_html__('Projekt zatím nemá žádné jednotky.', 'martin-dev-vyber-bytu') . '</p>';
+    }
     $h .= '<div class="martin-dv__tip" aria-hidden="true" hidden></div>';
 
     /* data pro JS */

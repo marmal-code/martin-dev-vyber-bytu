@@ -193,3 +193,4 @@
 @media (prefers-reduced-motion: reduce) {
   .martin-dv__area polygon, .martin-dv__target, .martin-dv__dim { transition: none; }
 }
+.martin-dv__empty { margin: 0; opacity: .7; }

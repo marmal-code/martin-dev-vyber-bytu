@@ -797,6 +797,14 @@ class Vyberbytu extends \Breakdance\Elements\Element
         [],
         
       ), c(
+        "jen_tabulka",
+        "Zobrazit jen tabulku s filtrem",
+        [],
+        ['type' => 'toggle', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
         "skryt_tabulku",
         "Skrýt tabulku jednotek",
         [],
