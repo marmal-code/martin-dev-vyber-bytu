@@ -19,6 +19,9 @@
   {% if design.oblasti.pruhlednost is defined and design.oblasti.pruhlednost is not null and design.oblasti.pruhlednost != '' %}--martin-dv-hl-opacity: {{ design.oblasti.pruhlednost / 100 }};{% endif %}
   {% if design.oblasti.obrys %}--martin-dv-hl-stroke: {{ design.oblasti.obrys }};{% endif %}
   {% if design.oblasti.obrys_sirka.style %}--martin-dv-hl-stroke-width: {{ design.oblasti.obrys_sirka.style }};{% endif %}
+  {% if design.oblasti.ztmaveni is defined and design.oblasti.ztmaveni is not null and design.oblasti.ztmaveni != '' %}--martin-dv-dim: {{ design.oblasti.ztmaveni / 100 }};{% endif %}
+  {% if design.oblasti.ztmaveni_barva %}--martin-dv-dim-color: {{ design.oblasti.ztmaveni_barva }};{% endif %}
+  {% if design.oblasti.napoveda is defined and design.oblasti.napoveda is not null and design.oblasti.napoveda != '' %}--martin-dv-hint: {{ design.oblasti.napoveda / 100 }};{% endif %}
   {% if design.oblasti.jednotky_pruhlednost is defined and design.oblasti.jednotky_pruhlednost is not null and design.oblasti.jednotky_pruhlednost != '' %}--martin-dv-unit-opacity: {{ design.oblasti.jednotky_pruhlednost / 100 }};{% endif %}
 }
 

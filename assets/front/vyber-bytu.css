@@ -56,6 +56,19 @@
   width: 100%; height: 100%; max-width: none; object-fit: fill;
 }
 .martin-dv__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+/* Ztmavení okolí při najetí na obrázek – klikací oblasti jsou z masky vyříznuté. */
+.martin-dv__dim {
+  fill: var(--martin-dv-dim-color, #000); opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+}
+.martin-dv__stage:hover .martin-dv__dim,
+.martin-dv__stage:focus-within .martin-dv__dim { opacity: var(--martin-dv-dim, .5); }
+/* Lehké zvýraznění všeho, co jde vybrat, když je myš nad obrázkem. */
+.martin-dv__stage:hover .martin-dv__area--nav:not(.is-hover):not(:focus-visible) polygon,
+.martin-dv__stage:focus-within .martin-dv__area--nav:not(.is-hover):not(:focus-visible) polygon {
+  fill-opacity: var(--martin-dv-hint, .15); stroke-opacity: .7;
+}
+.martin-dv__stage:hover .martin-dv__area--unit:not(.is-disabled):not(.is-hover) polygon { stroke-opacity: 1; }
 .martin-dv__area { cursor: pointer; outline: none; }
 .martin-dv__area polygon {
   fill: var(--c); fill-opacity: 0; stroke: var(--c); stroke-opacity: 0; stroke-width: 2;
@@ -178,5 +191,5 @@
 .martin-dv .screen-reader-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) {
-  .martin-dv__area polygon, .martin-dv__target { transition: none; }
+  .martin-dv__area polygon, .martin-dv__target, .martin-dv__dim { transition: none; }
 }

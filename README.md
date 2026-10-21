@@ -47,6 +47,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
+- **0.11.0** – při najetí myší na obrázek (pohled i půdorys) se zbytek obrázku ztmaví (výchozí 50 % černá) a klikací oblasti se jemně zvýrazní; prodané jednotky bez odkazu zůstávají ztmavené; Design tab: Zvýraznění na obrázku → Ztmavení okolí při najetí (%), Barva ztmavení, Zvýraznění klikacích oblastí při najetí (%).
 - **0.10.0** – řazení tabulky: výchozí od nejnižšího podlaží (číslo z názvu – NP, PP záporně, přízemí 0; bez čísla na konec) a uvnitř přirozeně podle čísla jednotky; mezonet u nejnižšího podlaží; stejné pořadí tlačítek podlaží ve filtru; přepínač Řazení tabulky (automaticky / podle pořadí v editoru).
 - **0.9.0** – nastavení tabulky v projektu: výběr a pořadí sloupců (Jednotka, Typ, Podlaží, Dispozice, Plocha, Venkovní plocha, Cena, Stav, Detail), nový sloupec Detail s odkazem na jednotku a vlastním textem; Design tab: Tabulka → Detail (písmo, pozadí, text, hover, zaoblení); bezpečnostní kontrola PHPCS WordPress Security bez nálezů.
 - **0.8.2** – bezpečnost: nepublikovaný projekt (koncept, soukromý) se na webu nevykreslí – vidí ho jen ten, kdo ho smí upravovat.

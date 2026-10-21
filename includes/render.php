@@ -297,6 +297,7 @@ function render_project(int $project_id, array $args = []): string
     /* pohledy */
     foreach ($views as $vid => $v) {
         $areas = '';
+        $cut   = []; // polygony klikacích oblastí – vyříznou se ze ztmavení při najetí
         $list  = '';
         $seen  = [];
         foreach ($v['areas'] as $a) {
@@ -305,6 +306,9 @@ function render_project(int $project_id, array $args = []): string
                 $tid = translate_id((int) $t['id']);
                 if (isset($units[$tid])) {
                     $areas .= unit_area_html($units[$tid], $tid, $a['poly']);
+                    if ($units[$tid]['clickable']) {
+                        $cut[] = $a['poly'];
+                    }
                 }
                 continue;
             }
@@ -316,6 +320,7 @@ function render_project(int $project_id, array $args = []): string
             $href  = '#' . $uid . '-' . $t['type'] . '-' . $t['id'];
             $areas .= '<a class="martin-dv__area martin-dv__area--nav" href="' . esc_attr($href) . '" data-dv-go="' . esc_attr($key) . '" data-dv-key="' . esc_attr($key) . '" aria-label="' . esc_attr($label) . '">'
                 . '<polygon points="' . esc_attr(poly_points($a['poly'])) . '"></polygon></a>';
+            $cut[] = $a['poly'];
             if (!isset($seen[$key])) {
                 $seen[$key] = [$href, $label, $keys[$key]['lines'] ?? []];
             }
@@ -335,7 +340,7 @@ function render_project(int $project_id, array $args = []): string
         $h .= '<section class="martin-dv__panel" data-dv-panel="view:' . esc_attr($vid) . '" id="' . esc_attr($uid . '-view-' . $vid) . '"' . ($vid === $start ? '' : ' hidden') . '>'
             . '<div class="martin-dv__bar martin-dv__bar--view" hidden>' . $back . '</div>'
             . '<div class="martin-dv__layout">'
-            . stage_html($v, $areas, $vid === $start)
+            . stage_html($v, $areas, $vid === $start, $cut)
             . '<div class="martin-dv__side">'
             . ($list ? '<p class="martin-dv__hint">' . esc_html($hint_view) . '</p><div class="martin-dv__targets">' . $list . '</div>' : '')
             . ($view_units[$vid] ? '<div class="martin-dv__card" data-dv-card>' . summary_card_html(__('Projekt', 'martin-dev-vyber-bytu'), $v['name'], $keys['view:' . $vid]['lines'], $hint_unit) . '</div>' : '')
@@ -347,6 +352,7 @@ function render_project(int $project_id, array $args = []): string
     /* podlaží */
     foreach ($floors as $fid => $f) {
         $areas = '';
+        $cut   = [];
         foreach ($f['areas'] as $a) {
             if (!$a['unit']) {
                 continue;
@@ -356,13 +362,16 @@ function render_project(int $project_id, array $args = []): string
                 continue;
             }
             $areas .= unit_area_html($units[$tid], $tid, $a['poly']);
+            if ($units[$tid]['clickable']) {
+                $cut[] = $a['poly'];
+            }
         }
         $summary = summary_card_html(__('Podlaží', 'martin-dev-vyber-bytu'), $f['name'], $keys['floor:' . $fid]['lines'], $hint_unit);
 
         $h .= '<section class="martin-dv__panel" data-dv-panel="floor:' . esc_attr($fid) . '" id="' . esc_attr($uid . '-floor-' . $fid) . '" hidden>'
             . '<div class="martin-dv__bar">' . $back . '<h3 class="martin-dv__title">' . esc_html($f['name']) . '</h3><div class="martin-dv__pills" data-dv-pills></div></div>'
             . '<div class="martin-dv__layout">'
-            . stage_html($f, $areas, false)
+            . stage_html($f, $areas, false, $cut)
             . '<div class="martin-dv__side"><div class="martin-dv__card" data-dv-card>' . $summary . '</div>' . $legend . '</div>'
             . '</div></section>';
     }
@@ -410,7 +419,10 @@ function render_project(int $project_id, array $args = []): string
     return $h;
 }
 
-function stage_html(array $item, string $areas, bool $eager): string
+/**
+ * @param array $cut polygony klikacích oblastí; při najetí na obrázek se zbytek ztmaví (SVG maska)
+ */
+function stage_html(array $item, string $areas, bool $eager, array $cut = []): string
 {
     $src    = $item['src'];
     $aspect = ($src['w'] && $src['h']) ? $src['w'] . ' / ' . $src['h']
@@ -426,11 +438,27 @@ function stage_html(array $item, string $areas, bool $eager): string
 
     return '<div class="martin-dv__stage" style="aspect-ratio:' . esc_attr($aspect) . '">'
         . $img
-        . '<svg class="martin-dv__svg" viewBox="0 0 100 100" preserveAspectRatio="none">' . $areas . '</svg>'
+        . '<svg class="martin-dv__svg" viewBox="0 0 100 100" preserveAspectRatio="none">' . dim_html($cut) . $areas . '</svg>'
         . '</div>';
 }
 
 /** Plocha polygonu jednotky (odkaz na detail, nebo neaktivní u prodané). */
+/** Ztmavení obrázku mimo klikací oblasti (maska: bílý obdélník, oblasti černě = vyříznuté). */
+function dim_html(array $cut): string
+{
+    if (!$cut) {
+        return '';
+    }
+    $id    = wp_unique_id('martin-dv-mask-');
+    $holes = '';
+    foreach ($cut as $poly) {
+        $holes .= '<polygon points="' . esc_attr(poly_points($poly)) . '" fill="#000"></polygon>';
+    }
+    return '<defs><mask id="' . esc_attr($id) . '" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">'
+        . '<rect x="0" y="0" width="100" height="100" fill="#fff"></rect>' . $holes . '</mask></defs>'
+        . '<rect class="martin-dv__dim" x="0" y="0" width="100" height="100" mask="url(#' . esc_attr($id) . ')" aria-hidden="true"></rect>';
+}
+
 function unit_area_html(array $u, int $id, array $poly): string
 {
     $key  = 'unit:' . $id;
