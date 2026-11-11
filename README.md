@@ -42,8 +42,8 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 
 1. Nahrát složku `martin-dev-vyber-bytu` do `wp-content/plugins/` a aktivovat.
 2. Nastavení → Trvalé odkazy → Uložit.
-3. Výběr bytů → Projekty → Přidat projekt.
-4. Výběr bytů → Přidat jednotku (u každé vybrat projekt).
+3. Developerské projekty → Projekty → Přidat projekt.
+4. Developerské projekty → Přidat jednotku (u každé vybrat projekt).
 5. V projektu: obrázek pohledu → oblasti podlaží → půdorysy → oblasti jednotek.
 6. Vytvořit Breakdance element podle `docs/breakdance-element.md`.
 
@@ -71,7 +71,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
-- **0.13.0** – nová funkce **Mapa okolí** (projekt → Okolí, element „Marmal – Mapa okolí“, shortcode `[martin_mapa_okoli]`); plugin přejmenován na „Marmal – Developerské projekty“; oprava: tlačítka v levém panelu editoru se už neroztahují do výšky.
+- **0.13.0** – nová funkce **Mapa okolí** (projekt → Okolí, element „Marmal – Mapa okolí“, shortcode `[martin_mapa_okoli]`); plugin přejmenován na „Marmal – Developerské projekty“; oprava: tlačítka v levém panelu editoru se už neroztahují do výšky; menu v administraci „Výběr bytů“ přejmenováno na „Developerské projekty“.
 - **0.12.0** – režim „jen tabulka s filtrem“ (bez obrázků domu a půdorysů): v elementu Content → Projekt → Zobrazit jen tabulku s filtrem, v shortcodu `jen_tabulka="ano"`; má přednost před Skrýt tabulku.
 - **0.11.0** – při najetí myší na obrázek (pohled i půdorys) se zbytek obrázku ztmaví (výchozí 50 % černá) a klikací oblasti se jemně zvýrazní; prodané jednotky bez odkazu zůstávají ztmavené; Design tab: Zvýraznění na obrázku → Ztmavení okolí při najetí (%), Barva ztmavení, Zvýraznění klikacích oblastí při najetí (%).
 - **0.10.0** – řazení tabulky: výchozí od nejnižšího podlaží (číslo z názvu – NP, PP záporně, přízemí 0; bez čísla na konec) a uvnitř přirozeně podle čísla jednotky; mezonet u nejnižšího podlaží; stejné pořadí tlačítek podlaží ve filtru; přepínač Řazení tabulky (automaticky / podle pořadí v editoru).

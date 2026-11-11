@@ -15,7 +15,7 @@ function register_post_types(): void
         'labels' => [
             'name'               => __('Jednotky', 'martin-dev-vyber-bytu'),
             'singular_name'      => __('Jednotka', 'martin-dev-vyber-bytu'),
-            'menu_name'          => __('Výběr bytů', 'martin-dev-vyber-bytu'),
+            'menu_name'          => __('Developerské projekty', 'martin-dev-vyber-bytu'),
             'all_items'          => __('Jednotky', 'martin-dev-vyber-bytu'),
             'add_new'            => __('Přidat jednotku', 'martin-dev-vyber-bytu'),
             'add_new_item'       => __('Přidat jednotku', 'martin-dev-vyber-bytu'),

@@ -107,7 +107,7 @@ function okoli_cat_var(string $cat): string
 function render_okoli(int $project_id, array $args = []): string
 {
     if (!$project_id || get_post_type($project_id) !== PT_PROJECT) {
-        return editor_notice(__('Mapa okolí: zadejte platné ID projektu (Výběr bytů → Projekty).', 'martin-dev-vyber-bytu'));
+        return editor_notice(__('Mapa okolí: zadejte platné ID projektu (Developerské projekty → Projekty).', 'martin-dev-vyber-bytu'));
     }
     // Nepublikovaný projekt vidí jen ten, kdo ho smí upravovat (stejně jako výběr bytů).
     if (get_post_status($project_id) !== 'publish' && !current_user_can('edit_post', $project_id)) {
