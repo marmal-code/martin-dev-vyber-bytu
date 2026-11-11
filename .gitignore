@@ -6,3 +6,4 @@ vendor/
 *.zip
 .idea/
 .vscode/
+__pycache__/

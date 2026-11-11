@@ -1,8 +1,14 @@
-# Marmal – Výběr bytů
+# Marmal – Developerské projekty
+
+> Do verze 0.12.0 „Marmal – Výběr bytů“. Složka, repozitář, text domain, prefixy `martin_dv_*` / `MartinDV` a element „Marmal – Výběr bytů“ zůstávají beze změny.
 
 Autor: Martin Malý – [marmal.cz](https://marmal.cz)
 
-WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce nebo vizualizaci domu podlaží, v půdorysu podlaží pak jednotku (byt, ateliér, sklep, garáž, parkovací stání) a klikem přejde na její detail.
+WordPress plugin pro weby developerských projektů. Obsahuje dvě funkce: **výběr jednotek** a **mapu okolí**.
+
+### Výběr jednotek
+
+Návštěvník vybírá na fotce nebo vizualizaci domu podlaží, v půdorysu podlaží pak jednotku (byt, ateliér, sklep, garáž, parkovací stání) a klikem přejde na její detail.
 
 - **Jednotky** jsou CPT `martin_dv_jednotka` s vlastní URL (`/byty/…`) a ACF poli (`dv_cislo`, `dv_stav`, `dv_cena` …). Detail se staví Breakdance šablonou s dynamickými daty.
 - **Projekty** (CPT `martin_dv_projekt`) obsahují pohledy (dům, areál, strany budovy) a podlaží s obkreslenými oblastmi.
@@ -10,6 +16,20 @@ WordPress plugin pro developerské projekty. Návštěvník vybírá na fotce ne
 - Mezonety: stejnou jednotku lze obkreslit ve více podlažích.
 - Barvy a písmo se berou z Breakdance Global Settings.
 - Výstup: Breakdance element **Marmal – Výběr bytů** (Add → Dynamic, slug `MartinDV\Vyberbytu`; vzniklo v Element Studiu, viz `docs/breakdance-element.md`) nebo shortcode `[martin_vyber_bytu id="123"]` (volitelně `jen_tabulka="ano" tabulka="ne" nazev="ne" popis="ne"`).
+
+### Mapa okolí (od 0.13.0)
+
+Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) mapou. Najetí na bod zvýrazní řádek a naopak, bod ukáže bublinu s názvem.
+
+- Zadává se v projektu → **Okolí** → Přidat mapu okolí: obrázek mapy, body kliknutím do mapy (tažením se posunou), pořadí v seznamu = čísla 01, 02…, hlavní bod projektu (pulzuje).
+- U bodu: název, kategorie, ikona (pevná sada ~20 ikon), nepovinně popis, vzdálenost a odkaz.
+- Volby mapy: značky Čísla / Ikony / Ikona + číslo, barvy podle kategorie, filtr kategorií.
+- Výstup: Breakdance element **Marmal – Mapa okolí** (Add → Dynamic, slug `MartinDV\MapaOkoli`) nebo shortcode `[martin_mapa_okoli id="123" mapa="1"]` (volitelně `rozlozeni="vpravo|vlevo|pod" sloupce="2" ztlumit="ne"`).
+- Kód je v `includes/okoli/`, `assets/*/okoli*`, `elements/MapaOkoli/`. Ovládací prvky elementu generuje `tools/okoli_element.py` – `element.php` neupravovat ručně ani v Element Studiu.
+- Podklad mapy neobkreslovat z Google Map (licence). Použít OpenStreetMap a uvést „© přispěvatelé OpenStreetMap“.
+
+### Společné
+
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
 
 ## Požadavky
@@ -44,9 +64,14 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 | `martin_dv_dispositions` | 1+kk … 6+kk | seznam dispozic v ACF |
 | `martin_dv_load_everywhere` | `false` | načíst CSS/JS na všech stránkách |
 | `martin_dv_detect_needles` | `Vyberbytu`, `martin_vyber_bytu` | podle čeho se pozná stránka s výběrem (CSS do `<head>`) |
+| `martin_dv_okoli_categories` | 9 kategorií | kategorie bodů mapy okolí (název, výchozí ikona, barva) |
+| `martin_dv_okoli_icons` | ~20 ikon | sada ikon bodů (vnitřek SVG 24×24 z kódu – ne od uživatele) |
+| `martin_dv_okoli_detect_needles` | `MapaOkoli`, `martin_mapa_okoli` | podle čeho se pozná stránka s mapou okolí |
+| `martin_dv_editor_config` | – | data pro editor projektu v administraci (používá mapa okolí) |
 
 ## Verze
 
+- **0.13.0** – nová funkce **Mapa okolí** (projekt → Okolí, element „Marmal – Mapa okolí“, shortcode `[martin_mapa_okoli]`); plugin přejmenován na „Marmal – Developerské projekty“; oprava: tlačítka v levém panelu editoru se už neroztahují do výšky.
 - **0.12.0** – režim „jen tabulka s filtrem“ (bez obrázků domu a půdorysů): v elementu Content → Projekt → Zobrazit jen tabulku s filtrem, v shortcodu `jen_tabulka="ano"`; má přednost před Skrýt tabulku.
 - **0.11.0** – při najetí myší na obrázek (pohled i půdorys) se zbytek obrázku ztmaví (výchozí 50 % černá) a klikací oblasti se jemně zvýrazní; prodané jednotky bez odkazu zůstávají ztmavené; Design tab: Zvýraznění na obrázku → Ztmavení okolí při najetí (%), Barva ztmavení, Zvýraznění klikacích oblastí při najetí (%).
 - **0.10.0** – řazení tabulky: výchozí od nejnižšího podlaží (číslo z názvu – NP, PP záporně, přízemí 0; bez čísla na konec) a uvnitř přirozeně podle čísla jednotky; mezonet u nejnižšího podlaží; stejné pořadí tlačítek podlaží ve filtru; přepínač Řazení tabulky (automaticky / podle pořadí v editoru).

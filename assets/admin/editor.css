@@ -11,6 +11,7 @@
 .mdv-navbtn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mdv-navbtn small { color: #646970; font-size: 11px; flex-shrink: 0; }
 .mdv-navbtn:hover { background: #fff; }
+.mdv-nav > .mdv-navbtn { flex: 0 0 auto; } /* ve sloupci se tlačítko nesmí natahovat do výšky */
 .mdv-navbtn.on { background: #2271b1; color: #fff; }
 .mdv-navbtn.on small { color: #e0ecf6; }
 .mdv-order { display: flex; }
@@ -65,3 +66,34 @@
 .mdv-cols { list-style: none; margin: 0; padding: 0; border: 1px solid #dcdcde; border-radius: 4px; }
 .mdv-col { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 10px; margin: 0; }
 .mdv-col + .mdv-col { border-top: 1px solid #f0f0f1; }
+
+/* ---------- Mapa okolí (okoli-editor.js) ---------- */
+.mdv-okwarn { color: #8a5a00; }
+.mdv-okstage { position: relative; width: 100%; max-width: 100%; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 4px; overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: none; }
+.mdv-okstage.ok-add, .mdv-okstage.ok-proj { cursor: crosshair; }
+.mdv-okstage img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: fill; pointer-events: none; }
+.mdv-okmk { --okc: #2271b1; position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: var(--okc); color: #fff; font: 700 11px/1 sans-serif; display: grid; place-items: center; cursor: move; box-shadow: 0 0 0 2px #fff, 0 1px 4px rgba(0,0,0,.3); z-index: 2; box-sizing: border-box; }
+.mdv-okmk svg, .mdv-oknum svg { width: 62%; height: 62%; }
+.mdv-okmk b, .mdv-oknum b { position: absolute; top: -7px; right: -9px; min-width: 15px; height: 15px; padding: 0 2px; border-radius: 8px; background: #1d2327; color: #fff; font-size: 9px; line-height: 15px; text-align: center; box-shadow: 0 0 0 1.5px #fff; }
+.mdv-okmk.on { box-shadow: 0 0 0 3px #1d2327, 0 0 0 5px #fff; z-index: 4; transform: scale(1.15); }
+.mdv-okstage.ok-add .mdv-okmk, .mdv-okstage.ok-proj .mdv-okmk { pointer-events: none; }
+.mdv-okproj { --okc: #00a32a; width: 30px; height: 30px; margin: -15px 0 0 -15px; box-shadow: 0 0 0 4px rgba(255,255,255,.95), 0 1px 6px rgba(0,0,0,.3); }
+.mdv-okproj::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #fff; }
+.mdv-oklist { list-style: none; margin: 0; padding: 0; border: 1px solid #dcdcde; border-radius: 4px; }
+.mdv-okrow { display: flex; align-items: center; gap: 6px; padding: 4px 8px 4px 4px; margin: 0; background: #fff; }
+.mdv-okrow + .mdv-okrow { border-top: 1px solid #f0f0f1; }
+.mdv-okrow.on { background: #f0f6fc; }
+.mdv-okrow.is-drag { opacity: .45; }
+.mdv-okrow.is-over { box-shadow: inset 0 2px 0 #2271b1; }
+.mdv-okgrip { cursor: grab; color: #a7aaad; font-size: 12px; letter-spacing: -2px; padding: 0 4px; }
+.mdv-okrowbtn { flex: 1; display: flex; align-items: center; gap: 10px; border: 0; background: none; padding: 4px; text-align: left; cursor: pointer; min-width: 0; font-size: 13px; color: #1d2327; }
+.mdv-oknum { --okc: #2271b1; position: relative; flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: var(--okc); color: #fff; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+.mdv-okname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.mdv-okname small { display: block; color: #646970; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mdv-okcat { color: #646970; font-size: 11.5px; white-space: nowrap; }
+.mdv-okicons { display: grid; grid-template-columns: repeat(auto-fill, minmax(34px, 1fr)); gap: 4px; }
+.mdv-okicon { display: grid; place-items: center; height: 34px; border: 1px solid #dcdcde; border-radius: 4px; background: #fff; cursor: pointer; color: #1d2327; padding: 0; }
+.mdv-okicon svg { width: 20px; height: 20px; }
+.mdv-okicon:hover { border-color: #2271b1; }
+.mdv-okicon.on { border-color: #2271b1; background: #2271b1; color: #fff; }
+.mdv-okcode { display: block; padding: 6px 8px; font-size: 12px; word-break: break-all; user-select: all; }

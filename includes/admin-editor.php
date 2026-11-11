@@ -28,6 +28,7 @@ function embed_box(\WP_Post $post): void
     echo '<p><strong>' . esc_html__('ID projektu:', 'martin-dev-vyber-bytu') . '</strong> <code>' . esc_html((string) $id) . '</code></p>';
     echo '<p>' . esc_html__('Breakdance: Add → element „Výběr bytů“ → Content → ID projektu.', 'martin-dev-vyber-bytu') . '</p>';
     echo '<p>' . esc_html__('Shortcode:', 'martin-dev-vyber-bytu') . '<br><code>' . esc_html('[martin_vyber_bytu id="' . $id . '"]') . '</code></p>';
+    echo '<p><strong>' . esc_html__('Mapa okolí', 'martin-dev-vyber-bytu') . '</strong><br>' . esc_html__('Breakdance: element „Marmal – Mapa okolí“ → ID projektu a pořadí mapy.', 'martin-dev-vyber-bytu') . '<br><code>' . esc_html('[martin_mapa_okoli id="' . $id . '" mapa="1"]') . '</code></p>';
     echo '<p><a href="' . esc_url(admin_url('post-new.php?post_type=' . PT_UNIT . '&martin_dv_projekt=' . $id)) . '">+ ' . esc_html__('Přidat jednotku do projektu', 'martin-dev-vyber-bytu') . '</a></p>';
 }
 
@@ -35,7 +36,7 @@ function embed_box(\WP_Post $post): void
 function editor_payload(int $post_id): array
 {
     $data = get_project_data($post_id);
-    foreach (['views', 'floors'] as $group) {
+    foreach (['views', 'floors', 'maps'] as $group) {
         foreach ($data[$group] as &$item) {
             $src           = image_src($item['image']);
             $item['image'] = $src ? ['id' => $item['image']['id'], 'url' => $src['url'], 'w' => $src['w'], 'h' => $src['h']] : null;
@@ -87,7 +88,9 @@ add_action('admin_enqueue_scripts', function ($hook) {
     global $post;
     wp_enqueue_media();
     wp_enqueue_style('martin-dv-editor', MARTIN_DV_URL . 'assets/admin/editor.css', [], VERSION);
-    wp_enqueue_script('martin-dv-editor', MARTIN_DV_URL . 'assets/admin/editor.js', [], VERSION, true);
+    // Editor mapy okolí se registruje jako rozšíření editoru (window.martinDvOkoliEditor), proto se načítá první.
+    wp_enqueue_script('martin-dv-okoli-editor', MARTIN_DV_URL . 'assets/admin/okoli-editor.js', [], VERSION, true);
+    wp_enqueue_script('martin-dv-editor', MARTIN_DV_URL . 'assets/admin/editor.js', ['martin-dv-okoli-editor'], VERSION, true);
 
     $cfg = [
         'data'       => editor_payload((int) $post->ID),
@@ -178,6 +181,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
             'unnamed'      => __('bez názvu', 'martin-dev-vyber-bytu'),
         ],
     ];
+    $cfg = apply_filters('martin_dv_editor_config', $cfg, (int) $post->ID);
     wp_add_inline_script('martin-dv-editor', 'window.martinDvEditor = ' . wp_json_encode($cfg, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) . ';', 'before');
 });
 

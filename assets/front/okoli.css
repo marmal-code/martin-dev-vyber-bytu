@@ -1,0 +1,141 @@
+/*
+ * Marmal – Developerské projekty: Mapa okolí (frontend)
+ * Barvy z Breakdance Global Settings (--bde-brand-primary-color, --bde-headings-color), písmo se dědí ze stránky.
+ * Vše jde přebít v elementu „Marmal – Mapa okolí“ → Design (nastavuje CSS proměnné --mdo-*).
+ */
+.martin-dv-okoli {
+  --mdo-accent: var(--bde-brand-primary-color, #2f6b4f);
+  --mdo-proj-c: var(--mdo-proj, var(--bde-headings-color, #1f2a33));
+  --mdo-line: color-mix(in srgb, currentColor 14%, transparent);
+  --mdo-hl: color-mix(in srgb, var(--mdo-accent) 14%, transparent);
+  --mdo-muted: color-mix(in srgb, currentColor 62%, transparent);
+  container-type: inline-size;
+  position: relative;
+}
+.martin-dv-okoli [hidden] { display: none !important; }
+
+/* filtr */
+.martin-dv-okoli__filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 var(--mdo-filter-gap, 20px); }
+.martin-dv-okoli__chip {
+  font: inherit; font-size: .875em; line-height: 1.3; color: var(--mdo-chip-text, inherit); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid var(--mdo-chip-border, var(--mdo-line)); background: var(--mdo-chip-bg, transparent);
+  border-radius: 999px; padding: 6px 14px; transition: background .15s, color .15s, border-color .15s;
+}
+.martin-dv-okoli__chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--mdo-accent); flex: 0 0 auto; }
+.martin-dv-okoli--catcolors .martin-dv-okoli__chip i { background: var(--mdo-cc, var(--mdo-accent)); }
+.martin-dv-okoli__chip[aria-pressed="true"] {
+  background: var(--mdo-chip-active-bg, var(--bde-headings-color, #1f2a33));
+  border-color: var(--mdo-chip-active-bg, var(--bde-headings-color, #1f2a33));
+  color: var(--mdo-chip-active-text, #fff);
+}
+
+/* rozložení */
+.martin-dv-okoli__layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--mdo-gap, 32px); }
+@container (min-width: 760px) {
+  .martin-dv-okoli--right .martin-dv-okoli__layout { grid-template-columns: minmax(0, 1.4fr) minmax(260px, var(--mdo-side, 1fr)); align-items: start; }
+  .martin-dv-okoli--left .martin-dv-okoli__layout { grid-template-columns: minmax(260px, var(--mdo-side, 1fr)) minmax(0, 1.4fr); align-items: start; }
+  .martin-dv-okoli--left .martin-dv-okoli__side { order: -1; }
+}
+
+/* mapa */
+.martin-dv-okoli__map { position: relative; width: 100%; --mk: var(--mdo-mk-size, clamp(19px, 3.2cqi, 30px)); }
+.martin-dv-okoli__img { position: absolute; inset: 0; width: 100% !important; height: 100% !important; max-width: none; object-fit: fill; display: block; border-radius: var(--mdo-map-radius, 0); }
+
+.martin-dv-okoli__mk {
+  position: absolute; z-index: 2; box-sizing: border-box;
+  width: var(--mk); height: var(--mk); min-width: 0; min-height: 0; margin: calc(var(--mk) / -2) 0 0 calc(var(--mk) / -2); padding: 0;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: var(--mdo-mk-bg, var(--mdo-accent));
+  color: var(--mdo-ink, var(--mdo-ink-auto, #fff));
+  font-family: inherit; font-weight: 700; font-size: calc(var(--mk) * .4); line-height: 1; letter-spacing: 0;
+  display: grid; place-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .22);
+  transition: transform .18s, opacity .2s, box-shadow .18s;
+}
+.martin-dv-okoli--catcolors .martin-dv-okoli__mk:not(.martin-dv-okoli__mk--proj) { background: var(--mdo-cc, var(--mdo-mk-bg, var(--mdo-accent))); }
+.martin-dv-okoli__mk > svg { width: 60%; height: 60%; display: block; }
+.martin-dv-okoli__mk:focus-visible,
+.martin-dv-okoli__row:focus-visible,
+.martin-dv-okoli__chip:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.martin-dv-okoli__mk.is-active { transform: scale(1.4); z-index: 5; box-shadow: 0 0 0 3px var(--mdo-mk-ring, #fff), 0 4px 14px rgba(0, 0, 0, .28); }
+.martin-dv-okoli.is-dim .martin-dv-okoli__map.has-active .martin-dv-okoli__mk:not(.is-active):not(.martin-dv-okoli__mk--proj) { opacity: .3; }
+.martin-dv-okoli__mk.is-hidden { opacity: 0 !important; transform: scale(.3); pointer-events: none; }
+
+.martin-dv-okoli__badge {
+  position: absolute; top: -28%; right: -32%; box-sizing: border-box;
+  min-width: 62%; height: 62%; padding: 0 3px; border-radius: 999px;
+  background: var(--mdo-badge-bg, var(--bde-headings-color, #1f2a33)); color: var(--mdo-badge-text, #fff);
+  border: 1.5px solid #fff; font-size: calc(var(--mk) * .3); line-height: 1; display: grid; place-items: center;
+}
+
+/* hlavní bod – projekt */
+.martin-dv-okoli__mk--proj {
+  --s: var(--mdo-proj-size, calc(var(--mk) * 1.2));
+  width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  background: var(--mdo-proj-c); z-index: 3;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, .95), 0 2px 10px rgba(0, 0, 0, .2);
+}
+.martin-dv-okoli__mk--proj::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%;
+  border: 2px solid var(--mdo-proj-c); animation: martin-dv-okoli-pulse 2.4s ease-out infinite; pointer-events: none;
+}
+.martin-dv-okoli--no-pulse .martin-dv-okoli__mk--proj::after { animation: none; display: none; }
+.martin-dv-okoli__mk--proj.is-active { transform: scale(1.15); }
+@keyframes martin-dv-okoli-pulse { from { transform: scale(1); opacity: .9; } to { transform: scale(2.3); opacity: 0; } }
+
+/* bublina */
+.martin-dv-okoli__tip {
+  position: absolute; z-index: 8; pointer-events: none;
+  background: var(--mdo-tip-bg, #fff); color: var(--mdo-tip-text, #1f2a33);
+  border-radius: var(--mdo-tip-radius, 8px); padding: 7px 12px; font-size: .85em; font-weight: 600; line-height: 1.35; white-space: nowrap;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .16);
+  transform: translate(var(--tx, -50%), calc(-100% - var(--mk) * .95 - 4px));
+}
+.martin-dv-okoli__tip.is-below { transform: translate(var(--tx, -50%), calc(var(--mk) * .95 + 4px)); }
+.martin-dv-okoli__tip small { display: block; font-weight: 400; opacity: .7; font-size: .92em; }
+
+/* seznam */
+.martin-dv-okoli__side { container-type: inline-size; min-width: 0; }
+.martin-dv-okoli__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 28px; }
+@container (min-width: 460px) { .martin-dv-okoli--cols2 .martin-dv-okoli__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.martin-dv-okoli__li { margin: 0; padding: 0; }
+.martin-dv-okoli__li::before, .martin-dv-okoli__li::marker { content: none; }
+.martin-dv-okoli__row {
+  width: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 14px;
+  padding: var(--mdo-row-pad, 10px 10px); margin: 0; border: 0; border-bottom: 1px solid var(--mdo-line); border-radius: 0;
+  background: transparent; color: inherit; font: inherit; text-align: left; text-decoration: none; cursor: pointer;
+  transition: background .15s;
+}
+.martin-dv-okoli__row.is-active { background: var(--mdo-hl); }
+.martin-dv-okoli__num {
+  position: relative; flex: 0 0 auto; box-sizing: border-box;
+  width: var(--mdo-num-size, var(--mdo-num-auto, 30px)); height: var(--mdo-num-size, var(--mdo-num-auto, 30px)); border-radius: 50%;
+  background: var(--mdo-mk-bg, var(--mdo-accent)); color: var(--mdo-ink, var(--mdo-ink-auto, #fff));
+  display: grid; place-items: center; font-size: calc(var(--mdo-num-size, var(--mdo-num-auto, 30px)) * .4); font-weight: 700; line-height: 1;
+  transition: transform .18s;
+  --mk: var(--mdo-num-size, var(--mdo-num-auto, 30px));
+}
+.martin-dv-okoli--catcolors .martin-dv-okoli__num { background: var(--mdo-cc, var(--mdo-mk-bg, var(--mdo-accent))); }
+.martin-dv-okoli__num > svg { width: 58%; height: 58%; display: block; }
+.martin-dv-okoli__row.is-active .martin-dv-okoli__num { transform: scale(1.12); }
+.martin-dv-okoli__txt { flex: 1; min-width: 0; }
+.martin-dv-okoli__name { display: block; }
+.martin-dv-okoli__desc { display: block; font-size: .87em; color: var(--mdo-desc, var(--mdo-muted)); margin-top: 1px; line-height: 1.4; }
+.martin-dv-okoli__dist { flex: 0 0 auto; font-size: .87em; color: var(--mdo-dist, var(--mdo-muted)); white-space: nowrap; }
+.martin-dv-okoli__li.is-hidden { display: none; }
+
+/* úzké šířky (mobil) – mapa se jen zmenší, seznam je pod ní */
+@container (max-width: 520px) {
+  .martin-dv-okoli__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .martin-dv-okoli__filters::-webkit-scrollbar { display: none; }
+  .martin-dv-okoli__chip { flex: 0 0 auto; }
+}
+@container (max-width: 360px) {
+  .martin-dv-okoli__row { gap: 11px; padding: 9px 6px; --mdo-num-auto: 26px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .martin-dv-okoli__mk--proj::after { animation: none; }
+  .martin-dv-okoli__mk, .martin-dv-okoli__row, .martin-dv-okoli__num { transition: none; }
+}

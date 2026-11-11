@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       Marmal – Výběr bytů
+ * Plugin Name:       Marmal – Developerské projekty
  * Plugin URI:        https://marmal.cz
- * Description:       Interaktivní výběr podlaží a jednotek (byty, sklepy, garáže) na obrázku domu a půdorysech. CPT Jednotky s ACF poli, Breakdance element a shortcode.
- * Version:           0.12.0
+ * Description:       Plugin pro weby developerských projektů: interaktivní výběr podlaží a jednotek (byty, domy, sklepy, garáže) na obrázku domu a půdorysech a interaktivní mapa okolí s body. CPT Jednotky s ACF poli, Breakdance elementy a shortcody.
+ * Version:           0.13.0
  * Author:            Martin Malý – marmal.cz
  * Author URI:        https://marmal.cz
  * Requires at least: 6.5
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-const VERSION    = '0.12.0';
+const VERSION    = '0.13.0';
 const PT_UNIT    = 'martin_dv_jednotka';
 const PT_PROJECT = 'martin_dv_projekt';
 const META_DATA  = '_martin_dv_data';
@@ -61,6 +61,10 @@ require_once MARTIN_DV_DIR . 'includes/acf-fields.php';
 require_once MARTIN_DV_DIR . 'includes/admin-editor.php';
 require_once MARTIN_DV_DIR . 'includes/render.php';
 require_once MARTIN_DV_DIR . 'includes/breakdance.php';
+// Mapa okolí (od 0.13.0) – samostatná složka, aby šla případně přesunout do Breakdance Plus.
+require_once MARTIN_DV_DIR . 'includes/okoli/data.php';
+require_once MARTIN_DV_DIR . 'includes/okoli/admin.php';
+require_once MARTIN_DV_DIR . 'includes/okoli/render.php';
 
 add_action('init', function () {
     load_plugin_textdomain('martin-dev-vyber-bytu', false, dirname(plugin_basename(MARTIN_DV_FILE)) . '/languages');

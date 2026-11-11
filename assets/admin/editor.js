@@ -30,6 +30,7 @@
   /* ---------- normalizace ---------- */
   S.views = Array.isArray(S.views) ? S.views : [];
   S.floors = Array.isArray(S.floors) ? S.floors : [];
+  S.maps = Array.isArray(S.maps) ? S.maps : [];
   if (!S.views.length) S.views.push({ id: uid('v'), name: T.defaultView, image: null, areas: [] });
   S.views.concat(S.floors).forEach(function (o) { o.areas = Array.isArray(o.areas) ? o.areas : []; });
   if (!S.start) S.start = S.views[0].id;
@@ -43,7 +44,7 @@
   function sync() { input.value = JSON.stringify(S); }
   function list(type) { return type === 'view' ? S.views : S.floors; }
   function ctxObj() {
-    if (U.ctx.type === 'settings') return null;
+    if (U.ctx.type === 'settings' || U.ctx.type === 'map') return null;
     var l = list(U.ctx.type);
     for (var i = 0; i < l.length; i++) { if (l[i].id === U.ctx.id) return l[i]; }
     return null;
@@ -85,6 +86,7 @@
         '<button type="button" data-act="down" data-id="' + esc(f.id) + '" title="' + esc(T.down) + '" aria-label="' + esc(T.down) + '"' + (i === S.floors.length - 1 ? ' disabled' : '') + '>↓</button></span></div>';
     });
     h += '<button type="button" class="mdv-add" data-act="addFloor">+ ' + esc(T.addFloor) + '</button>';
+    if (X) h += X.navHTML();
     h += '<div class="mdv-h">' + esc(T.project) + '</div>';
     h += '<button type="button" class="mdv-navbtn' + (U.ctx.type === 'settings' ? ' on' : '') + '" data-ctx="settings:x"><span>' + esc(T.settings) + '</span></button>';
     return h;
@@ -123,6 +125,7 @@
   }
 
   function mainHTML() {
+    if (U.ctx.type === 'map') return X ? X.mainHTML() : '';
     if (U.ctx.type === 'settings') return settingsHTML();
     var o = ctxObj();
     if (!o) return '';
@@ -188,6 +191,7 @@
   }
 
   function inspHTML() {
+    if (U.ctx.type === 'map') return X ? X.inspHTML() : '';
     if (U.ctx.type === 'settings') {
       return '<p class="mdv-help">' + esc(T.accentHelp) + '</p>';
     }
@@ -257,6 +261,7 @@
   /* ---------- akce ---------- */
   function setCtx(type, id) {
     U.ctx = { type: type, id: id }; U.sel = null; U.mode = 'select'; U.draft = [];
+    if (X) X.reset();
     render();
   }
 
@@ -454,6 +459,12 @@
     else if (e.key === 'Escape') { U.mode = 'select'; U.draft = []; renderMain(); }
     else if (e.key === 'Backspace') { e.preventDefault(); U.draft.pop(); renderMain(); }
   });
+
+  /* ---------- mapa okolí (assets/admin/okoli-editor.js) ---------- */
+  var X = typeof window.martinDvOkoliEditor === 'function' ? window.martinDvOkoliEditor({
+    CFG: CFG, S: S, U: U, root: root, esc: esc, uid: uid,
+    render: render, renderNav: renderNav, part: part, sync: sync, setCtx: setCtx
+  }) : null;
 
   render();
 })();

@@ -245,6 +245,7 @@ function sanitize_project_data(array $in): array
         'start'    => '',
         'views'    => [],
         'floors'   => [],
+        'maps'     => [],
         'settings' => default_settings(),
     ];
 
@@ -314,6 +315,9 @@ function sanitize_project_data(array $in): array
     $out['settings']['color_accent']   = sanitize_css_color($s['color_accent'] ?? '');
     $out['settings']['color_reserved'] = sanitize_css_color($s['color_reserved'] ?? '') ?: '#d39b2a';
     $out['settings']['color_sold']     = sanitize_css_color($s['color_sold'] ?? '') ?: '#9aa0a8';
+
+    // Mapy okolí (includes/okoli/data.php).
+    $out['maps'] = sanitize_maps($in['maps'] ?? []);
 
     return $out;
 }

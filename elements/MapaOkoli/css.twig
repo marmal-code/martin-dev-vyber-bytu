@@ -1,0 +1,64 @@
+%%SELECTOR%% {
+  width: {{ design.container.width.style }};
+  height: {{ design.container.height.style }};
+  {{ macros.backgroundColor(design.container.background) }}
+  {{ macros.borders(design.container.borders) }}
+  {{ macros.spacing_padding_all(design.container.padding) }}
+  {{ macros.typography(design.typography, globalSettings)  }}
+  {{ macros.spacing_margin_y(design.spacing) }}
+}
+
+{# ---- Vzhled přes CSS proměnné (výchozí hodnoty jsou v assets/front/okoli.css; prázdný prvek nic nemění) ---- #}
+%%SELECTOR%% .martin-dv-okoli {
+  {% if design.znacky.barva %}--mdo-accent: {{ design.znacky.barva }};{% endif %}
+  {% if design.znacky.text %}--mdo-ink: {{ design.znacky.text }};{% endif %}
+  {% if design.znacky.velikost.style %}--mdo-mk-size: {{ design.znacky.velikost.style }};{% endif %}
+  {% if design.znacky.obrys %}--mdo-mk-ring: {{ design.znacky.obrys }};{% endif %}
+  {% if design.znacky.stitek_pozadi %}--mdo-badge-bg: {{ design.znacky.stitek_pozadi }};{% endif %}
+  {% if design.znacky.stitek_text %}--mdo-badge-text: {{ design.znacky.stitek_text }};{% endif %}
+  {% if design.hlavni_bod.barva %}--mdo-proj: {{ design.hlavni_bod.barva }};{% endif %}
+  {% if design.hlavni_bod.velikost.style %}--mdo-proj-size: {{ design.hlavni_bod.velikost.style }};{% endif %}
+  {% if design.kategorie.skola %}--mdo-cat-skola: {{ design.kategorie.skola }};{% endif %}
+  {% if design.kategorie.obchod %}--mdo-cat-obchod: {{ design.kategorie.obchod }};{% endif %}
+  {% if design.kategorie.gastro %}--mdo-cat-gastro: {{ design.kategorie.gastro }};{% endif %}
+  {% if design.kategorie.zdravi %}--mdo-cat-zdravi: {{ design.kategorie.zdravi }};{% endif %}
+  {% if design.kategorie.sport %}--mdo-cat-sport: {{ design.kategorie.sport }};{% endif %}
+  {% if design.kategorie.priroda %}--mdo-cat-priroda: {{ design.kategorie.priroda }};{% endif %}
+  {% if design.kategorie.doprava %}--mdo-cat-doprava: {{ design.kategorie.doprava }};{% endif %}
+  {% if design.kategorie.sluzby %}--mdo-cat-sluzby: {{ design.kategorie.sluzby }};{% endif %}
+  {% if design.kategorie.kultura %}--mdo-cat-kultura: {{ design.kategorie.kultura }};{% endif %}
+  {% if design.mapa.zaobleni.style %}--mdo-map-radius: {{ design.mapa.zaobleni.style }};{% endif %}
+  {% if design.mapa.mezera.style %}--mdo-gap: {{ design.mapa.mezera.style }};{% endif %}
+  {% if design.mapa.sirka_seznamu.style %}--mdo-side: {{ design.mapa.sirka_seznamu.style }};{% endif %}
+  {% if design.bublina.pozadi %}--mdo-tip-bg: {{ design.bublina.pozadi }};{% endif %}
+  {% if design.bublina.text %}--mdo-tip-text: {{ design.bublina.text }};{% endif %}
+  {% if design.bublina.zaobleni.style %}--mdo-tip-radius: {{ design.bublina.zaobleni.style }};{% endif %}
+  {% if design.seznam.vzdalenost %}--mdo-dist: {{ design.seznam.vzdalenost }};{% endif %}
+  {% if design.seznam.cary %}--mdo-line: {{ design.seznam.cary }};{% endif %}
+  {% if design.seznam.zvyrazneni %}--mdo-hl: {{ design.seznam.zvyrazneni }};{% endif %}
+  {% if design.seznam.cislo.style %}--mdo-num-size: {{ design.seznam.cislo.style }};{% endif %}
+  {% if design.filtr.pozadi %}--mdo-chip-bg: {{ design.filtr.pozadi }};{% endif %}
+  {% if design.filtr.text %}--mdo-chip-text: {{ design.filtr.text }};{% endif %}
+  {% if design.filtr.ramecek %}--mdo-chip-border: {{ design.filtr.ramecek }};{% endif %}
+  {% if design.filtr.aktivni_pozadi %}--mdo-chip-active-bg: {{ design.filtr.aktivni_pozadi }};{% endif %}
+  {% if design.filtr.aktivni_text %}--mdo-chip-active-text: {{ design.filtr.aktivni_text }};{% endif %}
+  {% if design.filtr.mezera.style %}--mdo-filter-gap: {{ design.filtr.mezera.style }};{% endif %}
+}
+
+{% if design.hlavni_bod.bez_pulzu %}
+%%SELECTOR%% .martin-dv-okoli__mk--proj::after {
+  animation: none;
+  display: none;
+}
+{% endif %}
+
+{# ---- Písmo ---- #}
+%%SELECTOR%% .martin-dv-okoli .martin-dv-okoli__name {
+  {{ macros.typography(design.seznam.nazev, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv-okoli .martin-dv-okoli__desc {
+  {{ macros.typography(design.seznam.popis, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv-okoli .martin-dv-okoli__chip {
+  {{ macros.typography(design.filtr.tlacitko, globalSettings) }}
+}
