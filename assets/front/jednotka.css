@@ -1,0 +1,57 @@
+/*
+ * Marmal – Developerské projekty: údaje na detailu jednotky (od 0.14.0)
+ * Tabulka místností, Parametry jednotky, Schéma podlaží.
+ * Písmo a barva textu se dědí ze stránky (Breakdance Global Settings), zvýraznění = Brand barva.
+ * Vzhled z Design tabu elementů nastavuje proměnné --mdj-* (css.twig).
+ */
+.martin-dv-rooms,
+.martin-dv-params,
+.martin-dv-schema {
+  --mdj-accent: var(--bde-brand-primary-color, #2f6b4f);
+  --mdj-line: rgba(0, 0, 0, .14);
+  --mdj-muted: color-mix(in srgb, currentColor 62%, transparent);
+  --mdj-row-pad: 10px;
+}
+
+/* ---- Tabulka místností ---- */
+.martin-dv-rooms { overflow-x: auto; }
+.martin-dv-rooms__table { width: 100%; border-collapse: collapse; font: inherit; color: inherit; }
+.martin-dv-rooms__table th,
+.martin-dv-rooms__table td {
+  padding: var(--mdj-row-pad) 0; border: 0; border-bottom: 1px solid var(--mdj-line);
+  text-align: left; font-weight: inherit; background: none; vertical-align: baseline;
+}
+.martin-dv-rooms__table thead th {
+  font-size: .75em; letter-spacing: .08em; text-transform: uppercase; color: var(--mdj-muted); padding-top: 0;
+}
+.martin-dv-rooms__table .martin-dv-rooms__area { text-align: right; white-space: nowrap; padding-left: 16px; font-variant-numeric: tabular-nums; }
+.martin-dv-rooms__note { display: inline-block; margin-left: 6px; font-size: .85em; color: var(--mdj-muted); }
+.martin-dv-rooms__row.is-excluded { color: var(--mdj-muted); }
+.martin-dv-rooms__sum th,
+.martin-dv-rooms__sum td { font-weight: 700; border-bottom-width: 2px; border-bottom-color: var(--mdj-sum-line, var(--mdj-accent)); }
+.martin-dv-rooms__outside tr:first-child th,
+.martin-dv-rooms__outside tr:first-child td { padding-top: calc(var(--mdj-row-pad) * 2); }
+
+/* ---- Parametry jednotky ---- */
+.martin-dv-params { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 32px; }
+.martin-dv-params--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.martin-dv-params__row {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  padding: var(--mdj-row-pad) 0; border-bottom: 1px solid var(--mdj-line);
+}
+.martin-dv-params__label { margin: 0; color: var(--mdj-muted); font-weight: inherit; }
+.martin-dv-params__value { margin: 0; text-align: right; font-weight: 600; }
+@media (max-width: 767px) { .martin-dv-params--2 { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---- Schéma podlaží ---- */
+.martin-dv-schema { display: grid; gap: 24px; }
+.martin-dv-schema__plan { margin: 0; }
+.martin-dv-schema__stage { position: relative; width: 100%; overflow: hidden; border-radius: var(--mdj-radius, 0); }
+.martin-dv-schema__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; display: block; max-width: none; }
+.martin-dv-schema__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.martin-dv-schema__other { fill: var(--mdj-other, rgba(0, 0, 0, .06)); stroke: var(--mdj-other-line, rgba(0, 0, 0, .18)); stroke-width: 1px; }
+.martin-dv-schema__unit {
+  fill: color-mix(in srgb, var(--mdj-accent) var(--mdj-fill, 45%), transparent);
+  stroke: var(--mdj-accent); stroke-width: 2px;
+}
+.martin-dv-schema__caption { margin-top: 8px; font-size: .875em; color: var(--mdj-muted); }

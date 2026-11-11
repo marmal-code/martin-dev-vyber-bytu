@@ -1,0 +1,28 @@
+/* Marmal – Developerské projekty: editor u jednotky (od 0.14.0) */
+#martin-dv-unit-editor .mdu-sec { margin: 0 0 22px; }
+#martin-dv-unit-editor h4 { margin: 14px 0 2px; font-size: 14px; }
+#martin-dv-unit-editor .description { margin: 0 0 8px; }
+#martin-dv-unit-editor .mdu-table { border-collapse: collapse; }
+#martin-dv-unit-editor .mdu-table th { font-weight: 600; padding: 6px 8px; }
+#martin-dv-unit-editor .mdu-table td { padding: 4px 6px; vertical-align: middle; }
+#martin-dv-unit-editor .mdu-table input[type="text"],
+#martin-dv-unit-editor .mdu-table select { width: 100%; max-width: none; }
+#martin-dv-unit-editor .mdu-w-num { width: 110px; }
+#martin-dv-unit-editor .mdu-w-type { width: 150px; }
+#martin-dv-unit-editor .mdu-num { text-align: right; }
+#martin-dv-unit-editor .mdu-c { text-align: center; width: 70px; }
+#martin-dv-unit-editor .mdu-tools { width: 82px; white-space: nowrap; text-align: right; }
+#martin-dv-unit-editor .mdu-tools button { padding: 2px 5px; font-size: 15px; line-height: 1; text-decoration: none; }
+#martin-dv-unit-editor .mdu-tools button:disabled { opacity: .3; cursor: default; }
+#martin-dv-unit-editor .mdu-del { color: #b32d2e; }
+#martin-dv-unit-editor .mdu-empty { color: #757575; font-style: italic; margin: 4px 0 8px; }
+#martin-dv-unit-editor .mdu-dirs { display: flex; flex-wrap: wrap; gap: 4px; }
+#martin-dv-unit-editor .mdu-dir { position: relative; }
+#martin-dv-unit-editor .mdu-dir input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+#martin-dv-unit-editor .mdu-dir span { display: inline-block; min-width: 26px; padding: 3px 6px; border: 1px solid #c3c4c7; border-radius: 4px; text-align: center; font-size: 12px; cursor: pointer; background: #fff; }
+#martin-dv-unit-editor .mdu-dir input:checked + span { background: #2271b1; border-color: #2271b1; color: #fff; }
+#martin-dv-unit-editor .mdu-dir input:focus-visible + span { outline: 2px solid #2271b1; outline-offset: 1px; }
+#martin-dv-unit-editor .mdu-sums { margin: -6px 0 18px; }
+#martin-dv-unit-editor .mdu-sumline { display: flex; flex-wrap: wrap; gap: 6px 22px; padding: 8px 10px; background: #f6f7f7; border-radius: 4px; }
+#martin-dv-unit-editor .mdu-warn { margin: 8px 0 0; padding: 8px 10px; background: #fcf9e8; border-left: 4px solid #dba617; }
+#martin-dv-unit-editor .mdu-ok { margin: 8px 0 0; color: #00703c; }

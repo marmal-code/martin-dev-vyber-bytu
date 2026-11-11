@@ -57,7 +57,7 @@ add_action('acf/init', function () {
                 'wrapper' => ['width' => '33'],
             ],
             [
-                'key' => 'field_martin_dv_plocha', 'name' => 'dv_plocha', 'label' => __('Podlahová plocha (m²)', 'martin-dev-vyber-bytu'),
+                'key' => 'field_martin_dv_plocha', 'name' => 'dv_plocha', 'label' => __('Podlahová plocha (m²)', 'martin-dev-vyber-bytu'), // popisek přepíše nastavení projektu (area_label)
                 'type' => 'number', 'step' => 0.1, 'min' => 0, 'wrapper' => ['width' => '34'],
             ],
             [
@@ -76,6 +76,7 @@ add_action('acf/init', function () {
                 'key' => 'field_martin_dv_cena_na_dotaz', 'name' => 'dv_cena_na_dotaz', 'label' => __('Cena na dotaz', 'martin-dev-vyber-bytu'),
                 'type' => 'true_false', 'ui' => 1, 'wrapper' => ['width' => '33'],
             ],
+            ...position_fields(),
             ...accessory_fields(),
             [
                 'key' => 'field_martin_dv_pudorys', 'name' => 'dv_pudorys', 'label' => __('Půdorys jednotky', 'martin-dev-vyber-bytu'),
@@ -171,3 +172,86 @@ function accessory_fields(): array
 
     return $fields;
 }
+
+/**
+ * Poloha v domě (od 0.14.0). Jednoduchá pole v ACF free – v Breakdance jsou i v ACF dynamických datech.
+ * Budova / vchod se vybírá ze seznamu v nastavení projektu (pole se skryje, když projekt žádné budovy nemá).
+ */
+function position_fields(): array
+{
+    $dirs = [];
+    foreach (orientations() as $key => $o) {
+        $dirs[$key] = $o[0];
+    }
+    return [
+        [
+            'key'     => 'field_martin_dv_poloha_nadpis',
+            'name'    => '',
+            'label'   => __('Poloha v domě', 'martin-dev-vyber-bytu'),
+            'type'    => 'message',
+            'message' => __('Vše nepovinné – na webu se zobrazí jen vyplněné údaje. Číslo podlaží nemusíš vyplňovat, když je jednotka obkreslená v půdorysu podlaží (doplní se samo).', 'martin-dev-vyber-bytu'),
+        ],
+        [
+            'key' => 'field_martin_dv_budova', 'name' => 'dv_budova', 'label' => __('Budova / vchod', 'martin-dev-vyber-bytu'),
+            'type' => 'select', 'choices' => [], 'allow_null' => 1, 'return_format' => 'value', 'wrapper' => ['width' => '34'],
+        ],
+        [
+            'key' => 'field_martin_dv_podlazi_cislo', 'name' => 'dv_podlazi_cislo', 'label' => __('Číslo podlaží', 'martin-dev-vyber-bytu'),
+            'type' => 'number', 'step' => 1, 'min' => -10, 'max' => 200,
+            'instructions' => __('1 = 1. NP, -1 = 1. PP, 0 = přízemí', 'martin-dev-vyber-bytu'), 'wrapper' => ['width' => '33'],
+        ],
+        [
+            'key' => 'field_martin_dv_umisteni', 'name' => 'dv_umisteni', 'label' => __('Umístění na podlaží', 'martin-dev-vyber-bytu'),
+            'type' => 'text', 'placeholder' => __('např. východní roh domu', 'martin-dev-vyber-bytu'), 'wrapper' => ['width' => '33'],
+        ],
+        [
+            'key' => 'field_martin_dv_orientace', 'name' => 'dv_orientace', 'label' => __('Orientace oken', 'martin-dev-vyber-bytu'),
+            'type' => 'checkbox', 'choices' => $dirs, 'layout' => 'horizontal', 'return_format' => 'label', 'wrapper' => ['width' => '50'],
+        ],
+        [
+            'key' => 'field_martin_dv_vyhled', 'name' => 'dv_vyhled', 'label' => __('Výhled', 'martin-dev-vyber-bytu'),
+            'type' => 'text', 'placeholder' => __('např. do zeleně a na Brdy', 'martin-dev-vyber-bytu'), 'wrapper' => ['width' => '50'],
+        ],
+    ];
+}
+
+/** ID projektu jednotky, kterou právě upravuješ (i u nové jednotky z odkazu v projektu). */
+function current_admin_project(): int
+{
+    global $post;
+    if ($post instanceof \WP_Post && $post->post_type === PT_UNIT) {
+        $pid = project_of_unit((int) $post->ID);
+        if ($pid) {
+            return $pid;
+        }
+    }
+    $from_url = isset($_GET['martin_dv_projekt']) ? absint($_GET['martin_dv_projekt']) : 0; // phpcs:ignore WordPress.Security.NonceVerification
+    return ($from_url && get_post_type($from_url) === PT_PROJECT) ? $from_url : 0;
+}
+
+/** Popisek hlavní plochy podle nastavení projektu (Podlahová / Užitná plocha …). */
+add_filter('acf/prepare_field/name=dv_plocha', function ($field) {
+    if (is_array($field)) {
+        /* translators: %s: název plochy, např. Užitná plocha */
+        $field['label'] = sprintf(__('%s (m²)', 'martin-dev-vyber-bytu'), area_label(current_admin_project()));
+    }
+    return $field;
+});
+
+/** Budova / vchod: nabídka ze seznamu v projektu; bez budov se pole skryje (pokud už nemá hodnotu). */
+add_filter('acf/prepare_field/name=dv_budova', function ($field) {
+    if (!is_array($field)) {
+        return $field;
+    }
+    $buildings = project_buildings(current_admin_project());
+    $current   = is_string($field['value'] ?? null) ? $field['value'] : '';
+    if ($current !== '' && !in_array($current, $buildings, true)) {
+        $buildings[] = $current; // přejmenovaná / smazaná budova – hodnota se neztratí
+    }
+    if (!$buildings) {
+        return false;
+    }
+    $field['choices']      = array_combine($buildings, $buildings);
+    $field['instructions'] = __('Seznam budov upravíš v projektu → Nastavení zobrazení.', 'martin-dev-vyber-bytu');
+    return $field;
+});

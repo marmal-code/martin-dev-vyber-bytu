@@ -179,6 +179,12 @@ add_action('admin_enqueue_scripts', function ($hook) {
             'reserved'     => __('Rezervované', 'martin-dev-vyber-bytu'),
             'sold'         => __('Prodané', 'martin-dev-vyber-bytu'),
             'unnamed'      => __('bez názvu', 'martin-dev-vyber-bytu'),
+            'unitData'     => __('Údaje jednotek', 'martin-dev-vyber-bytu'),
+            'labelArea'    => __('Název hlavní plochy', 'martin-dev-vyber-bytu'),
+            'labelAreaPh'  => __('Podlahová plocha', 'martin-dev-vyber-bytu'),
+            'labelAreaHelp'=> __('Podle architekta projektu, např. „Užitná plocha“. Použije se u jednotek, v tabulce, bublině, tabulce místností a parametrech. Prázdné = Podlahová plocha.', 'martin-dev-vyber-bytu'),
+            'buildings'    => __('Budovy / vchody', 'martin-dev-vyber-bytu'),
+            'buildingsHelp'=> __('Každá na nový řádek (např. Budova A, Vchod B). U jednotky se pak vybírá ze seznamu. Prázdné = projekt s jednou budovou, pole se u jednotek nezobrazí.', 'martin-dev-vyber-bytu'),
         ],
     ];
     $cfg = apply_filters('martin_dv_editor_config', $cfg, (int) $post->ID);
