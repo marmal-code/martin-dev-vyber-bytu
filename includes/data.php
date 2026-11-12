@@ -19,6 +19,7 @@ function unit_types(): array
         'dvojdum'  => __('Dvojdům', 'martin-dev-vyber-bytu'),
         'radovy_dum' => __('Řadový dům', 'martin-dev-vyber-bytu'),
         'atelier'  => __('Ateliér', 'martin-dev-vyber-bytu'),
+        'kancelar' => __('Kancelář', 'martin-dev-vyber-bytu'), // od 0.18.0
         'nebytovy' => __('Nebytový prostor', 'martin-dev-vyber-bytu'),
         'sklep'    => __('Sklep', 'martin-dev-vyber-bytu'),
         'garaz'    => __('Garáž', 'martin-dev-vyber-bytu'),

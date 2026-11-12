@@ -3,7 +3,7 @@
  * Plugin Name:       Marmal – Developerské projekty
  * Plugin URI:        https://marmal.cz
  * Description:       Plugin pro weby developerských projektů: interaktivní výběr podlaží a jednotek (byty, domy, sklepy, garáže) na obrázku domu a půdorysech a interaktivní mapa okolí s body. CPT Jednotky s ACF poli, místnostmi, venkovními plochami a parametry, Breakdance elementy a shortcody.
- * Version:           0.17.0
+ * Version:           0.18.0
  * Author:            Martin Malý – marmal.cz
  * Author URI:        https://marmal.cz
  * Requires at least: 6.5
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-const VERSION    = '0.17.0';
+const VERSION    = '0.18.0';
 const PT_UNIT    = 'martin_dv_jednotka';
 const PT_PROJECT = 'martin_dv_projekt';
 const META_DATA  = '_martin_dv_data';
@@ -56,6 +56,8 @@ add_action('plugins_loaded', function () {
 });
 
 require_once MARTIN_DV_DIR . 'includes/data.php';
+// Nastavení pluginu – typy jednotek, vlastní texty, adresa detailu (od 0.18.0). Musí být před registrací CPT.
+require_once MARTIN_DV_DIR . 'includes/nastaveni.php';
 // Údaje jednotky (od 0.14.0): místnosti, venkovní plochy, parametry, poloha v domě.
 require_once MARTIN_DV_DIR . 'includes/jednotka/data.php';
 // Příslušenství jako seznam, předchozí / další a podobné jednotky (od 0.17.0).
@@ -79,6 +81,11 @@ require_once MARTIN_DV_DIR . 'includes/jednotka/render-dalsi.php';
 require_once MARTIN_DV_DIR . 'includes/projekt/admin.php';
 require_once MARTIN_DV_DIR . 'includes/projekt/render.php';
 require_once MARTIN_DV_DIR . 'includes/dynamic-data.php';
+// Import / export CSV a hromadné úpravy (od 0.18.0) – jen v administraci.
+if (is_admin()) {
+    require_once MARTIN_DV_DIR . 'includes/csv.php';
+    require_once MARTIN_DV_DIR . 'includes/hromadne.php';
+}
 
 add_action('init', function () {
     load_plugin_textdomain('martin-dev-vyber-bytu', false, dirname(plugin_basename(MARTIN_DV_FILE)) . '/languages');

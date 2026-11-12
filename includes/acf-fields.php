@@ -289,3 +289,17 @@ add_filter('acf/format_value/name=dv_stav', function ($value, $post_id) {
     $id = is_numeric($post_id) ? (int) $post_id : 0;
     return ($id && get_post_type($id) === PT_UNIT) ? unit_status($id)['label'] : $value;
 }, 10, 2);
+
+/** Typ jednotky: jen typy zapnuté v nastavení pluginu (od 0.18.0); uložená hodnota se neztratí. */
+add_filter('acf/prepare_field/name=dv_typ', function ($field) {
+    if (!is_array($field) || !function_exists(__NAMESPACE__ . '\\enabled_unit_types')) {
+        return $field;
+    }
+    $choices = enabled_unit_types();
+    $current = is_string($field['value'] ?? null) ? $field['value'] : '';
+    if ($current !== '' && !isset($choices[$current]) && isset(unit_types()[$current])) {
+        $choices[$current] = unit_types()[$current];
+    }
+    $field['choices'] = $choices;
+    return $field;
+});

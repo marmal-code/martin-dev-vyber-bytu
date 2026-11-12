@@ -66,6 +66,13 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 - Dynamická data jednotky: Cena platná od, Příslušenství, Patří k jednotce (+ odkaz), Předchozí / Další jednotka (+ odkaz).
 - Kód: `includes/jednotka/prislusenstvi.php`, `includes/jednotka/render-dalsi.php`.
 
+### Import / export, hromadné úpravy a nastavení (od 0.18.0)
+
+- **Developerské projekty → Import / export**: export jednotek (1 řádek = 1 jednotka) a místností (1 řádek = 1 místnost) do CSV pro Excel (středník, UTF-8 s BOM, buňky chráněné proti vzorcům). Import ve dvou krocích – nahrání → náhled změn (nové / změna / beze změny / chyba, staré → nové hodnoty) → potvrzení. Jednotka se páruje podle `id`, jinak projekt + `cislo`, jinak se založí nová (koncept). Mění se jen sloupce, které v souboru jsou; prázdná buňka hodnotu smaže (kromě názvu a projektu). Přijímá i Windows-1250 a čárku jako oddělovač. Seznamy v buňce: `venkovni` „Balkon: 4,2: J JZ | Terasa: 10“, `parametry` „Výška stropů = 2,7 m | PENB = B“, `prislusenstvi` „Garáž: G3: 18: 450000 | Nabíječka: : : v ceně“ (vazby na samostatné jednotky se zachovají podle typu + označení). Soubor místností nahradí místnosti uvedených jednotek. Oprávnění `manage_options` (filtr `martin_dv_import_capability`), max. 2 MB / 2000 řádků.
+- **Přehled jednotek**: Rychlé úpravy – stav a cena; Hromadné úpravy – stav, nová cena nebo změna ceny o % se zaokrouhlením (Kč / tisíce / desetitisíce). Stav se nastaví jen tam, kde existuje v projektu jednotky.
+- **Developerské projekty → Nastavení**: které typy jednotek se nabízejí (nově i Kancelář), adresa detailu (výchozí `/byty/`, např. `/domy/`), vlastní texty místo výchozích (Jednotka → Byt / Dům …, typy jednotek, texty výběru a detailu) – přes filtr `gettext_martin-dev-vyber-bytu`, zástupné symboly (%1$d) se kontrolují. Option `martin_dv_settings`.
+- Kód: `includes/csv.php`, `includes/hromadne.php`, `includes/nastaveni.php`.
+
 ### Společné
 
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
@@ -97,7 +104,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 | Filtr | Výchozí | Účel |
 |---|---|---|
-| `martin_dv_unit_slug` | `byty` | URL slug jednotek (po změně uložit trvalé odkazy) |
+| `martin_dv_unit_slug` | `byty` | URL slug jednotek (od 0.18.0 i v Nastavení – trvalé odkazy se přegenerují samy) |
 | `martin_dv_accessories` | stání, garáž, sklepní kóje | pevné položky příslušenství (každá má zaškrtávátko + cenu) |
 | `martin_dv_dispositions` | 1+kk … 6+kk | seznam dispozic v ACF |
 | `martin_dv_load_everywhere` | `false` | načíst CSS/JS na všech stránkách |
@@ -109,10 +116,13 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 | `martin_dv_default_project` | první publikovaný projekt | projekt pro dynamická data a dokumenty mimo detail jednotky |
 | `martin_dv_date_format` | `j. n. Y` | formát data předprodeje |
 | `martin_dv_accessory_unit_types` | sklep, garaz, stani | typy jednotek, které jsou příslušenstvím (mimo navigaci a Podobné) |
+| `martin_dv_import_capability` | `manage_options` | kdo smí importovat / exportovat CSV |
+| `martin_dv_overridable_texts` | seznam textů | texty, které jde přepsat v Nastavení |
 | `martin_dv_editor_config` | – | data pro editor projektu v administraci (používá mapa okolí) |
 
 ## Verze
 
+- **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář.
 - **0.17.0** – příslušenství jako seznam s vazbou na sklep / garáž, cena platná od, rezervace do (interně), elementy Příslušenství, Předchozí / další jednotka, Podobné jednotky, nová dynamická data.
 - **0.16.0** – fotky, vizualizace, video a dokumenty jednotky (galerie přes Galerii Plus, video přes dynamická data), element Dokumenty i s dokumenty jednotky, dynamická data Obrázek / Video / Karta jednotky.
 - **0.15.0** – údaje projektu (developer, dodavatel, lokalita, termín, předprodej, kontakt prodejce s fotkou, texty, dokumenty), vlastní stavy jednotek s barvou, Breakdance dynamická data (jednotka + projekt, český formát čísel), elementy Štítek stavu a Dokumenty, text místo ceny.
