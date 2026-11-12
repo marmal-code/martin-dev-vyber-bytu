@@ -81,3 +81,53 @@
 .martin-dv-docs__name { flex: 1 1 auto; font-weight: 600; }
 .martin-dv-docs__meta { flex: 0 0 auto; font-size: .85em; color: var(--mdj-muted, rgba(0, 0, 0, .6)); }
 .martin-dv-docs, .martin-dv-badge { --mdj-accent: var(--bde-brand-primary-color, #2f6b4f); }
+
+/* ---- Příslušenství (od 0.17.0; třídy kompatibilní se starým shortcodem) ---- */
+.martin-dv-acc { list-style: none; margin: 0; padding: 0; }
+.martin-dv-acc__item {
+  display: flex; align-items: baseline; gap: 16px; padding: var(--mdj-row-pad, 10px) 0;
+  border-bottom: 1px solid var(--mdj-line, rgba(0, 0, 0, .14));
+}
+.martin-dv-acc__label { flex: 1 1 auto; }
+.martin-dv-acc__label a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.martin-dv-acc__area { color: var(--mdj-muted, rgba(0, 0, 0, .6)); white-space: nowrap; }
+.martin-dv-acc__price { font-weight: 600; white-space: nowrap; text-align: right; min-width: 7em; }
+
+/* ---- Předchozí / další (od 0.17.0) ---- */
+.martin-dv-nav { display: grid; grid-template-columns: 1fr 1fr; gap: var(--mdj-nav-gap, 16px); }
+.martin-dv-nav a {
+  display: flex; flex-direction: column; gap: 2px; padding: var(--mdj-nav-pad, 14px 18px);
+  border: 1px solid var(--mdj-line, rgba(0, 0, 0, .14)); border-radius: var(--mdj-nav-radius, 8px);
+  color: inherit; text-decoration: none; background: var(--mdj-nav-bg, transparent);
+  transition: border-color .15s, background-color .15s;
+}
+.martin-dv-nav a:hover, .martin-dv-nav a:focus-visible {
+  border-color: var(--mdj-accent, var(--bde-brand-primary-color, #2f6b4f));
+  background: var(--mdj-nav-bg-hover, color-mix(in srgb, var(--mdj-accent, #2f6b4f) 6%, transparent));
+}
+.martin-dv-nav__next { text-align: right; align-items: flex-end; }
+.martin-dv-nav__dir { font-size: .8125em; text-transform: uppercase; letter-spacing: .06em; color: var(--mdj-accent, var(--bde-brand-primary-color, #2f6b4f)); font-weight: 700; }
+.martin-dv-nav__label { font-weight: 700; }
+.martin-dv-nav__meta { font-size: .875em; color: var(--mdj-muted, rgba(0, 0, 0, .6)); }
+.martin-dv-nav { --mdj-accent: var(--bde-brand-primary-color, #2f6b4f); }
+
+/* ---- Podobné jednotky (od 0.17.0) ---- */
+.martin-dv-similar { display: grid; grid-template-columns: repeat(var(--mdj-cols, 3), minmax(0, 1fr)); gap: var(--mdj-sim-gap, 24px); --mdj-accent: var(--bde-brand-primary-color, #2f6b4f); }
+.martin-dv-similar__card {
+  display: flex; flex-direction: column; overflow: hidden; color: inherit; text-decoration: none;
+  border: 1px solid var(--mdj-line, rgba(0, 0, 0, .14)); border-radius: var(--mdj-sim-radius, 10px);
+  background: var(--mdj-sim-bg, transparent); transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+.martin-dv-similar__card:hover, .martin-dv-similar__card:focus-visible {
+  border-color: var(--mdj-accent); box-shadow: 0 8px 24px rgba(0, 0, 0, .08); transform: translateY(-2px);
+}
+.martin-dv-similar__img { display: block; aspect-ratio: var(--mdj-sim-ratio, 4 / 3); overflow: hidden; background: rgba(0, 0, 0, .04); }
+.martin-dv-similar__img img { width: 100% !important; height: 100% !important; object-fit: cover; display: block; max-width: none; }
+.martin-dv-similar__body { display: flex; flex-direction: column; gap: 6px; padding: var(--mdj-sim-pad, 16px 18px); }
+.martin-dv-similar__top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.martin-dv-similar__title { font-weight: 700; font-size: 1.0625em; }
+.martin-dv-similar__meta { font-size: .9em; color: var(--mdj-muted, rgba(0, 0, 0, .6)); }
+.martin-dv-similar__price { font-weight: 700; }
+@media (max-width: 1023px) { .martin-dv-similar { grid-template-columns: repeat(min(var(--mdj-cols, 3), 2), minmax(0, 1fr)); } }
+@media (max-width: 767px) { .martin-dv-similar { grid-template-columns: minmax(0, 1fr); } .martin-dv-nav { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .martin-dv-similar__card { transition: none; } .martin-dv-similar__card:hover { transform: none; } }

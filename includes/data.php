@@ -489,6 +489,15 @@ function format_accessory_price(string $price): string
  */
 function unit_accessory_list(int $post_id): array
 {
+    // Od 0.17.0: vyplněný seznam příslušenství má přednost před starými poli dv_acc_*.
+    if (function_exists(__NAMESPACE__ . '\\unit_accessory_rows')) {
+        $rows = unit_accessory_rows($post_id);
+        if ($rows) {
+            return array_map(function ($r) {
+                return ['label' => $r['label'] . ($r['areaTxt'] !== '' ? ' (' . $r['areaTxt'] . ')' : ''), 'price' => $r['price']];
+            }, $rows);
+        }
+    }
     $out = [];
     foreach (unit_accessories() as $key => $label) {
         $price = trim((string) get_post_meta($post_id, 'dv_acc_' . $key . '_cena', true));

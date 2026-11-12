@@ -76,21 +76,13 @@ add_shortcode('martin_vyber_bytu', function ($atts) {
  * Když jednotka nic nemá, nevypíše nic.
  */
 add_shortcode('martin_dv_prislusenstvi', function ($atts) {
-    $atts = shortcode_atts(['id' => 0], $atts, 'martin_dv_prislusenstvi');
-    $id   = absint($atts['id']) ?: get_the_ID();
-    if (!$id || get_post_type($id) !== PT_UNIT) {
-        return '';
-    }
-    $list = unit_accessory_list($id);
-    if (!$list) {
-        return '';
-    }
-    $h = '<ul class="martin-dv-acc">';
-    foreach ($list as $item) {
-        $h .= '<li><span class="martin-dv-acc__label">' . esc_html($item['label']) . '</span> '
-            . '<span class="martin-dv-acc__price">' . esc_html($item['price']) . '</span></li>';
-    }
-    return $h . '</ul>';
+    // Od 0.17.0 přes render_accessories() (nový seznam s plochou a odkazem, jinak stará pole) – třídy zůstávají.
+    $atts = shortcode_atts(['id' => 0, 'plocha' => 'ano', 'cena' => 'ano', 'odkazy' => 'ano'], $atts, 'martin_dv_prislusenstvi');
+    return render_accessories(absint($atts['id']), [
+        'hide_area'  => $atts['plocha'] === 'ne',
+        'hide_price' => $atts['cena'] === 'ne',
+        'no_links'   => $atts['odkazy'] === 'ne',
+    ]);
 });
 
 /* ---------- Render ---------- */

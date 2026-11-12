@@ -57,6 +57,15 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 - Element **Marmal – Dokumenty**: na detailu jednotky nejdřív dokumenty jednotky, pak projektu (oboje jde skrýt); shortcode `[martin_dv_dokumenty jednotky="ne" projektu="ne"]`.
 - Nová dynamická data jednotky: Obrázek (hlavní fotka, jinak první vizualizace / fotka – pro karty v Post Loop), První vizualizace, Video, Video – odkaz, Karta jednotky – odkaz na PDF, Počet fotek a vizualizací.
 
+### Příslušenství, cena, předchozí / další a podobné jednotky (od 0.17.0)
+
+- **Příslušenství** v boxu Místnosti, venkovní plochy a parametry: typ (stání, garáž, sklep, jiné), název, označení, plocha, cena, „v ceně“ a volitelná vazba na samostatnou jednotku Sklep / Garáž / Stání (prázdné údaje převezme z ní, u ní se uloží zpětný odkaz `_dv_patri_k`). JSON `_dv_prislusenstvi`. Vyplněný seznam má přednost před starými poli `dv_acc_*` (ta zůstávají).
+- U jednotky **Cena platná od** (`dv_cena_od`, na webu) a **Rezervace do** (`dv_rezervace_do`, jen interně – sloupec v přehledu jednotek, po termínu červeně).
+- Elementy **Marmal – Příslušenství**, **Marmal – Předchozí / další jednotka**, **Marmal – Podobné jednotky**; shortcody `[martin_dv_prislusenstvi plocha="ne" cena="ne" odkazy="ne"]`, `[martin_dv_navigace predchozi="" dalsi=""]`, `[martin_dv_podobne pocet="3" sloupce="3" prodane="ano" jen_shoda="ano" obrazek="ne"]`.
+- Pořadí jednotek (předchozí / další) jako v tabulce výběru: od nejnižšího podlaží, pak podle čísla; sklepy, garáže a stání mají vlastní řadu. Podobné: stejná dispozice a podlaží → stejná dispozice → stejné podlaží, uvnitř podle rozdílu plochy, bez prodaných (volba).
+- Dynamická data jednotky: Cena platná od, Příslušenství, Patří k jednotce (+ odkaz), Předchozí / Další jednotka (+ odkaz).
+- Kód: `includes/jednotka/prislusenstvi.php`, `includes/jednotka/render-dalsi.php`.
+
 ### Společné
 
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
@@ -99,10 +108,12 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 | `martin_dv_param_suggestions` | výška stropů, PENB… | návrhy názvů vlastních parametrů v editoru jednotky |
 | `martin_dv_default_project` | první publikovaný projekt | projekt pro dynamická data a dokumenty mimo detail jednotky |
 | `martin_dv_date_format` | `j. n. Y` | formát data předprodeje |
+| `martin_dv_accessory_unit_types` | sklep, garaz, stani | typy jednotek, které jsou příslušenstvím (mimo navigaci a Podobné) |
 | `martin_dv_editor_config` | – | data pro editor projektu v administraci (používá mapa okolí) |
 
 ## Verze
 
+- **0.17.0** – příslušenství jako seznam s vazbou na sklep / garáž, cena platná od, rezervace do (interně), elementy Příslušenství, Předchozí / další jednotka, Podobné jednotky, nová dynamická data.
 - **0.16.0** – fotky, vizualizace, video a dokumenty jednotky (galerie přes Galerii Plus, video přes dynamická data), element Dokumenty i s dokumenty jednotky, dynamická data Obrázek / Video / Karta jednotky.
 - **0.15.0** – údaje projektu (developer, dodavatel, lokalita, termín, předprodej, kontakt prodejce s fotkou, texty, dokumenty), vlastní stavy jednotek s barvou, Breakdance dynamická data (jednotka + projekt, český formát čísel), elementy Štítek stavu a Dokumenty, text místo ceny.
 - **0.14.0** – údaje jednotky: místnosti se součtem a kontrolou proti celkové ploše (součet smí být menší – příčky a zdi), seznam venkovních ploch s orientací, vlastní parametry, poloha v domě (budova, číslo podlaží, umístění, orientace, výhled); v projektu název hlavní plochy a seznam budov; nové elementy Tabulka místností, Parametry jednotky, Schéma podlaží a shortcody.

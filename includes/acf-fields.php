@@ -76,6 +76,16 @@ add_action('acf/init', function () {
                 'key' => 'field_martin_dv_cena_na_dotaz', 'name' => 'dv_cena_na_dotaz', 'label' => __('Cena na dotaz', 'martin-dev-vyber-bytu'),
                 'type' => 'true_false', 'ui' => 1, 'wrapper' => ['width' => '33'],
             ],
+            // Od 0.17.0: platnost ceny (na webu) a rezervace do (jen interně – sloupec v přehledu jednotek).
+            [
+                'key' => 'field_martin_dv_cena_od', 'name' => 'dv_cena_od', 'label' => __('Cena platná od', 'martin-dev-vyber-bytu'),
+                'type' => 'date_picker', 'display_format' => 'j. n. Y', 'return_format' => 'j. n. Y', 'first_day' => 1, 'wrapper' => ['width' => '50'],
+            ],
+            [
+                'key' => 'field_martin_dv_rezervace_do', 'name' => 'dv_rezervace_do', 'label' => __('Rezervace do (interní)', 'martin-dev-vyber-bytu'),
+                'type' => 'date_picker', 'display_format' => 'j. n. Y', 'return_format' => 'j. n. Y', 'first_day' => 1, 'wrapper' => ['width' => '50'],
+                'instructions' => __('Jen pro tebe – na webu se nezobrazí. V přehledu jednotek se po termínu zvýrazní.', 'martin-dev-vyber-bytu'),
+            ],
             ...position_fields(),
             ...accessory_fields(),
             [
@@ -110,7 +120,7 @@ function accessory_fields(): array
         'name'    => '',
         'label'   => __('Volitelné příslušenství k dokoupení', 'martin-dev-vyber-bytu'),
         'type'    => 'message',
-        'message' => __('Zaškrtni, co si kupující k této jednotce může připlatit, a vedle doplň cenu. Na webu se zobrazí jen položky, které jsou zaškrtnuté a mají cenu.', 'martin-dev-vyber-bytu'),
+        'message' => __('Starší způsob: zaškrtni, co si kupující může připlatit, a doplň cenu. Nově raději box „Místnosti, venkovní plochy a parametry“ → Příslušenství (označení, plocha, vazba na sklep / garáž) – když je tam vyplněný, má přednost a tato pole se nepoužijí.', 'martin-dev-vyber-bytu'),
     ]];
 
     foreach (unit_accessories() as $key => $label) {

@@ -29,6 +29,7 @@ function unit_box(\WP_Post $post): void
         'rooms'    => unit_rooms_raw((int) $post->ID),
         'outdoors' => sanitize_outdoors(read_json_meta((int) $post->ID, META_OUTDOORS)),
         'params'   => unit_params((int) $post->ID),
+        'accessories' => unit_accessories_raw((int) $post->ID),
     ];
     echo '<input type="hidden" id="martin-dv-unit-data" name="martin_dv_unit_data" value="' . esc_attr(wp_json_encode($data, JSON_UNESCAPED_UNICODE)) . '">';
     echo '<div id="martin-dv-unit-editor"><p>' . esc_html__('Načítám editor…', 'martin-dev-vyber-bytu') . '</p></div>';
@@ -57,6 +58,8 @@ add_action('admin_enqueue_scripts', function ($hook) {
         'outdoorTypes' => outdoor_types(),
         'orientations' => $dirs,
         'suggestions'  => array_values(param_suggestions()),
+        'accTypes'     => accessory_types(),
+        'accUnits'     => accessory_unit_choices(current_admin_project(), (($GLOBALS['post'] ?? null) instanceof \WP_Post) ? (int) $GLOBALS['post']->ID : 0),
         'areaLabel'    => area_label(current_admin_project()),
         'totalLabel'   => total_label(current_admin_project()),
         'i18n'         => [
@@ -96,6 +99,19 @@ add_action('admin_enqueue_scripts', function ($hook) {
             /* translators: %s: název celkové plochy */
             'match'        => __('Součet místností odpovídá: %s.', 'martin-dev-vyber-bytu'),
             'empty'        => __('Zatím žádné řádky.', 'martin-dev-vyber-bytu'),
+            'acc'          => __('Příslušenství', 'martin-dev-vyber-bytu'),
+            'accHelp'      => __('Stání, garáž, sklep nebo jiné. Když vybereš samostatnou jednotku (sklep / garáž / stání), prázdné označení, plochu a cenu převezme z ní a u ní se zobrazí, ke které jednotce patří. Vyplněný seznam má přednost před starým příslušenstvím výše.', 'martin-dev-vyber-bytu'),
+            'accName'      => __('Název (u Jiné)', 'martin-dev-vyber-bytu'),
+            'accNamePh'    => __('např. Nabíječka', 'martin-dev-vyber-bytu'),
+            'accCode'      => __('Označení', 'martin-dev-vyber-bytu'),
+            'accCodePh'    => __('např. G3', 'martin-dev-vyber-bytu'),
+            'accPrice'     => __('Cena (Kč)', 'martin-dev-vyber-bytu'),
+            'accIncluded'  => __('V ceně', 'martin-dev-vyber-bytu'),
+            'accUnit'      => __('Samostatná jednotka', 'martin-dev-vyber-bytu'),
+            'accNoUnit'    => __('— žádná —', 'martin-dev-vyber-bytu'),
+            /* translators: %s: jednotka, ke které příslušenství už patří */
+            'accTaken'     => __('(patří k %s)', 'martin-dev-vyber-bytu'),
+            'addAcc'       => __('Přidat příslušenství', 'martin-dev-vyber-bytu'),
         ],
     ];
     wp_add_inline_script('martin-dv-unit-editor', 'window.martinDvUnitEditor = ' . wp_json_encode($cfg, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) . ';', 'before');
@@ -127,6 +143,9 @@ function save_unit_lists(int $post_id, array $data): void
         META_OUTDOORS => isset($data['outdoors']) ? sanitize_outdoors($data['outdoors']) : null,
         META_PARAMS   => isset($data['params']) ? sanitize_params($data['params']) : null,
     ];
+    if (array_key_exists('accessories', $data)) {
+        save_unit_accessories($post_id, $data['accessories']); // od 0.17.0
+    }
     foreach ($lists as $key => $rows) {
         if ($rows === null) {
             continue; // seznam nebyl poslán – neměnit

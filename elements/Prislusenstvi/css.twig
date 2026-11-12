@@ -1,0 +1,18 @@
+%%SELECTOR%% {
+  width: {{ design.container.width.style }};
+  {{ macros.backgroundColor(design.container.background) }}
+  {{ macros.borders(design.container.borders) }}
+  {{ macros.spacing_padding_all(design.container.padding) }}
+  {{ macros.typography(design.typography, globalSettings)  }}
+  {{ macros.spacing_margin_y(design.spacing) }}
+}
+
+{# Vzhled přes CSS proměnné (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
+%%SELECTOR%% .martin-dv-acc {
+  {% if design.vzhled.cary %}--mdj-line: {{ design.vzhled.cary }};{% endif %}
+  {% if design.vzhled.plocha %}--mdj-muted: {{ design.vzhled.plocha }};{% endif %}
+  {% if design.vzhled.odsazeni.style %}--mdj-row-pad: {{ design.vzhled.odsazeni.style }};{% endif %}
+}
+%%SELECTOR%% .martin-dv-acc .martin-dv-acc__price {
+  {{ macros.typography(design.vzhled.cena_pismo, globalSettings) }}
+}

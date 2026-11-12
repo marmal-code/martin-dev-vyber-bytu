@@ -21,6 +21,11 @@ from okoli_element import c, color, unit, toggle, number, preset, section  # noq
 ROOT = base.ROOT
 
 
+def text(slug, label):
+    # Typ „text“ je ověřený v Breakdance 2.8 (viz katalog).
+    return c(slug, label, None, "['type' => 'text', 'layout' => 'vertical']")
+
+
 def container():
     return c('container', 'Container', [
         unit('width', 'Width', True),
@@ -159,6 +164,85 @@ ELEMENTS = {
             ]),
         ]),
     },
+    'Prislusenstvi': {
+        'name': 'Marmal – Příslušenství',
+        'class': 'martin-dv-prislusenstvi-element',
+        'section': 'prislusenstvi',
+        'order': 107,
+        'content': [
+            c('prislusenstvi', 'Příslušenství', [
+                number('jednotka_id', ID_HELP, 0),
+                toggle('skryt_plochu', 'Skrýt plochu'),
+                toggle('skryt_cenu', 'Skrýt cenu'),
+                toggle('bez_odkazu', 'Bez odkazu na samostatnou jednotku (sklep, garáž)'),
+            ], "['type' => 'section', 'layout' => 'vertical']"),
+        ],
+        'design': common_design([
+            section('vzhled', 'Řádky', [
+                preset('typography_with_effects_and_align', 'Písmo ceny', 'cena_pismo'),
+                color('cary', 'Čáry mezi řádky'),
+                color('plocha', 'Barva plochy'),
+                unit('odsazeni', 'Výška řádku (odsazení nahoře a dole)', True),
+            ]),
+        ]),
+    },
+    'PredchoziDalsi': {
+        'name': 'Marmal – Předchozí / další jednotka',
+        'class': 'martin-dv-navigace-element',
+        'section': 'navigace',
+        'order': 108,
+        'content': [
+            c('navigace', 'Předchozí / další', [
+                number('jednotka_id', ID_HELP, 0),
+                text('text_predchozi', 'Text „Předchozí“ (prázdné = Předchozí)'),
+                text('text_dalsi', 'Text „Další“ (prázdné = Další)'),
+                toggle('skryt_texty', 'Skrýt texty Předchozí / Další'),
+            ], "['type' => 'section', 'layout' => 'vertical']"),
+        ],
+        'design': common_design([
+            section('vzhled', 'Odkazy', [
+                preset('typography_with_effects_and_align', 'Písmo označení', 'nazev'),
+                preset('spacing_padding_all', 'Odsazení', 'odsazeni'),
+                unit('mezera', 'Mezera mezi odkazy'),
+                unit('zaobleni', 'Zaoblení'),
+                color('pozadi', 'Pozadí'),
+                color('pozadi_hover', 'Pozadí po najetí'),
+                color('ramecek', 'Rámeček'),
+                color('zvyrazneni', 'Rámeček po najetí a text Předchozí / Další (prázdné = Brand)'),
+                color('popis', 'Barva dispozice a plochy'),
+            ]),
+        ]),
+    },
+    'PodobneJednotky': {
+        'name': 'Marmal – Podobné jednotky',
+        'class': 'martin-dv-podobne-element',
+        'section': 'podobne',
+        'order': 109,
+        'content': [
+            c('podobne', 'Podobné jednotky', [
+                number('jednotka_id', ID_HELP, 0),
+                number('pocet', 'Počet jednotek (prázdné = 3)', 1),
+                number('sloupce', 'Sloupce na počítači 1–4 (prázdné = 3)', 1),
+                toggle('jen_shoda', 'Jen se stejnou dispozicí nebo podlažím'),
+                toggle('s_prodanymi', 'Zobrazit i prodané'),
+                toggle('bez_obrazku', 'Bez obrázku'),
+                toggle('bez_ceny', 'Bez ceny'),
+            ], "['type' => 'section', 'layout' => 'vertical']"),
+        ],
+        'design': common_design([
+            section('vzhled', 'Karty', [
+                preset('typography_with_effects_and_align', 'Písmo označení', 'nazev'),
+                preset('typography_with_effects_and_align', 'Písmo ceny', 'cena'),
+                unit('mezera', 'Mezera mezi kartami', True),
+                unit('zaobleni', 'Zaoblení karty'),
+                preset('spacing_padding_all', 'Odsazení textu', 'odsazeni'),
+                color('pozadi', 'Pozadí karty'),
+                color('ramecek', 'Rámeček'),
+                color('zvyrazneni', 'Rámeček po najetí (prázdné = Brand)'),
+                color('popis', 'Barva dispozice, plochy a podlaží'),
+            ]),
+        ]),
+    },
 }
 
 SSR = {
@@ -272,6 +356,75 @@ $martin_dv_html = \\MartinDV\\render_documents(absint($martin_dv_c['projekt_id']
 // render_documents() vrací hotové HTML, každá hodnota je escapovaná (esc_html/esc_attr/esc_url).
 echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 ''',
+    'Prislusenstvi': '''<?php
+/**
+ * Server-side render elementu „Příslušenství“ (MartinDV\\Prislusenstvi) – od 0.17.0.
+ * Element Studio tento soubor neupravuje – mění se jen tady v pluginu.
+ *
+ * @var array $propertiesData
+ */
+
+if (!function_exists('\\MartinDV\\render_accessories')) {
+    echo '<p>Plugin „Marmal – Developerské projekty“ není aktivní.</p>';
+    return;
+}
+
+$martin_dv_c = $propertiesData['content']['prislusenstvi'] ?? [];
+$martin_dv_html = \\MartinDV\\render_accessories(absint($martin_dv_c['jednotka_id'] ?? 0), [
+    'hide_area'  => !empty($martin_dv_c['skryt_plochu']),
+    'hide_price' => !empty($martin_dv_c['skryt_cenu']),
+    'no_links'   => !empty($martin_dv_c['bez_odkazu']),
+]);
+// Funkce vrací hotové HTML, každá hodnota je escapovaná (esc_html/esc_attr/esc_url).
+echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+''',
+    'PredchoziDalsi': '''<?php
+/**
+ * Server-side render elementu „Předchozí / další jednotka“ (MartinDV\\PredchoziDalsi) – od 0.17.0.
+ * Element Studio tento soubor neupravuje – mění se jen tady v pluginu.
+ *
+ * @var array $propertiesData
+ */
+
+if (!function_exists('\\MartinDV\\render_prev_next')) {
+    echo '<p>Plugin „Marmal – Developerské projekty“ není aktivní.</p>';
+    return;
+}
+
+$martin_dv_c = $propertiesData['content']['navigace'] ?? [];
+$martin_dv_html = \\MartinDV\\render_prev_next(absint($martin_dv_c['jednotka_id'] ?? 0), [
+    'prev_text' => sanitize_text_field((string) ($martin_dv_c['text_predchozi'] ?? '')),
+    'next_text' => sanitize_text_field((string) ($martin_dv_c['text_dalsi'] ?? '')),
+    'hide_dir'  => !empty($martin_dv_c['skryt_texty']),
+]);
+// Funkce vrací hotové HTML, každá hodnota je escapovaná (esc_html/esc_attr/esc_url).
+echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+''',
+    'PodobneJednotky': '''<?php
+/**
+ * Server-side render elementu „Podobné jednotky“ (MartinDV\\PodobneJednotky) – od 0.17.0.
+ * Element Studio tento soubor neupravuje – mění se jen tady v pluginu.
+ *
+ * @var array $propertiesData
+ */
+
+if (!function_exists('\\MartinDV\\render_similar')) {
+    echo '<p>Plugin „Marmal – Developerské projekty“ není aktivní.</p>';
+    return;
+}
+
+$martin_dv_c = $propertiesData['content']['podobne'] ?? [];
+$martin_dv_html = \\MartinDV\\render_similar(absint($martin_dv_c['jednotka_id'] ?? 0), [
+    'count'      => absint($martin_dv_c['pocet'] ?? 0) ?: 3,
+    'cols'       => absint($martin_dv_c['sloupce'] ?? 0) ?: 3,
+    'only_match' => !empty($martin_dv_c['jen_shoda']),
+    'with_sold'  => !empty($martin_dv_c['s_prodanymi']),
+    'hide_image' => !empty($martin_dv_c['bez_obrazku']),
+    'hide_price' => !empty($martin_dv_c['bez_ceny']),
+]);
+// Funkce vrací hotové HTML, každá hodnota je escapovaná (esc_html/esc_attr/esc_url).
+echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+''',
 }
 
 CONTAINER_CSS = '''%%SELECTOR%% {
@@ -348,6 +501,55 @@ CSS = {
 }
 %%SELECTOR%% .martin-dv-docs .martin-dv-docs__name {
   {{ macros.typography(design.vzhled.nazev, globalSettings) }}
+}
+''',
+    'Prislusenstvi': CONTAINER_CSS + '''
+{# Vzhled přes CSS proměnné (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
+%%SELECTOR%% .martin-dv-acc {
+  {% if design.vzhled.cary %}--mdj-line: {{ design.vzhled.cary }};{% endif %}
+  {% if design.vzhled.plocha %}--mdj-muted: {{ design.vzhled.plocha }};{% endif %}
+  {% if design.vzhled.odsazeni.style %}--mdj-row-pad: {{ design.vzhled.odsazeni.style }};{% endif %}
+}
+%%SELECTOR%% .martin-dv-acc .martin-dv-acc__price {
+  {{ macros.typography(design.vzhled.cena_pismo, globalSettings) }}
+}
+''',
+    'PredchoziDalsi': CONTAINER_CSS + '''
+{# Vzhled přes CSS proměnné (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
+%%SELECTOR%% .martin-dv-nav {
+  {% if design.vzhled.mezera.style %}--mdj-nav-gap: {{ design.vzhled.mezera.style }};{% endif %}
+  {% if design.vzhled.zaobleni.style %}--mdj-nav-radius: {{ design.vzhled.zaobleni.style }};{% endif %}
+  {% if design.vzhled.pozadi %}--mdj-nav-bg: {{ design.vzhled.pozadi }};{% endif %}
+  {% if design.vzhled.pozadi_hover %}--mdj-nav-bg-hover: {{ design.vzhled.pozadi_hover }};{% endif %}
+  {% if design.vzhled.ramecek %}--mdj-line: {{ design.vzhled.ramecek }};{% endif %}
+  {% if design.vzhled.zvyrazneni %}--mdj-accent: {{ design.vzhled.zvyrazneni }};{% endif %}
+  {% if design.vzhled.popis %}--mdj-muted: {{ design.vzhled.popis }};{% endif %}
+}
+%%SELECTOR%% .martin-dv-nav a {
+  {{ macros.spacing_padding_all(design.vzhled.odsazeni) }}
+}
+%%SELECTOR%% .martin-dv-nav .martin-dv-nav__label {
+  {{ macros.typography(design.vzhled.nazev, globalSettings) }}
+}
+''',
+    'PodobneJednotky': CONTAINER_CSS + '''
+{# Vzhled přes CSS proměnné (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
+%%SELECTOR%% .martin-dv-similar {
+  {% if design.vzhled.mezera.style %}--mdj-sim-gap: {{ design.vzhled.mezera.style }};{% endif %}
+  {% if design.vzhled.zaobleni.style %}--mdj-sim-radius: {{ design.vzhled.zaobleni.style }};{% endif %}
+  {% if design.vzhled.pozadi %}--mdj-sim-bg: {{ design.vzhled.pozadi }};{% endif %}
+  {% if design.vzhled.ramecek %}--mdj-line: {{ design.vzhled.ramecek }};{% endif %}
+  {% if design.vzhled.zvyrazneni %}--mdj-accent: {{ design.vzhled.zvyrazneni }};{% endif %}
+  {% if design.vzhled.popis %}--mdj-muted: {{ design.vzhled.popis }};{% endif %}
+}
+%%SELECTOR%% .martin-dv-similar .martin-dv-similar__body {
+  {{ macros.spacing_padding_all(design.vzhled.odsazeni) }}
+}
+%%SELECTOR%% .martin-dv-similar .martin-dv-similar__title {
+  {{ macros.typography(design.vzhled.nazev, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv-similar .martin-dv-similar__price {
+  {{ macros.typography(design.vzhled.cena, globalSettings) }}
 }
 ''',
 }

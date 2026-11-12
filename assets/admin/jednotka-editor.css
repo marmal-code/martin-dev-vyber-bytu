@@ -9,6 +9,7 @@
 #martin-dv-unit-editor .mdu-table select { width: 100%; max-width: none; }
 #martin-dv-unit-editor .mdu-w-num { width: 110px; }
 #martin-dv-unit-editor .mdu-w-type { width: 150px; }
+#martin-dv-unit-editor .mdu-w-code { width: 90px; }
 #martin-dv-unit-editor .mdu-num { text-align: right; }
 #martin-dv-unit-editor .mdu-c { text-align: center; width: 70px; }
 #martin-dv-unit-editor .mdu-tools { width: 82px; white-space: nowrap; text-align: right; }

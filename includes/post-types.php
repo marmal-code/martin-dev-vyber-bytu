@@ -68,6 +68,7 @@ add_filter('manage_' . PT_UNIT . '_posts_columns', function ($cols) {
             $new['dv_disp']    = __('Dispozice', 'martin-dev-vyber-bytu');
             $new['dv_stav']    = __('Stav', 'martin-dev-vyber-bytu');
             $new['dv_projekt'] = __('Projekt', 'martin-dev-vyber-bytu');
+            $new['dv_rezervace'] = __('Rezervace do', 'martin-dev-vyber-bytu');
         }
     }
     return $new;
@@ -75,6 +76,17 @@ add_filter('manage_' . PT_UNIT . '_posts_columns', function ($cols) {
 
 add_action('manage_' . PT_UNIT . '_posts_custom_column', function ($col, $post_id) {
     switch ($col) {
+        case 'dv_rezervace':
+            // ACF date_picker ukládá Ymd. Po termínu červeně (od 0.17.0).
+            $raw = (string) get_post_meta($post_id, 'dv_rezervace_do', true);
+            if (!preg_match('/^(\d{4})(\d{2})(\d{2})$/', $raw, $d)) {
+                echo '—';
+                break;
+            }
+            $ymd     = $d[1] . '-' . $d[2] . '-' . $d[3];
+            $expired = $ymd < wp_date('Y-m-d');
+            echo '<span' . ($expired ? ' style="color:#b32d2e;font-weight:600"' : '') . '>' . esc_html(fmt_date($ymd)) . '</span>';
+            break;
         case 'dv_typ':
             $t = unit_types();
             echo esc_html($t[get_post_meta($post_id, 'dv_typ', true)] ?? '—');
