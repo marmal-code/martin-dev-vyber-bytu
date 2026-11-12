@@ -92,6 +92,11 @@
   .martin-dv-docs--auto .martin-dv-docs__in { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr auto; row-gap: 0; }
   .martin-dv-docs--auto .martin-dv-docs__btn { grid-column: 1 / -1; grid-row: 3; margin-top: var(--mdj-btn-gap, 16px); }
 }
+/* I „tlačítko vpravo“ se ve velmi úzké kartě (pod 360 px) složí pod sebe – jinak by se název lámal po písmenech. */
+@container (max-width: 359px) {
+  .martin-dv-docs--radek .martin-dv-docs__in { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr auto; row-gap: 0; }
+  .martin-dv-docs--radek .martin-dv-docs__btn { grid-column: 1 / -1; grid-row: 3; margin-top: var(--mdj-btn-gap, 16px); }
+}
 .martin-dv-docs__badge {
   display: inline-flex; align-items: center; justify-content: center;
   width: var(--mdj-badge-size, 44px); height: var(--mdj-badge-size, 44px); border-radius: var(--mdj-badge-radius, 8px);
@@ -100,7 +105,7 @@
   font-size: .6875rem; font-weight: 700; letter-spacing: .04em;
 }
 .martin-dv-docs__text { min-width: 0; display: flex; flex-direction: column; gap: 2px; align-self: center; }
-.martin-dv-docs__name { font-weight: 700; overflow-wrap: anywhere; }
+.martin-dv-docs__name { font-weight: 700; overflow-wrap: break-word; }
 .martin-dv-docs__desc { font-size: .875em; color: var(--mdj-muted, rgba(0, 0, 0, .6)); }
 .martin-dv-docs__btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px; white-space: nowrap;

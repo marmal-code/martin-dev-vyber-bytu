@@ -13,8 +13,8 @@ if (!defined('ABSPATH')) {
 /* ---------- Assety ---------- */
 
 add_action('init', function () {
-    wp_register_style('martin-dv', MARTIN_DV_URL . 'assets/front/vyber-bytu.css', [], VERSION);
-    wp_register_script('martin-dv', MARTIN_DV_URL . 'assets/front/vyber-bytu.js', [], VERSION, ['in_footer' => true, 'strategy' => 'defer']);
+    wp_register_style('martin-dv', MARTIN_DV_URL . 'assets/front/vyber-bytu.css', [], asset_ver('assets/front/vyber-bytu.css'));
+    wp_register_script('martin-dv', MARTIN_DV_URL . 'assets/front/vyber-bytu.js', [], asset_ver('assets/front/vyber-bytu.js'), ['in_footer' => true, 'strategy' => 'defer']);
 }, 20);
 
 /**
@@ -54,7 +54,7 @@ function ensure_assets(): string
     }
     // Hlavička už je venku (typické u Breakdance a v náhledu builderu) → link přímo u komponenty.
     wp_styles()->done[] = 'martin-dv';
-    return '<link rel="stylesheet" id="martin-dv-css" href="' . esc_url(add_query_arg('ver', VERSION, MARTIN_DV_URL . 'assets/front/vyber-bytu.css')) . '" media="all">';
+    return '<link rel="stylesheet" id="martin-dv-css" href="' . esc_url(add_query_arg('ver', asset_ver('assets/front/vyber-bytu.css'), MARTIN_DV_URL . 'assets/front/vyber-bytu.css')) . '" media="all">';
 }
 
 /* ---------- Shortcode ---------- */

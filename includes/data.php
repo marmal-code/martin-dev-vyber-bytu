@@ -9,6 +9,16 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Verze souboru pro ?ver= (od 0.18.0): verze pluginu + čas změny souboru – prohlížeč, builder ani cache
+ * nepodrží starý CSS / JS po nahrání testovacího ZIPu se stejnou verzí pluginu.
+ */
+function asset_ver(string $rel): string
+{
+    $file = MARTIN_DV_DIR . $rel;
+    return VERSION . (is_file($file) ? '.' . filemtime($file) : '');
+}
+
 /* ---------- Číselníky ---------- */
 
 function unit_types(): array

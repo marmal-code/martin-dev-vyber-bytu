@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 /* ---------- Assety ---------- */
 
 add_action('init', function () {
-    wp_register_style('martin-dv-jednotka', MARTIN_DV_URL . 'assets/front/jednotka.css', [], VERSION);
+    wp_register_style('martin-dv-jednotka', MARTIN_DV_URL . 'assets/front/jednotka.css', [], asset_ver('assets/front/jednotka.css'));
 }, 20);
 
 /** Na detailu jednotky CSS rovnou do <head>; jinde ho doplní ensure_unit_assets(). */
@@ -38,7 +38,7 @@ function ensure_unit_assets(): string
         return '';
     }
     wp_styles()->done[] = 'martin-dv-jednotka';
-    return '<link rel="stylesheet" id="martin-dv-jednotka-css" href="' . esc_url(add_query_arg('ver', VERSION, MARTIN_DV_URL . 'assets/front/jednotka.css')) . '" media="all">';
+    return '<link rel="stylesheet" id="martin-dv-jednotka-css" href="' . esc_url(add_query_arg('ver', asset_ver('assets/front/jednotka.css'), MARTIN_DV_URL . 'assets/front/jednotka.css')) . '" media="all">';
 }
 
 /* ---------- Shortcody ---------- */

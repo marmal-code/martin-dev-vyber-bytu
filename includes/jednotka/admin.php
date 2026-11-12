@@ -46,8 +46,8 @@ add_action('admin_enqueue_scripts', function ($hook) {
     if (!$screen || $screen->post_type !== PT_UNIT || !in_array($hook, ['post.php', 'post-new.php'], true)) {
         return;
     }
-    wp_enqueue_style('martin-dv-unit-editor', MARTIN_DV_URL . 'assets/admin/jednotka-editor.css', [], VERSION);
-    wp_enqueue_script('martin-dv-unit-editor', MARTIN_DV_URL . 'assets/admin/jednotka-editor.js', [], VERSION, true);
+    wp_enqueue_style('martin-dv-unit-editor', MARTIN_DV_URL . 'assets/admin/jednotka-editor.css', [], asset_ver('assets/admin/jednotka-editor.css'));
+    wp_enqueue_script('martin-dv-unit-editor', MARTIN_DV_URL . 'assets/admin/jednotka-editor.js', [], asset_ver('assets/admin/jednotka-editor.js'), true);
 
     $dirs = [];
     foreach (orientations() as $key => $o) {

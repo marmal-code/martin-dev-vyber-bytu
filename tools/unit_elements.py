@@ -162,8 +162,8 @@ ELEMENTS = {
         'design': common_design([
             section('mrizka', 'Rozložení karet', [
                 number('sloupce', 'Sloupce na počítači (1–4, prázdné = 1)', 1),
-                number('sloupce_tablet', 'Sloupce na tabletu (prázdné = max. 2)', 1),
-                number('sloupce_mobil', 'Sloupce na mobilu (prázdné = 1)', 1),
+                number('sloupce_tablet', 'Sloupce na tabletu (1–4, prázdné = max. 2)', 1),
+                number('sloupce_mobil', 'Sloupce na mobilu (1–4, prázdné = 1)', 1),
                 unit('mezera', 'Mezera mezi kartami', True),
             ]),
             section('vzhled', 'Karty', [
@@ -522,9 +522,9 @@ CSS = {
     'Dokumenty': CONTAINER_CSS + '''
 {# Vzhled přes CSS proměnné (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
 %%SELECTOR%% .martin-dv-docs {
-  {% if design.mrizka.sloupce %}--mdj-docs-cols: {{ design.mrizka.sloupce }};{% endif %}
-  {% if design.mrizka.sloupce_tablet %}--mdj-docs-cols-t: {{ design.mrizka.sloupce_tablet }};{% endif %}
-  {% if design.mrizka.sloupce_mobil %}--mdj-docs-cols-m: {{ design.mrizka.sloupce_mobil }};{% endif %}
+  {% if design.mrizka.sloupce %}--mdj-docs-cols: {{ design.mrizka.sloupce > 4 ? 4 : design.mrizka.sloupce }};{% endif %}
+  {% if design.mrizka.sloupce_tablet %}--mdj-docs-cols-t: {{ design.mrizka.sloupce_tablet > 4 ? 4 : design.mrizka.sloupce_tablet }};{% endif %}
+  {% if design.mrizka.sloupce_mobil %}--mdj-docs-cols-m: {{ design.mrizka.sloupce_mobil > 4 ? 4 : design.mrizka.sloupce_mobil }};{% endif %}
   {% if design.mrizka.mezera.style %}--mdj-docs-gap: {{ design.mrizka.mezera.style }};{% endif %}
   {% if design.vzhled.zaobleni.style %}--mdj-docs-radius: {{ design.vzhled.zaobleni.style }};{% endif %}
   {% if design.vzhled.pozadi %}--mdj-docs-bg: {{ design.vzhled.pozadi }};{% endif %}

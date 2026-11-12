@@ -147,7 +147,7 @@ class Dokumenty extends \Breakdance\Elements\Element
         [],
       ), c(
         "sloupce_tablet",
-        "Sloupce na tabletu (prázdné = max. 2)",
+        "Sloupce na tabletu (1–4, prázdné = max. 2)",
         [],
         ['type' => 'number', 'layout' => 'vertical', 'rangeOptions' => ['min' => 1, 'step' => 1]],
         false,
@@ -155,7 +155,7 @@ class Dokumenty extends \Breakdance\Elements\Element
         [],
       ), c(
         "sloupce_mobil",
-        "Sloupce na mobilu (prázdné = 1)",
+        "Sloupce na mobilu (1–4, prázdné = 1)",
         [],
         ['type' => 'number', 'layout' => 'vertical', 'rangeOptions' => ['min' => 1, 'step' => 1]],
         false,

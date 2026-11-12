@@ -86,10 +86,10 @@ add_action('admin_enqueue_scripts', function ($hook) {
     }
     global $post;
     wp_enqueue_media();
-    wp_enqueue_style('martin-dv-editor', MARTIN_DV_URL . 'assets/admin/editor.css', [], VERSION);
+    wp_enqueue_style('martin-dv-editor', MARTIN_DV_URL . 'assets/admin/editor.css', [], asset_ver('assets/admin/editor.css'));
     // Editor mapy okolí se registruje jako rozšíření editoru (window.martinDvOkoliEditor), proto se načítá první.
-    wp_enqueue_script('martin-dv-okoli-editor', MARTIN_DV_URL . 'assets/admin/okoli-editor.js', [], VERSION, true);
-    wp_enqueue_script('martin-dv-editor', MARTIN_DV_URL . 'assets/admin/editor.js', ['martin-dv-okoli-editor'], VERSION, true);
+    wp_enqueue_script('martin-dv-okoli-editor', MARTIN_DV_URL . 'assets/admin/okoli-editor.js', [], asset_ver('assets/admin/okoli-editor.js'), true);
+    wp_enqueue_script('martin-dv-editor', MARTIN_DV_URL . 'assets/admin/editor.js', ['martin-dv-okoli-editor'], asset_ver('assets/admin/editor.js'), true);
 
     $cfg = [
         'data'       => editor_payload((int) $post->ID),

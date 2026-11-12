@@ -168,7 +168,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
         $files[$aid] = ['file' => wp_basename((string) get_attached_file($aid)), 'thumb' => $thumb ? $thumb[0] : ''];
     }
     wp_enqueue_media();
-    wp_enqueue_script('martin-dv-media-editor', MARTIN_DV_URL . 'assets/admin/jednotka-media.js', ['media-editor'], VERSION, true);
+    wp_enqueue_script('martin-dv-media-editor', MARTIN_DV_URL . 'assets/admin/jednotka-media.js', ['media-editor'], asset_ver('assets/admin/jednotka-media.js'), true);
     $cfg = [
         'files' => (object) $files,
         'i18n'  => [

@@ -13,8 +13,8 @@ if (!defined('ABSPATH')) {
 /* ---------- Assety ---------- */
 
 add_action('init', function () {
-    wp_register_style('martin-dv-okoli', MARTIN_DV_URL . 'assets/front/okoli.css', [], VERSION);
-    wp_register_script('martin-dv-okoli', MARTIN_DV_URL . 'assets/front/okoli.js', [], VERSION, ['in_footer' => true, 'strategy' => 'defer']);
+    wp_register_style('martin-dv-okoli', MARTIN_DV_URL . 'assets/front/okoli.css', [], asset_ver('assets/front/okoli.css'));
+    wp_register_script('martin-dv-okoli', MARTIN_DV_URL . 'assets/front/okoli.js', [], asset_ver('assets/front/okoli.js'), ['in_footer' => true, 'strategy' => 'defer']);
 }, 20);
 
 /** Když stránka mapu obsahuje, CSS jde do <head> (bez probliknutí). Jinak ho doplní ensure_okoli_assets(). */
@@ -49,7 +49,7 @@ function ensure_okoli_assets(): string
     }
     // Hlavička už je venku (Breakdance, náhled v builderu) → link přímo u komponenty.
     wp_styles()->done[] = 'martin-dv-okoli';
-    return '<link rel="stylesheet" id="martin-dv-okoli-css" href="' . esc_url(add_query_arg('ver', VERSION, MARTIN_DV_URL . 'assets/front/okoli.css')) . '" media="all">';
+    return '<link rel="stylesheet" id="martin-dv-okoli-css" href="' . esc_url(add_query_arg('ver', asset_ver('assets/front/okoli.css'), MARTIN_DV_URL . 'assets/front/okoli.css')) . '" media="all">';
 }
 
 /* ---------- Shortcode ---------- */
