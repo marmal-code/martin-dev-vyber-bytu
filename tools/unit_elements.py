@@ -132,13 +132,15 @@ ELEMENTS = {
         ]),
     },
     'Dokumenty': {
-        'name': 'Marmal – Dokumenty',
+        'name': 'Marmal – Dokumenty',  # od 0.16.0 i dokumenty jednotky
         'class': 'martin-dv-dokumenty-element',
         'section': 'dokumenty',
         'order': 106,
         'content': [
-            c('dokumenty', 'Dokumenty projektu', [
+            c('dokumenty', 'Dokumenty', [
                 number('projekt_id', 'ID projektu (prázdné = projekt jednotky / výchozí)', 0),
+                toggle('skryt_jednotky', 'Skrýt dokumenty jednotky (karta jednotky…)'),
+                toggle('skryt_projektu', 'Skrýt dokumenty projektu'),
                 toggle('skryt_info', 'Skrýt typ a velikost souboru'),
                 toggle('stejne_okno', 'Otevírat ve stejném okně'),
             ], "['type' => 'section', 'layout' => 'vertical']"),
@@ -262,8 +264,10 @@ if (!function_exists('\\MartinDV\\render_documents')) {
 
 $martin_dv_c = $propertiesData['content']['dokumenty'] ?? [];
 $martin_dv_html = \\MartinDV\\render_documents(absint($martin_dv_c['projekt_id'] ?? 0), [
-    'hide_meta' => !empty($martin_dv_c['skryt_info']),
-    'same_tab'  => !empty($martin_dv_c['stejne_okno']),
+    'hide_unit'    => !empty($martin_dv_c['skryt_jednotky']),
+    'hide_project' => !empty($martin_dv_c['skryt_projektu']),
+    'hide_meta'    => !empty($martin_dv_c['skryt_info']),
+    'same_tab'     => !empty($martin_dv_c['stejne_okno']),
 ]);
 // render_documents() vrací hotové HTML, každá hodnota je escapovaná (esc_html/esc_attr/esc_url).
 echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

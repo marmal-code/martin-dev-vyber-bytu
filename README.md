@@ -47,6 +47,16 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 - Elementy **Marmal – Štítek stavu** a **Marmal – Dokumenty**, shortcody `[martin_dv_stav]`, `[martin_dv_dokumenty projekt="" info="ne" novy="ne"]`.
 - Kód: `includes/projekt/`, `includes/dynamic-data.php` (+ třídy v `includes/dynamic-data/fields.php`), `assets/admin/projekt-info.js`, elementy `StitekStavu`, `Dokumenty`.
 
+### Fotky, vizualizace, video a dokumenty jednotky (od 0.16.0)
+
+- **Hlavní fotka** = náhledový obrázek jednotky (Featured Image).
+- U jednotky box **Fotky, vizualizace, video a dokumenty**: fotky a vizualizace (výběr z knihovny médií, pořadí šipkami), odkaz na video (YouTube / Vimeo / MP4), dokumenty jednotky (název + soubor). Karta jednotky (`dv_karta`) se do dokumentů přidá sama jako první.
+- Ukládá se `dv_galerie`, `dv_vizualizace`, `dv_galerie_vse` (pole ID obrázků), `dv_video`, `_dv_dokumenty` (JSON).
+- Galerie na webu: element **Galerie Plus** (Breakdance Plus) → Zdroj = ACF pole → `dv_galerie` / `dv_vizualizace` / `dv_galerie_vse`.
+- Video: element Video → dynamická data „Developerské projekty → Jednotka → Video“.
+- Element **Marmal – Dokumenty**: na detailu jednotky nejdřív dokumenty jednotky, pak projektu (oboje jde skrýt); shortcode `[martin_dv_dokumenty jednotky="ne" projektu="ne"]`.
+- Nová dynamická data jednotky: Obrázek (hlavní fotka, jinak první vizualizace / fotka – pro karty v Post Loop), První vizualizace, Video, Video – odkaz, Karta jednotky – odkaz na PDF, Počet fotek a vizualizací.
+
 ### Společné
 
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
@@ -93,6 +103,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
+- **0.16.0** – fotky, vizualizace, video a dokumenty jednotky (galerie přes Galerii Plus, video přes dynamická data), element Dokumenty i s dokumenty jednotky, dynamická data Obrázek / Video / Karta jednotky.
 - **0.15.0** – údaje projektu (developer, dodavatel, lokalita, termín, předprodej, kontakt prodejce s fotkou, texty, dokumenty), vlastní stavy jednotek s barvou, Breakdance dynamická data (jednotka + projekt, český formát čísel), elementy Štítek stavu a Dokumenty, text místo ceny.
 - **0.14.0** – údaje jednotky: místnosti se součtem a kontrolou proti celkové ploše (součet smí být menší – příčky a zdi), seznam venkovních ploch s orientací, vlastní parametry, poloha v domě (budova, číslo podlaží, umístění, orientace, výhled); v projektu název hlavní plochy a seznam budov; nové elementy Tabulka místností, Parametry jednotky, Schéma podlaží a shortcody.
 - **0.13.0** – nová funkce **Mapa okolí** (projekt → Okolí, element „Marmal – Mapa okolí“, shortcode `[martin_mapa_okoli]`); plugin přejmenován na „Marmal – Developerské projekty“; oprava: tlačítka v levém panelu editoru se už neroztahují do výšky; menu v administraci „Výběr bytů“ přejmenováno na „Developerské projekty“.

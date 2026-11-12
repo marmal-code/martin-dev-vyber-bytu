@@ -215,12 +215,28 @@ class Dokumenty extends \Breakdance\Elements\Element
     {
         return [c(
         "dokumenty",
-        "Dokumenty projektu",
+        "Dokumenty",
         [c(
         "projekt_id",
         "ID projektu (prázdné = projekt jednotky / výchozí)",
         [],
         ['type' => 'number', 'layout' => 'vertical', 'rangeOptions' => ['min' => 0, 'step' => 1]],
+        false,
+        false,
+        [],
+      ), c(
+        "skryt_jednotky",
+        "Skrýt dokumenty jednotky (karta jednotky…)",
+        [],
+        ['type' => 'toggle', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "skryt_projektu",
+        "Skrýt dokumenty projektu",
+        [],
+        ['type' => 'toggle', 'layout' => 'vertical'],
         false,
         false,
         [],

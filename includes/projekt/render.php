@@ -18,10 +18,13 @@ add_shortcode('martin_dv_stav', function ($atts) {
 });
 
 add_shortcode('martin_dv_dokumenty', function ($atts) {
-    $atts = shortcode_atts(['projekt' => 0, 'info' => 'ano', 'novy' => 'ano'], $atts, 'martin_dv_dokumenty');
+    $atts = shortcode_atts(['projekt' => 0, 'jednotka' => 0, 'info' => 'ano', 'novy' => 'ano', 'jednotky' => 'ano', 'projektu' => 'ano'], $atts, 'martin_dv_dokumenty');
     return render_documents(absint($atts['projekt']), [
-        'hide_meta'  => $atts['info'] === 'ne',
-        'same_tab'   => $atts['novy'] === 'ne',
+        'unit'         => absint($atts['jednotka']),
+        'hide_meta'    => $atts['info'] === 'ne',
+        'same_tab'     => $atts['novy'] === 'ne',
+        'hide_unit'    => $atts['jednotky'] === 'ne',
+        'hide_project' => $atts['projektu'] === 'ne',
     ]);
 });
 
@@ -41,19 +44,35 @@ function render_status_badge(int $id): string
 }
 
 /**
- * Dokumenty projektu ke stažení. Bez ID projektu: projekt aktuální jednotky, jinak výchozí projekt.
+ * Dokumenty ke stažení: na detailu jednotky nejdřív dokumenty jednotky (karta jednotky + vlastní, od 0.16.0),
+ * pak dokumenty projektu. Bez ID projektu: projekt jednotky, jinak výchozí projekt.
  *
- * @param array $args hide_meta (bez typu a velikosti), same_tab (otevřít ve stejném okně)
+ * @param array $args unit (ID jednotky, 0 = aktuální), hide_unit, hide_project, hide_meta (bez typu a velikosti),
+ *                    same_tab (otevřít ve stejném okně)
  */
 function render_documents(int $project_id, array $args = []): string
 {
-    $project_id = $project_id ?: current_project();
-    if (!project_visible($project_id)) {
-        return editor_notice(__('Dokumenty: žádný publikovaný projekt.', 'martin-dev-vyber-bytu'));
+    $docs = [];
+    $unit = empty($args['hide_unit']) ? resolve_unit((int) ($args['unit'] ?? 0)) : 0;
+    if ($unit) {
+        $docs = unit_documents($unit);
     }
-    $docs = project_info($project_id)['dokumenty'];
+    if (empty($args['hide_project'])) {
+        $project_id = $project_id ?: ($unit ? project_of_unit($unit) : current_project());
+        if (project_visible($project_id)) {
+            $docs = array_merge($docs, project_info($project_id)['dokumenty']);
+        }
+    }
+    // Stejný soubor jen jednou (např. ceník u projektu i u jednotky).
+    $seen = [];
+    $docs = array_values(array_filter($docs, function ($d) use (&$seen) {
+        if (isset($seen[$d['soubor']])) {
+            return false;
+        }
+        return $seen[$d['soubor']] = true;
+    }));
     if (!$docs) {
-        return editor_notice(__('Dokumenty: projekt zatím nemá dokumenty (Projekt → Údaje projektu → Dokumenty).', 'martin-dev-vyber-bytu'));
+        return editor_notice(__('Dokumenty: zatím žádné (Jednotka → Fotky, video a dokumenty, nebo Projekt → Údaje projektu → Dokumenty).', 'martin-dev-vyber-bytu'));
     }
     $h = ensure_unit_assets() . '<ul class="martin-dv-docs">';
     foreach ($docs as $d) {
