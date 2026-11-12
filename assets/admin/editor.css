@@ -56,7 +56,7 @@
 .mdv-fld { display: flex; flex-direction: column; gap: 4px; }
 .mdv-fld > span { font-weight: 600; font-size: 12.5px; }
 .mdv-fld small { color: #646970; }
-.mdv-fld select, .mdv-fld input[type=text] { width: 100%; max-width: 100%; }
+.mdv-fld select, .mdv-fld input[type=text], .mdv-fld textarea { width: 100%; max-width: 100%; }
 .mdv-check { display: flex; gap: 6px; align-items: flex-start; }
 .mdv-check input { margin-top: 2px; }
 .mdv-group { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid #f0f0f1; }

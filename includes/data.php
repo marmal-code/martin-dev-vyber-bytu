@@ -177,6 +177,9 @@ function default_settings(): array
         'color_accent'   => '',
         'color_reserved' => '#d39b2a',
         'color_sold'     => '#9aa0a8',
+        'label_area'     => '',
+        'label_total'    => '',
+        'buildings'      => [],
     ];
 }
 
@@ -315,6 +318,10 @@ function sanitize_project_data(array $in): array
     $out['settings']['color_accent']   = sanitize_css_color($s['color_accent'] ?? '');
     $out['settings']['color_reserved'] = sanitize_css_color($s['color_reserved'] ?? '') ?: '#d39b2a';
     $out['settings']['color_sold']     = sanitize_css_color($s['color_sold'] ?? '') ?: '#9aa0a8';
+    // Od 0.14.0: název hlavní plochy (Podlahová / Užitná …) a seznam budov / vchodů.
+    $out['settings']['label_area']     = clean_text($s['label_area'] ?? '', 60);
+    $out['settings']['label_total']    = clean_text($s['label_total'] ?? '', 60);
+    $out['settings']['buildings']      = sanitize_buildings($s['buildings'] ?? []);
 
     // Mapy okolí (includes/okoli/data.php).
     $out['maps'] = sanitize_maps($in['maps'] ?? []);
@@ -381,8 +388,13 @@ function unit_info(int $id, array $settings): ?array
     $num    = trim((string) $m('dv_cislo'));
     $label  = $num !== '' ? $types[$type] . ' ' . $num : get_the_title($pid);
     $area   = (float) $m('dv_plocha');
-    $outT   = isset($outs[$m('dv_venkovni_typ')]) ? $m('dv_venkovni_typ') : '';
-    $outA   = (float) $m('dv_venkovni_plocha');
+    // Venkovní plochy: seznam (od 0.14.0) má přednost před jednoduchým polem.
+    $outRows = unit_outdoors($pid);
+    $outT    = $outRows ? $outRows[0]['typ'] : '';
+    $outA    = array_sum(array_column($outRows, 'plocha'));
+    $outTxt  = implode(', ', array_map(function ($o) use ($outs) {
+        return trim($outs[$o['typ']] . ' ' . ($o['plocha'] > 0 ? fmt_area($o['plocha']) : ''));
+    }, $outRows));
     $price  = (int) $m('dv_cena');
 
     if ($status === 'prodany') {
@@ -408,14 +420,17 @@ function unit_info(int $id, array $settings): ?array
         'disp'        => (string) $m('dv_dispozice'),
         'area'        => $area,
         'areaTxt'     => $area > 0 ? fmt_area($area) : '',
-        'outLabel'    => $outT ? $outs[$outT] : '',
+        'outLabel'    => $outT ? implode(', ', array_unique(array_map(function ($o) use ($outs) {
+            return $outs[$o['typ']];
+        }, $outRows))) : '',
         'outAreaTxt'  => ($outT && $outA > 0) ? fmt_area($outA) : '',
-        'outTxt'      => $outT ? trim($outs[$outT] . ' ' . ($outA > 0 ? fmt_area($outA) : '')) : '',
+        'outTxt'      => $outTxt,
         'price'       => ($status === 'volny' && !$m('dv_cena_na_dotaz')) ? $price : 0,
         'priceTxt'    => $price_txt,
         'status'      => $status,
         'statusLabel' => $sts[$status],
-        'floorTxt'    => (string) $m('dv_podlazi'),
+        'floorTxt'    => trim((string) $m('dv_podlazi')) !== '' ? trim((string) $m('dv_podlazi'))
+            : (is_numeric($m('dv_podlazi_cislo')) ? floor_number_label((int) $m('dv_podlazi_cislo')) : ''),
         'url'         => get_permalink($pid),
         'clickable'   => $status !== 'prodany' || !empty($settings['sold_clickable']),
     ];

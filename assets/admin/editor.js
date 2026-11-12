@@ -172,6 +172,16 @@
       '<label class="mdv-fld"><span>' + esc(T.tableDetail) + '</span><input type="text" data-set="table_detail" value="' + esc(S.settings.table_detail || '') + '" placeholder="' + esc(T.tableDetailPh) + '"></label></div>';
   }
 
+  /* Od 0.14.0: název hlavní plochy a seznam budov / vchodů pro údaje jednotek. */
+  function unitDataHTML() {
+    var b = S.settings.buildings;
+    var bTxt = Array.isArray(b) ? b.join('\n') : (b || '');
+    return '<div class="mdv-group"><span class="mdv-kicker">' + esc(T.unitData) + '</span>' +
+      '<label class="mdv-fld"><span>' + esc(T.labelTotal) + '</span><input type="text" data-set="label_total" value="' + esc(S.settings.label_total || '') + '" placeholder="' + esc(T.labelTotalPh) + '"><small>' + esc(T.labelTotalHelp) + '</small></label>' +
+      '<label class="mdv-fld"><span>' + esc(T.labelArea) + '</span><input type="text" data-set="label_area" value="' + esc(S.settings.label_area || '') + '" placeholder="' + esc(T.labelAreaPh) + '"><small>' + esc(T.labelAreaHelp) + '</small></label>' +
+      '<label class="mdv-fld"><span>' + esc(T.buildings) + '</span><textarea rows="3" data-set="buildings">' + esc(bTxt) + '</textarea><small>' + esc(T.buildingsHelp) + '</small></label></div>';
+  }
+
   function settingsHTML() {
     var s = S.settings;
     return '<div class="mdv-title"><span class="mdv-kicker">' + esc(T.project) + '</span><strong>' + esc(T.settings) + '</strong></div>' +
@@ -180,6 +190,7 @@
       '<div class="mdv-group"><span class="mdv-kicker">' + esc(T.setTip) + '</span>' +
       check('tip_area', T.tipArea) + check('tip_outdoor', T.tipOutdoor) + check('tip_price', T.tipPrice) + check('tip_status', T.tipStatus) + '</div>' +
       columnsHTML() +
+      unitDataHTML() +
       '<label class="mdv-fld"><span>' + esc(T.buttonText) + '</span><input type="text" data-set="button_text" value="' + esc(s.button_text) + '" placeholder="' + esc(T.buttonPh) + '"></label>' +
       '<label class="mdv-fld"><span>' + esc(T.hintView) + '</span><input type="text" data-set="hint_view" value="' + esc(s.hint_view) + '" placeholder="' + esc(T.hintViewPh) + '"><small>' + esc(T.hintHelp) + '</small></label>' +
       '<label class="mdv-fld"><span>' + esc(T.hintFloor) + '</span><input type="text" data-set="hint_floor" value="' + esc(s.hint_floor) + '" placeholder="' + esc(T.hintFloorPh) + '"><small>' + esc(T.hintHelp) + '</small></label>' +

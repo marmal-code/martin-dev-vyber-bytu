@@ -1,0 +1,20 @@
+%%SELECTOR%% {
+  width: {{ design.container.width.style }};
+  {{ macros.backgroundColor(design.container.background) }}
+  {{ macros.borders(design.container.borders) }}
+  {{ macros.spacing_padding_all(design.container.padding) }}
+  {{ macros.typography(design.typography, globalSettings)  }}
+  {{ macros.spacing_margin_y(design.spacing) }}
+}
+
+{# Vzhled přes CSS proměnné (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
+%%SELECTOR%% .martin-dv-rooms {
+  {% if design.vzhled.cary %}--mdj-line: {{ design.vzhled.cary }};{% endif %}
+  {% if design.vzhled.soucet %}--mdj-sum-line: {{ design.vzhled.soucet }};{% endif %}
+  {% if design.vzhled.popisky %}--mdj-muted: {{ design.vzhled.popisky }};{% endif %}
+  {% if design.vzhled.odsazeni.style %}--mdj-row-pad: {{ design.vzhled.odsazeni.style }};{% endif %}
+}
+%%SELECTOR%% .martin-dv-rooms .martin-dv-rooms__sum th,
+%%SELECTOR%% .martin-dv-rooms .martin-dv-rooms__sum td {
+  {{ macros.typography(design.vzhled.soucet_pismo, globalSettings) }}
+}
