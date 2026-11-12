@@ -35,6 +35,9 @@ jobs:
         run: |
           mkdir -p dist/martin-dev-vyber-bytu
           rsync -a --exclude '.git' --exclude '.github' --exclude 'dist' --exclude 'demo' --exclude 'tools' --exclude '.gitignore' ./ dist/martin-dev-vyber-bytu/
+          # Pojistka: bez knihovny Parsedown spadne kontrola aktualizací (chyba z verze 0.18.0)
+          test -f dist/martin-dev-vyber-bytu/lib/plugin-update-checker/vendor/Parsedown.php
+          test -f dist/martin-dev-vyber-bytu/lib/plugin-update-checker/vendor/PucReadmeParser.php
           cd dist && zip -qr martin-dev-vyber-bytu.zip martin-dev-vyber-bytu
 
       - name: Vydat release
@@ -44,4 +47,7 @@ jobs:
         run: |
           gh release create "v${{ steps.v.outputs.version }}" dist/martin-dev-vyber-bytu.zip \
             --title "v${{ steps.v.outputs.version }}" \
-            --notes "$(git log -1 --pretty=%B)"
+            --notes ""
+          # Poznámky k vydání nechávej prázdné: weby s verzí 0.18.0 a starší nemají
+          # knihovnu Parsedown a na textu poznámek by kontrola aktualizací spadla.
+          # Popis změn je v README.md (sekce Historie verzí).

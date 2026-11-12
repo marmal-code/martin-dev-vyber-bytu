@@ -122,6 +122,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
+- **0.18.1** – oprava pádu WordPressu při kontrole aktualizací: do balíčku se nedostala knihovna Parsedown (složka `vendor/` byla v `.gitignore`), takže kontrola aktualizací spadla, jakmile vydání na GitHubu mělo poznámky. Knihovna doplněna, poznámky k vydáním zůstávají prázdné (kvůli webům se starší verzí), Action ověřuje, že je knihovna v ZIPu. Weby se starší verzí je potřeba jednou aktualizovat ručně nahráním ZIPu.
 - **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář; staré příslušenství odebráno a převedeno do seznamu; Dokumenty jako řádky s popisem a tlačítkem Stáhnout.
 - **0.17.0** – příslušenství jako seznam s vazbou na sklep / garáž, cena platná od, rezervace do (interně), elementy Příslušenství, Předchozí / další jednotka, Podobné jednotky, nová dynamická data.
 - **0.16.0** – fotky, vizualizace, video a dokumenty jednotky (galerie přes Galerii Plus, video přes dynamická data), element Dokumenty i s dokumenty jednotky, dynamická data Obrázek / Video / Karta jednotky.
