@@ -30,9 +30,10 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 
 ### Údaje jednotky na detailu (od 0.14.0)
 
-- U jednotky box **Místnosti, venkovní plochy a parametry** (vlastní editor, nepotřebuje ACF Pro): místnosti (název, plocha, obytná / vedlejší, „započítat“, poznámka) se součtem a upozorněním, když se liší od zadané plochy o víc než 0,1 m²; venkovní plochy (typ, plocha, orientace); vlastní parametry (název + hodnota). Ukládá se jako JSON do `_dv_mistnosti`, `_dv_venkovni`, `_dv_parametry`.
+- `dv_plocha` = **celková plocha** jednotky včetně příček a zdí. Součet místností je kontrolní – smí být stejný nebo menší.
+- U jednotky box **Místnosti, venkovní plochy a parametry** (vlastní editor, nepotřebuje ACF Pro): místnosti (název, plocha, obytná / vedlejší, „započítat“, poznámka) se součtem a upozorněním, když je součet větší než celková plocha (tolerance 0,1 m²); venkovní plochy (typ, plocha, orientace); vlastní parametry (název + hodnota). Ukládá se jako JSON do `_dv_mistnosti`, `_dv_venkovni`, `_dv_parametry`.
 - **Poloha v domě** (ACF free): `dv_budova` (výběr ze seznamu budov v projektu), `dv_podlazi_cislo`, `dv_umisteni`, `dv_orientace`, `dv_vyhled`. Číslo podlaží se bez vyplnění vezme z názvu podlaží, ve kterém je jednotka obkreslená.
-- V projektu → Nastavení zobrazení → **Údaje jednotek**: název hlavní plochy (Podlahová / Užitná …) a seznam budov / vchodů.
+- V projektu → Nastavení zobrazení → **Údaje jednotek**: název celkové plochy (výchozí Celková plocha), název součtu místností (Podlahová / Užitná …) a seznam budov / vchodů.
 - Vyplněný seznam venkovních ploch má přednost před starým polem `dv_venkovni_*` (to zůstává pro jednoduché případy).
 - Výstup (detail jednotky): elementy **Marmal – Tabulka místností**, **Marmal – Parametry jednotky**, **Marmal – Schéma podlaží** (Add → Dynamic) nebo shortcody `[martin_dv_mistnosti]`, `[martin_dv_parametry]` (`cena="ano" sloupce="2" zakladni="ne" vlastni="ne"`), `[martin_dv_schema]` (`nazev="ne" ostatni="ne"`). Bez `id` berou aktuální jednotku.
 - Kód je v `includes/jednotka/`, `assets/admin/jednotka-editor.*`, `assets/front/jednotka.css`, `elements/Mistnosti|Parametry|SchemaPodlazi/`. Ovládací prvky elementů generuje `tools/unit_elements.py`.
@@ -81,7 +82,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
-- **0.14.0** – údaje jednotky: místnosti se součtem a kontrolou plochy, seznam venkovních ploch s orientací, vlastní parametry, poloha v domě (budova, číslo podlaží, umístění, orientace, výhled); v projektu název hlavní plochy a seznam budov; nové elementy Tabulka místností, Parametry jednotky, Schéma podlaží a shortcody.
+- **0.14.0** – údaje jednotky: místnosti se součtem a kontrolou proti celkové ploše (součet smí být menší – příčky a zdi), seznam venkovních ploch s orientací, vlastní parametry, poloha v domě (budova, číslo podlaží, umístění, orientace, výhled); v projektu název hlavní plochy a seznam budov; nové elementy Tabulka místností, Parametry jednotky, Schéma podlaží a shortcody.
 - **0.13.0** – nová funkce **Mapa okolí** (projekt → Okolí, element „Marmal – Mapa okolí“, shortcode `[martin_mapa_okoli]`); plugin přejmenován na „Marmal – Developerské projekty“; oprava: tlačítka v levém panelu editoru se už neroztahují do výšky; menu v administraci „Výběr bytů“ přejmenováno na „Developerské projekty“.
 - **0.12.0** – režim „jen tabulka s filtrem“ (bez obrázků domu a půdorysů): v elementu Content → Projekt → Zobrazit jen tabulku s filtrem, v shortcodu `jen_tabulka="ano"`; má přednost před Skrýt tabulku.
 - **0.11.0** – při najetí myší na obrázek (pohled i půdorys) se zbytek obrázku ztmaví (výchozí 50 % černá) a klikací oblasti se jemně zvýrazní; prodané jednotky bez odkazu zůstávají ztmavené; Design tab: Zvýraznění na obrázku → Ztmavení okolí při najetí (%), Barva ztmavení, Zvýraznění klikacích oblastí při najetí (%).

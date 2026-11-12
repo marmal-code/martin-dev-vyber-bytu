@@ -412,7 +412,7 @@ function render_project(int $project_id, array $args = []): string
         'i18n'     => [
             'clickArea'  => __('Klikněte pro zobrazení', 'martin-dev-vyber-bytu'),
             'clickUnit'  => __('Klikněte pro detail', 'martin-dev-vyber-bytu'),
-            'area'       => ($s['label_area'] ?? '') !== '' ? $s['label_area'] : __('Plocha', 'martin-dev-vyber-bytu'),
+            'area'       => __('Plocha', 'martin-dev-vyber-bytu'),
             'disp'       => __('Dispozice', 'martin-dev-vyber-bytu'),
             'floor'      => __('Podlaží', 'martin-dev-vyber-bytu'),
             'price'      => __('Cena', 'martin-dev-vyber-bytu'),
@@ -601,9 +601,6 @@ function table_html(array $units, array $floors, array $floor_units, array $unit
     }
     $detail_txt = ($settings['table_detail'] ?? '') !== '' ? $settings['table_detail'] : __('Detail', 'martin-dev-vyber-bytu');
     $head_txt   = ['detail' => '', 'venkovni' => __('Venkovní plocha', 'martin-dev-vyber-bytu')];
-    if (($settings['label_area'] ?? '') !== '') {
-        $head_txt['plocha'] = $settings['label_area']; // od 0.14.0 – název plochy z nastavení projektu
-    }
 
     $h = '<div class="martin-dv__table">'
         . '<h3 class="martin-dv__table-title">' . esc_html($title) . '</h3>'

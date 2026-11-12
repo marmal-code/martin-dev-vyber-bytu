@@ -58,6 +58,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
         'orientations' => $dirs,
         'suggestions'  => array_values(param_suggestions()),
         'areaLabel'    => area_label(current_admin_project()),
+        'totalLabel'   => total_label(current_admin_project()),
         'i18n'         => [
             'rooms'        => __('Místnosti', 'martin-dev-vyber-bytu'),
             'roomsHelp'    => __('Vnitřní místnosti jednotky. Balkony, terasy a zahrady patří do Venkovních ploch níže.', 'martin-dev-vyber-bytu'),
@@ -88,9 +89,12 @@ add_action('admin_enqueue_scripts', function ($hook) {
             'sumRooms'     => __('%s podle místností', 'martin-dev-vyber-bytu'),
             'sumOther'     => __('Nezapočítané místnosti', 'martin-dev-vyber-bytu'),
             'sumOutdoor'   => __('Venkovní plochy celkem', 'martin-dev-vyber-bytu'),
-            /* translators: 1: součet místností, 2: zadaná plocha, 3: rozdíl */
-            'mismatch'     => __('Součet místností (%1$s) se liší od zadané plochy (%2$s) o %3$s. Zkontroluj plochy, nebo zaškrtnutí „Započítat“.', 'martin-dev-vyber-bytu'),
-            'match'        => __('Součet místností odpovídá zadané ploše.', 'martin-dev-vyber-bytu'),
+            /* translators: 1: součet místností, 2: název celkové plochy, 3: celková plocha, 4: rozdíl */
+            'over'         => __('Součet místností (%1$s) je větší než %2$s (%3$s) o %4$s. Zkontroluj plochy, nebo zaškrtnutí „Započítat“.', 'martin-dev-vyber-bytu'),
+            /* translators: 1: rozdíl, 2: název celkové plochy */
+            'under'        => __('Součet místností je o %1$s menší než %2$s (příčky a zdi) – v pořádku.', 'martin-dev-vyber-bytu'),
+            /* translators: %s: název celkové plochy */
+            'match'        => __('Součet místností odpovídá: %s.', 'martin-dev-vyber-bytu'),
             'empty'        => __('Zatím žádné řádky.', 'martin-dev-vyber-bytu'),
         ],
     ];

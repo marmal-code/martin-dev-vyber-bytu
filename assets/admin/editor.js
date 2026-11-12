@@ -177,6 +177,7 @@
     var b = S.settings.buildings;
     var bTxt = Array.isArray(b) ? b.join('\n') : (b || '');
     return '<div class="mdv-group"><span class="mdv-kicker">' + esc(T.unitData) + '</span>' +
+      '<label class="mdv-fld"><span>' + esc(T.labelTotal) + '</span><input type="text" data-set="label_total" value="' + esc(S.settings.label_total || '') + '" placeholder="' + esc(T.labelTotalPh) + '"><small>' + esc(T.labelTotalHelp) + '</small></label>' +
       '<label class="mdv-fld"><span>' + esc(T.labelArea) + '</span><input type="text" data-set="label_area" value="' + esc(S.settings.label_area || '') + '" placeholder="' + esc(T.labelAreaPh) + '"><small>' + esc(T.labelAreaHelp) + '</small></label>' +
       '<label class="mdv-fld"><span>' + esc(T.buildings) + '</span><textarea rows="3" data-set="buildings">' + esc(bTxt) + '</textarea><small>' + esc(T.buildingsHelp) + '</small></label></div>';
   }

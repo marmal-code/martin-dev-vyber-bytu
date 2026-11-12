@@ -123,11 +123,16 @@
     if (outdoor) h += '<span>' + esc(T.sumOutdoor) + ': ' + esc(fmtArea(outdoor)) + '</span>';
     var f = totalField(), total = f ? toNum(f.value) : 0, msg = '';
     if (counted && total) {
-      var diff = Math.round((counted - total) * 100) / 100;
+      // Celková plocha zahrnuje příčky a zdi → součet místností smí být stejný nebo menší.
       // Tolerance 0,1 m² kvůli zaokrouhlení ploch v kartách bytů.
-      msg = Math.abs(diff) > 0.1
-        ? '<p class="mdu-warn">⚠ ' + esc(T.mismatch.replace('%1$s', fmtArea(counted)).replace('%2$s', fmtArea(total)).replace('%3$s', fmtArea(Math.abs(diff)))) + '</p>'
-        : '<p class="mdu-ok">✓ ' + esc(T.match) + '</p>';
+      var diff = Math.round((counted - total) * 100) / 100, tl = CFG.totalLabel.toLowerCase();
+      if (diff > 0.1) {
+        msg = '<p class="mdu-warn">⚠ ' + esc(T.over.replace('%1$s', fmtArea(counted)).replace('%2$s', tl).replace('%3$s', fmtArea(total)).replace('%4$s', fmtArea(diff))) + '</p>';
+      } else if (diff < -0.1) {
+        msg = '<p class="mdu-ok">✓ ' + esc(T.under.replace('%1$s', fmtArea(-diff)).replace('%2$s', tl)) + '</p>';
+      } else {
+        msg = '<p class="mdu-ok">✓ ' + esc(T.match.replace('%s', tl)) + '</p>';
+      }
     }
     box.innerHTML = (h ? '<div class="mdu-sumline">' + h + '</div>' : '') + msg;
   }

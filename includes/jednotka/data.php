@@ -210,7 +210,10 @@ function project_of_unit(int $post_id): int
     return ($pid && get_post_type($pid) === PT_PROJECT) ? $pid : 0;
 }
 
-/** Název hlavní plochy podle projektu (Podlahová plocha / Užitná plocha / …). */
+/**
+ * Název součtu místností podle projektu (Podlahová plocha / Užitná plocha / …).
+ * Pozor: `dv_plocha` je CELKOVÁ plocha jednotky (včetně příček a zdí) – viz total_label().
+ */
 function area_label(int $project_id = 0): string
 {
     $label = '';
@@ -218,6 +221,16 @@ function area_label(int $project_id = 0): string
         $label = (string) (get_project_data($project_id)['settings']['label_area'] ?? '');
     }
     return $label !== '' ? $label : __('Podlahová plocha', 'martin-dev-vyber-bytu');
+}
+
+/** Název celkové plochy jednotky (`dv_plocha`, včetně příček a zdí) – výchozí „Celková plocha“. */
+function total_label(int $project_id = 0): string
+{
+    $label = '';
+    if ($project_id) {
+        $label = (string) (get_project_data($project_id)['settings']['label_total'] ?? '');
+    }
+    return $label !== '' ? $label : __('Celková plocha', 'martin-dev-vyber-bytu');
 }
 
 /** Seznam budov / vchodů v projektu (názvy). */

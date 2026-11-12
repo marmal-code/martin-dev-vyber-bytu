@@ -178,6 +178,7 @@ function default_settings(): array
         'color_reserved' => '#d39b2a',
         'color_sold'     => '#9aa0a8',
         'label_area'     => '',
+        'label_total'    => '',
         'buildings'      => [],
     ];
 }
@@ -319,6 +320,7 @@ function sanitize_project_data(array $in): array
     $out['settings']['color_sold']     = sanitize_css_color($s['color_sold'] ?? '') ?: '#9aa0a8';
     // Od 0.14.0: název hlavní plochy (Podlahová / Užitná …) a seznam budov / vchodů.
     $out['settings']['label_area']     = clean_text($s['label_area'] ?? '', 60);
+    $out['settings']['label_total']    = clean_text($s['label_total'] ?? '', 60);
     $out['settings']['buildings']      = sanitize_buildings($s['buildings'] ?? []);
 
     // Mapy okolí (includes/okoli/data.php).

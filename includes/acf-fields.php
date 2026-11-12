@@ -229,11 +229,12 @@ function current_admin_project(): int
     return ($from_url && get_post_type($from_url) === PT_PROJECT) ? $from_url : 0;
 }
 
-/** Popisek hlavní plochy podle nastavení projektu (Podlahová / Užitná plocha …). */
+/** `dv_plocha` = celková plocha jednotky (včetně příček a zdí); popisek podle nastavení projektu. */
 add_filter('acf/prepare_field/name=dv_plocha', function ($field) {
     if (is_array($field)) {
-        /* translators: %s: název plochy, např. Užitná plocha */
-        $field['label'] = sprintf(__('%s (m²)', 'martin-dev-vyber-bytu'), area_label(current_admin_project()));
+        /* translators: %s: název celkové plochy, např. Celková plocha */
+        $field['label']        = sprintf(__('%s (m²)', 'martin-dev-vyber-bytu'), total_label(current_admin_project()));
+        $field['instructions'] = __('Celková plocha jednotky včetně příček a zdí. Součet místností (níže) může být stejný nebo menší.', 'martin-dev-vyber-bytu');
     }
     return $field;
 });

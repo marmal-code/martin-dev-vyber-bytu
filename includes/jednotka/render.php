@@ -184,7 +184,12 @@ function unit_param_rows(int $unit, array $args = []): array
 
         $add('typ', __('Typ', 'martin-dev-vyber-bytu'), $types[$m('dv_typ')] ?? '');
         $add('dispozice', __('Dispozice', 'martin-dev-vyber-bytu'), (string) $m('dv_dispozice'));
-        $add('plocha', area_label($project), $area > 0 ? fmt_area_exact($area) : '');
+        // `dv_plocha` = celková plocha (s příčkami); součet místností jen když se liší (jinak by se opakoval).
+        $add('plocha', total_label($project), $area > 0 ? fmt_area_exact($area) : '');
+        $rooms_sum = unit_area_sums($unit)['rooms'];
+        if ($rooms_sum > 0 && abs($rooms_sum - $area) > 0.01) {
+            $add('uzitna', area_label($project), fmt_area_exact($rooms_sum));
+        }
         foreach (unit_outdoors($unit) as $o) {
             $dir = orientation_text($o['orientace']);
             $add('venkovni', $outs[$o['typ']], trim(($o['plocha'] > 0 ? fmt_area_exact($o['plocha']) : '') . ($dir !== '' ? ' (' . $dir . ')' : '')) ?: '✓');
