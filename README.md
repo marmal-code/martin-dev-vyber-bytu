@@ -127,7 +127,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
-- **0.19.0-beta1** – titulky, popisky a obrázky jednotek pro modul SEO (Breakdance Plus 0.18.0+): vzory a text projektu v Údajích projektu, výchozí vzory pro byty / domy a pro sklepy, garáže a stání, „Prodáno“, cena jen bez „Cena na dotaz“.
+- **0.19.0-beta1** – oprava z větve `oprava-aktualizace` (knihovna Parsedown v balíčku, Action ji ověřuje a vydává release bez poznámek) – v 0.18.1 z `main` chyběla; titulky, popisky a obrázky jednotek pro modul SEO (Breakdance Plus 0.18.0+): vzory a text projektu v Údajích projektu, výchozí vzory pro byty / domy a pro sklepy, garáže a stání, „Prodáno“, cena jen bez „Cena na dotaz“.
 - **0.18.1** – „Cena na dotaz“ u jednotky skryje na webu i ceny jejího příslušenství (výběr bytů, element Příslušenství); ceny zůstávají uložené. Filtr `martin_dv_hide_accessory_prices`. Ve výběru bytů se příslušenství bez ceny ukáže s ✓ (dřív zůstal jen prázdný nadpis). Výběr bytů (bublina, karta, sloupec tabulky) popisuje plochu názvem celkové plochy z projektu (výchozí „Celková plocha“) místo obecného „Plocha“.
 - **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář; staré příslušenství odebráno a převedeno do seznamu; Dokumenty jako řádky s popisem a tlačítkem Stáhnout.
 - **0.17.0** – příslušenství jako seznam s vazbou na sklep / garáž, cena platná od, rezervace do (interně), elementy Příslušenství, Předchozí / další jednotka, Podobné jednotky, nová dynamická data.
