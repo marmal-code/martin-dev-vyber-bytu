@@ -48,7 +48,7 @@ function outdoor_types(): array
     ];
 }
 
-/** Volitelné příslušenství k dokoupení (zaškrtává se u každé jednotky zvlášť). */
+/** Pevné položky starého příslušenství (do 0.17.0) – už jen pro převod do seznamu. */
 function unit_accessories(): array
 {
     return apply_filters('martin_dv_accessories', [
@@ -473,58 +473,16 @@ function image_src(array $image): ?array
     return ['url' => $src[0], 'w' => $w, 'h' => $h];
 }
 
-/** Cena příslušenství: čisté číslo se naformátuje („350000“ → „350 000 Kč“), jinak se vypíše, jak je napsaná. */
-function format_accessory_price(string $price): string
-{
-    $price = trim($price);
-    if (preg_match('/^\d[\d\s.]*$/u', $price)) {
-        /* translators: %s: cena */
-        return sprintf(__('%s Kč', 'martin-dev-vyber-bytu'), num((int) preg_replace('/\D/', '', $price)));
-    }
-    return $price;
-}
-
 /**
- * Seznam příslušenství k dokoupení: [['label' => 'Garáž', 'price' => '350 000 Kč'], …]
- * Položka se zobrazí, jen když je zaškrtnutá (u vlastních vyplněný název) A má cenu.
+ * Příslušenství pro kartu ve výběru: [['label' => 'Garáž G3 (18 m²)', 'price' => '450 000 Kč'], …].
+ * Od 0.18.0 jen ze seznamu příslušenství (stará pole dv_acc_* se při aktualizaci převedla – migrate_legacy_accessories()).
  */
 function unit_accessory_list(int $post_id): array
 {
-    // Od 0.17.0: vyplněný seznam příslušenství má přednost před starými poli dv_acc_*.
-    if (function_exists(__NAMESPACE__ . '\\unit_accessory_rows')) {
-        $rows = unit_accessory_rows($post_id);
-        if ($rows) {
-            return array_map(function ($r) {
-                return ['label' => $r['label'] . ($r['areaTxt'] !== '' ? ' (' . $r['areaTxt'] . ')' : ''), 'price' => $r['price']];
-            }, $rows);
-        }
+    if (!function_exists(__NAMESPACE__ . '\\unit_accessory_rows')) {
+        return [];
     }
-    $out = [];
-    foreach (unit_accessories() as $key => $label) {
-        $price = trim((string) get_post_meta($post_id, 'dv_acc_' . $key . '_cena', true));
-        if (get_post_meta($post_id, 'dv_acc_' . $key, true) && $price !== '') {
-            $out[] = ['label' => $label, 'price' => format_accessory_price($price)];
-        }
-    }
-
-    // ACF Pro opakovač: počet řádků je v hlavním meta poli, hodnoty v dv_acc_vlastni_{i}_nazev / _cena.
-    $rows = (int) get_post_meta($post_id, 'dv_acc_vlastni', true);
-    for ($i = 0; $i < min($rows, 50); $i++) {
-        $name  = trim((string) get_post_meta($post_id, 'dv_acc_vlastni_' . $i . '_nazev', true));
-        $price = trim((string) get_post_meta($post_id, 'dv_acc_vlastni_' . $i . '_cena', true));
-        if ($name !== '' && $price !== '') {
-            $out[] = ['label' => $name, 'price' => format_accessory_price($price)];
-        }
-    }
-
-    // ACF free: 3 pevné řádky.
-    for ($i = 1; $i <= 3; $i++) {
-        $name  = trim((string) get_post_meta($post_id, 'dv_acc_slot' . $i . '_nazev', true));
-        $price = trim((string) get_post_meta($post_id, 'dv_acc_slot' . $i . '_cena', true));
-        if ($name !== '' && $price !== '') {
-            $out[] = ['label' => $name, 'price' => format_accessory_price($price)];
-        }
-    }
-
-    return $out;
+    return array_map(function ($r) {
+        return ['label' => $r['label'] . ($r['areaTxt'] !== '' ? ' (' . $r['areaTxt'] . ')' : ''), 'price' => $r['price']];
+    }, unit_accessory_rows($post_id));
 }

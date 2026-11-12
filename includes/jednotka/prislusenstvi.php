@@ -1,7 +1,8 @@
 <?php
 /**
- * Příslušenství jednotky jako seznam (od 0.17.0) – nahrazuje pevné sloty (dv_acc_*), ty zůstávají
- * jako záloha: když je seznam prázdný, výpis použije stará pole.
+ * Příslušenství jednotky jako seznam (od 0.17.0). Od 0.18.0 jediný způsob – stará pole (dv_acc_*)
+ * se jednorázově převedou do seznamu (migrate_legacy_accessories()) a dál se nepoužívají
+ * (jejich meta zůstávají v databázi jen pro případný návrat ke starší verzi).
  *
  * _dv_prislusenstvi  JSON [{typ, nazev, oznaceni, plocha, cena, v_cene, jednotka}]
  *   typ       stani | garaz | sklep | jine (u „jine“ se zobrazí nazev)
@@ -285,3 +286,76 @@ function similar_units(int $unit_id, array $args = []): array
     });
     return array_column(array_slice($cands, 0, $count), 'id');
 }
+
+/* ---------- Převod starého příslušenství (do 0.17.0) ---------- */
+
+/** Stará pole jednotky → řádky nového seznamu. */
+function legacy_accessory_rows(int $post_id): array
+{
+    $map  = ['parkovaci_stani' => 'stani', 'garaz' => 'garaz', 'sklep' => 'sklep'];
+    $rows = [];
+    $add  = function (string $typ, string $name, string $price) use (&$rows) {
+        $price   = trim($price);
+        $incl    = (bool) preg_match('/v\s*cen/iu', $price);
+        $rows[] = [
+            'typ'    => $typ,
+            'nazev'  => $typ === 'jine' ? $name : '',
+            'cena'   => (!$incl && preg_match('/^\d[\d\s.]*(\s*Kč)?$/u', $price)) ? clean_price($price) : 0,
+            'v_cene' => $incl,
+        ];
+    };
+    foreach (unit_accessories() as $key => $label) {
+        if (get_post_meta($post_id, 'dv_acc_' . $key, true)) {
+            $add($map[$key] ?? 'jine', $label, (string) get_post_meta($post_id, 'dv_acc_' . $key . '_cena', true));
+        }
+    }
+    $n = (int) get_post_meta($post_id, 'dv_acc_vlastni', true); // ACF Pro opakovač
+    for ($i = 0; $i < min($n, 50); $i++) {
+        $name = trim((string) get_post_meta($post_id, 'dv_acc_vlastni_' . $i . '_nazev', true));
+        if ($name !== '') {
+            $add('jine', $name, (string) get_post_meta($post_id, 'dv_acc_vlastni_' . $i . '_cena', true));
+        }
+    }
+    for ($i = 1; $i <= 3; $i++) { // ACF free – 3 sloty
+        $name = trim((string) get_post_meta($post_id, 'dv_acc_slot' . $i . '_nazev', true));
+        if ($name !== '') {
+            $add('jine', $name, (string) get_post_meta($post_id, 'dv_acc_slot' . $i . '_cena', true));
+        }
+    }
+    return sanitize_accessories($rows);
+}
+
+/**
+ * Jednorázový převod u všech jednotek: jen tam, kde nový seznam je prázdný a stará pole něco mají.
+ * Vrací počet převedených jednotek.
+ */
+function migrate_legacy_accessories(): int
+{
+    $done = 0;
+    $ids  = get_posts([
+        'post_type'      => PT_UNIT,
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'no_found_rows'  => true,
+    ]);
+    foreach ($ids as $id) {
+        if (unit_accessories_raw((int) $id)) {
+            continue;
+        }
+        $rows = legacy_accessory_rows((int) $id);
+        if ($rows) {
+            update_post_meta((int) $id, META_ACC, wp_slash(wp_json_encode($rows, JSON_UNESCAPED_UNICODE)));
+            $done++;
+        }
+    }
+    return $done;
+}
+
+add_action('admin_init', function () {
+    if (get_option('martin_dv_migrace_prislusenstvi') || !current_user_can('edit_posts')) {
+        return;
+    }
+    update_option('martin_dv_migrace_prislusenstvi', 1, false); // nejdřív značka – převod běží jen jednou
+    migrate_legacy_accessories();
+});

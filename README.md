@@ -59,7 +59,7 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 
 ### Příslušenství, cena, předchozí / další a podobné jednotky (od 0.17.0)
 
-- **Příslušenství** v boxu Místnosti, venkovní plochy a parametry: typ (stání, garáž, sklep, jiné), název, označení, plocha, cena, „v ceně“ a volitelná vazba na samostatnou jednotku Sklep / Garáž / Stání (prázdné údaje převezme z ní, u ní se uloží zpětný odkaz `_dv_patri_k`). JSON `_dv_prislusenstvi`. Vyplněný seznam má přednost před starými poli `dv_acc_*` (ta zůstávají).
+- **Příslušenství** v boxu Místnosti, venkovní plochy a parametry: typ (stání, garáž, sklep, jiné), název, označení, plocha, cena, „v ceně“ a volitelná vazba na samostatnou jednotku Sklep / Garáž / Stání (prázdné údaje převezme z ní, u ní se uloží zpětný odkaz `_dv_patri_k`). JSON `_dv_prislusenstvi`. Od 0.18.0 jediný způsob – stará pole `dv_acc_*` jsou z administrace odebraná a jejich data se při první návštěvě administrace jednorázově převedla do seznamu (option `martin_dv_migrace_prislusenstvi`; stará meta zůstávají v databázi jen pro návrat ke starší verzi).
 - U jednotky **Cena platná od** (`dv_cena_od`, na webu) a **Rezervace do** (`dv_rezervace_do`, jen interně – sloupec v přehledu jednotek, po termínu červeně).
 - Elementy **Marmal – Příslušenství**, **Marmal – Předchozí / další jednotka**, **Marmal – Podobné jednotky**; shortcody `[martin_dv_prislusenstvi plocha="ne" cena="ne" odkazy="ne"]`, `[martin_dv_navigace predchozi="" dalsi=""]`, `[martin_dv_podobne pocet="3" sloupce="3" prodane="ano" jen_shoda="ano" obrazek="ne"]`.
 - Pořadí jednotek (předchozí / další) jako v tabulce výběru: od nejnižšího podlaží, pak podle čísla; sklepy, garáže a stání mají vlastní řadu. Podobné: stejná dispozice a podlaží → stejná dispozice → stejné podlaží, uvnitř podle rozdílu plochy, bez prodaných (volba).
@@ -122,7 +122,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
-- **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář.
+- **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář; staré příslušenství odebráno a převedeno do seznamu.
 - **0.17.0** – příslušenství jako seznam s vazbou na sklep / garáž, cena platná od, rezervace do (interně), elementy Příslušenství, Předchozí / další jednotka, Podobné jednotky, nová dynamická data.
 - **0.16.0** – fotky, vizualizace, video a dokumenty jednotky (galerie přes Galerii Plus, video přes dynamická data), element Dokumenty i s dokumenty jednotky, dynamická data Obrázek / Video / Karta jednotky.
 - **0.15.0** – údaje projektu (developer, dodavatel, lokalita, termín, předprodej, kontakt prodejce s fotkou, texty, dokumenty), vlastní stavy jednotek s barvou, Breakdance dynamická data (jednotka + projekt, český formát čísel), elementy Štítek stavu a Dokumenty, text místo ceny.

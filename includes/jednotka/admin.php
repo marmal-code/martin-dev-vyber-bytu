@@ -100,7 +100,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
             'match'        => __('Součet místností odpovídá: %s.', 'martin-dev-vyber-bytu'),
             'empty'        => __('Zatím žádné řádky.', 'martin-dev-vyber-bytu'),
             'acc'          => __('Příslušenství', 'martin-dev-vyber-bytu'),
-            'accHelp'      => __('Stání, garáž, sklep nebo jiné. Když vybereš samostatnou jednotku (sklep / garáž / stání), prázdné označení, plochu a cenu převezme z ní a u ní se zobrazí, ke které jednotce patří. Vyplněný seznam má přednost před starým příslušenstvím výše.', 'martin-dev-vyber-bytu'),
+            'accHelp'      => __('Stání, garáž, sklep nebo jiné. Když vybereš samostatnou jednotku (sklep / garáž / stání), prázdné označení, plochu a cenu převezme z ní a u ní se zobrazí, ke které jednotce patří.', 'martin-dev-vyber-bytu'),
             'accName'      => __('Název (u Jiné)', 'martin-dev-vyber-bytu'),
             'accNamePh'    => __('např. Nabíječka', 'martin-dev-vyber-bytu'),
             'accCode'      => __('Označení', 'martin-dev-vyber-bytu'),

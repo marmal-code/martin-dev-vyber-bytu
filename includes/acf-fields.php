@@ -87,7 +87,7 @@ add_action('acf/init', function () {
                 'instructions' => __('Jen pro tebe – na webu se nezobrazí. V přehledu jednotek se po termínu zvýrazní.', 'martin-dev-vyber-bytu'),
             ],
             ...position_fields(),
-            ...accessory_fields(),
+            // Příslušenství od 0.18.0 jen v boxu „Místnosti, venkovní plochy a parametry“ (stará pole dv_acc_* zrušena, data převedena).
             [
                 'key' => 'field_martin_dv_pudorys', 'name' => 'dv_pudorys', 'label' => __('Půdorys jednotky', 'martin-dev-vyber-bytu'),
                 'type' => 'image', 'return_format' => 'id', 'preview_size' => 'medium', 'wrapper' => ['width' => '50'],
@@ -107,81 +107,6 @@ add_filter('acf/load_value/name=dv_projekt', function ($value) {
     }
     return $value;
 });
-
-/**
- * Příslušenství k dokoupení: u každé pevné položky zaškrtávátko + cena vedle,
- * pod tím vlastní položky (název + cena). Zobrazí se jen položka se zaškrtnutím i cenou.
- * Vlastní položky: s ACF Pro opakovač (libovolný počet), s ACF free 3 pevné řádky.
- */
-function accessory_fields(): array
-{
-    $fields = [[
-        'key'     => 'field_martin_dv_acc_nadpis',
-        'name'    => '',
-        'label'   => __('Volitelné příslušenství k dokoupení', 'martin-dev-vyber-bytu'),
-        'type'    => 'message',
-        'message' => __('Starší způsob: zaškrtni, co si kupující může připlatit, a doplň cenu. Nově raději box „Místnosti, venkovní plochy a parametry“ → Příslušenství (označení, plocha, vazba na sklep / garáž) – když je tam vyplněný, má přednost a tato pole se nepoužijí.', 'martin-dev-vyber-bytu'),
-    ]];
-
-    foreach (unit_accessories() as $key => $label) {
-        $fields[] = [
-            'key'     => 'field_martin_dv_acc_' . $key,
-            'name'    => 'dv_acc_' . $key,
-            'label'   => $label,
-            'type'    => 'true_false',
-            'ui'      => 1,
-            'wrapper' => ['width' => '30'],
-        ];
-        $fields[] = [
-            'key'               => 'field_martin_dv_acc_' . $key . '_cena',
-            'name'              => 'dv_acc_' . $key . '_cena',
-            'label'             => sprintf(/* translators: %s: název příslušenství */ __('%s – cena', 'martin-dev-vyber-bytu'), $label),
-            'type'              => 'text',
-            'placeholder'       => __('např. 350 000 Kč', 'martin-dev-vyber-bytu'),
-            'wrapper'           => ['width' => '70'],
-            'conditional_logic' => [[['field' => 'field_martin_dv_acc_' . $key, 'operator' => '==', 'value' => '1']]],
-        ];
-    }
-
-    $has_repeater = class_exists('acf_field_repeater') || (function_exists('acf_get_field_type') && acf_get_field_type('repeater'));
-
-    if ($has_repeater) {
-        $fields[] = [
-            'key'          => 'field_martin_dv_acc_vlastni',
-            'name'         => 'dv_acc_vlastni',
-            'label'        => __('Další příslušenství', 'martin-dev-vyber-bytu'),
-            'type'         => 'repeater',
-            'layout'       => 'table',
-            'button_label' => __('Přidat příslušenství', 'martin-dev-vyber-bytu'),
-            'sub_fields'   => [
-                [
-                    'key' => 'field_martin_dv_acc_vlastni_nazev', 'name' => 'nazev', 'label' => __('Název', 'martin-dev-vyber-bytu'),
-                    'type' => 'text', 'placeholder' => __('např. Nabíječka pro elektroauto', 'martin-dev-vyber-bytu'), 'wrapper' => ['width' => '50'],
-                ],
-                [
-                    'key' => 'field_martin_dv_acc_vlastni_cena', 'name' => 'cena', 'label' => __('Cena / popis', 'martin-dev-vyber-bytu'),
-                    'type' => 'text', 'placeholder' => __('např. 35 000 Kč', 'martin-dev-vyber-bytu'), 'wrapper' => ['width' => '50'],
-                ],
-            ],
-        ];
-    } else {
-        for ($i = 1; $i <= 3; $i++) {
-            $fields[] = [
-                'key' => 'field_martin_dv_acc_slot' . $i . '_nazev', 'name' => 'dv_acc_slot' . $i . '_nazev',
-                /* translators: %d: pořadí */
-                'label' => sprintf(__('Další příslušenství %d – název', 'martin-dev-vyber-bytu'), $i),
-                'type' => 'text', 'placeholder' => __('např. Nabíječka pro elektroauto', 'martin-dev-vyber-bytu'), 'wrapper' => ['width' => '30'],
-            ];
-            $fields[] = [
-                'key' => 'field_martin_dv_acc_slot' . $i . '_cena', 'name' => 'dv_acc_slot' . $i . '_cena',
-                'label' => __('Cena / popis', 'martin-dev-vyber-bytu'),
-                'type' => 'text', 'placeholder' => __('např. 35 000 Kč', 'martin-dev-vyber-bytu'), 'wrapper' => ['width' => '70'],
-            ];
-        }
-    }
-
-    return $fields;
-}
 
 /**
  * Poloha v domě (od 0.14.0). Jednoduchá pole v ACF free – v Breakdance jsou i v ACF dynamických datech.

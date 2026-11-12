@@ -62,12 +62,6 @@ function render_accessories(int $id, array $args = []): string
     }
     $rows = unit_accessory_rows($unit);
     if (!$rows) {
-        // Starší pole dv_acc_* (bez plochy a odkazu).
-        $rows = array_map(function ($a) {
-            return ['label' => $a['label'], 'areaTxt' => '', 'price' => $a['price'], 'url' => '', 'typ' => 'jine'];
-        }, unit_accessory_list($unit));
-    }
-    if (!$rows) {
         return editor_notice(__('Příslušenství: jednotka žádné nemá.', 'martin-dev-vyber-bytu'));
     }
     $h = ensure_unit_assets() . '<ul class="martin-dv-acc">';
