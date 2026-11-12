@@ -177,6 +177,8 @@ function default_settings(): array
         'color_accent'   => '',
         'color_reserved' => '#d39b2a',
         'color_sold'     => '#9aa0a8',
+        'color_free'     => '',
+        'statuses'       => [],
         'label_area'     => '',
         'label_total'    => '',
         'buildings'      => [],
@@ -319,6 +321,19 @@ function sanitize_project_data(array $in): array
     $out['settings']['color_reserved'] = sanitize_css_color($s['color_reserved'] ?? '') ?: '#d39b2a';
     $out['settings']['color_sold']     = sanitize_css_color($s['color_sold'] ?? '') ?: '#9aa0a8';
     // Od 0.14.0: název hlavní plochy (Podlahová / Užitná …) a seznam budov / vchodů.
+    // Od 0.15.0: stavy jednotek (názvy, barvy, vlastní stavy). Barvy základních stavů zůstávají
+    // i v color_* kvůli CSS proměnným výběru (starší data bez seznamu převezmou barvy odtud).
+    $out['settings']['statuses'] = sanitize_statuses($s['statuses'] ?? [], [
+        'volny'       => sanitize_css_color($s['color_free'] ?? ''),
+        'rezervovany' => $out['settings']['color_reserved'],
+        'prodany'     => $out['settings']['color_sold'],
+    ]);
+    foreach ($out['settings']['statuses'] as $st) {
+        $map = ['volny' => 'color_free', 'rezervovany' => 'color_reserved', 'prodany' => 'color_sold'];
+        if (isset($map[$st['key']])) {
+            $out['settings'][$map[$st['key']]] = $st['color'];
+        }
+    }
     $out['settings']['label_area']     = clean_text($s['label_area'] ?? '', 60);
     $out['settings']['label_total']    = clean_text($s['label_total'] ?? '', 60);
     $out['settings']['buildings']      = sanitize_buildings($s['buildings'] ?? []);
@@ -381,10 +396,11 @@ function unit_info(int $id, array $settings): ?array
     };
 
     $types  = unit_types();
-    $sts    = statuses();
     $outs   = outdoor_types();
     $type   = isset($types[$m('dv_typ')]) ? $m('dv_typ') : 'byt';
-    $status = isset($sts[$m('dv_stav')]) ? $m('dv_stav') : 'volny';
+    // Od 0.15.0 stavy podle projektu: $status = chování (volny / rezervovany / prodany), $st = konkrétní stav.
+    $st     = unit_status($pid);
+    $status = $st['kind'];
     $num    = trim((string) $m('dv_cislo'));
     $label  = $num !== '' ? $types[$type] . ' ' . $num : get_the_title($pid);
     $area   = (float) $m('dv_plocha');
@@ -404,6 +420,9 @@ function unit_info(int $id, array $settings): ?array
     } elseif ($price > 0) {
         /* translators: %s: cena */
         $price_txt = sprintf(__('%s Kč', 'martin-dev-vyber-bytu'), num($price));
+    } elseif ($status === 'volny') {
+        // Text projektu místo ceny, např. „Ceny zveřejníme se zahájením předprodeje“ (od 0.15.0).
+        $price_txt = project_info(project_of_unit($pid))['texty']['cena'];
     } else {
         $price_txt = '';
     }
@@ -428,7 +447,9 @@ function unit_info(int $id, array $settings): ?array
         'price'       => ($status === 'volny' && !$m('dv_cena_na_dotaz')) ? $price : 0,
         'priceTxt'    => $price_txt,
         'status'      => $status,
-        'statusLabel' => $sts[$status],
+        'statusKey'   => $st['key'],
+        'statusLabel' => $st['label'],
+        'statusColor' => $st['custom'] ? $st['color'] : '',
         'floorTxt'    => trim((string) $m('dv_podlazi')) !== '' ? trim((string) $m('dv_podlazi'))
             : (is_numeric($m('dv_podlazi_cislo')) ? floor_number_label((int) $m('dv_podlazi_cislo')) : ''),
         'url'         => get_permalink($pid),

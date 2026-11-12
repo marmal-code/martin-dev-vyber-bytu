@@ -264,6 +264,9 @@ function render_project(int $project_id, array $args = []): string
     $h   = ensure_assets();
 
     $style = '--martin-dv-reserved:' . $s['color_reserved'] . ';--martin-dv-sold:' . $s['color_sold'] . ';';
+    if (($s['color_free'] ?? '') !== '') {
+        $style .= '--martin-dv-free:' . $s['color_free'] . ';';
+    }
     if ($accent) {
         $style .= '--martin-dv-accent:' . $accent . ';';
     }
@@ -287,8 +290,9 @@ function render_project(int $project_id, array $args = []): string
     $legend = '';
     if ($units) {
         $legend = '<div class="martin-dv__legend">';
-        foreach (statuses() as $key => $label) {
-            $legend .= '<span data-status="' . esc_attr($key) . '"><i></i>' . esc_html($label) . '</span>';
+        // Od 0.15.0 stavy projektu včetně vlastních (data-status = chování, barva vlastního stavu inline).
+        foreach (project_statuses($project_id) as $key => $st) {
+            $legend .= '<span data-status="' . esc_attr($st['kind']) . '"' . status_style($key, $st['color']) . '><i></i>' . esc_html($st['label']) . '</span>';
         }
         $legend .= '</div>';
     }
@@ -473,9 +477,9 @@ function unit_area_html(array $u, int $id, array $poly): string
     $aria = trim($u['label'] . ', ' . implode(', ', array_filter([$u['disp'], $u['areaTxt'], $u['statusLabel']])), ', ');
     $pg   = '<polygon points="' . esc_attr(poly_points($poly)) . '"></polygon>';
     if ($u['clickable']) {
-        return '<a class="martin-dv__area martin-dv__area--unit" href="' . esc_url($u['url']) . '" data-dv-key="' . esc_attr($key) . '" data-status="' . esc_attr($u['status']) . '" aria-label="' . esc_attr($aria) . '">' . $pg . '</a>';
+        return '<a class="martin-dv__area martin-dv__area--unit" href="' . esc_url($u['url']) . '" data-dv-key="' . esc_attr($key) . '" data-status="' . esc_attr($u['status']) . '"' . status_style($u['statusKey'], $u['statusColor']) . ' aria-label="' . esc_attr($aria) . '">' . $pg . '</a>';
     }
-    return '<g class="martin-dv__area martin-dv__area--unit is-disabled" data-dv-key="' . esc_attr($key) . '" data-status="' . esc_attr($u['status']) . '" role="img" aria-label="' . esc_attr($aria) . '">' . $pg . '</g>';
+    return '<g class="martin-dv__area martin-dv__area--unit is-disabled" data-dv-key="' . esc_attr($key) . '" data-status="' . esc_attr($u['status']) . '"' . status_style($u['statusKey'], $u['statusColor']) . ' role="img" aria-label="' . esc_attr($aria) . '">' . $pg . '</g>';
 }
 
 function summary_card_html(string $kicker, string $title, array $lines, string $hint): string
@@ -614,7 +618,7 @@ function table_html(array $units, array $floors, array $floor_units, array $unit
 
     foreach ($ids as $id) {
         $u  = $units[$id];
-        $h .= '<tr data-dv-key="unit:' . (int) $id . '" data-type="' . esc_attr($u['type']) . '" data-disp="' . esc_attr($u['disp']) . '" data-status="' . esc_attr($u['status']) . '" data-floors="' . esc_attr(implode(' ', $unit_floors[$id] ?? [])) . '">';
+        $h .= '<tr data-dv-key="unit:' . (int) $id . '" data-type="' . esc_attr($u['type']) . '" data-disp="' . esc_attr($u['disp']) . '" data-status="' . esc_attr($u['status']) . '"' . status_style($u['statusKey'], $u['statusColor']) . ' data-floors="' . esc_attr(implode(' ', $unit_floors[$id] ?? [])) . '">';
         foreach ($columns as $col) {
             switch ($col) {
                 case 'jednotka':
@@ -640,7 +644,7 @@ function table_html(array $units, array $floors, array $floor_units, array $unit
                     $h .= '<td class="martin-dv__cell-price">' . esc_html($u['priceTxt'] ?: '—') . '</td>';
                     break;
                 case 'stav':
-                    $h .= '<td><span class="martin-dv__status" data-status="' . esc_attr($u['status']) . '">' . esc_html($u['statusLabel']) . '</span></td>';
+                    $h .= '<td><span class="martin-dv__status" data-status="' . esc_attr($u['status']) . '"' . status_style($u['statusKey'], $u['statusColor']) . '>' . esc_html($u['statusLabel']) . '</span></td>';
                     break;
                 case 'detail':
                     $h .= '<td class="martin-dv__cell-detail">' . ($u['clickable']
@@ -655,4 +659,17 @@ function table_html(array $units, array $floors, array $floor_units, array $unit
     $h .= '</tbody></table></div></div>';
 
     return $h;
+}
+
+/**
+ * Atributy vlastního stavu: style="--c:…" (barva) + data-status-key. Základní stavy nic nepřidávají –
+ * barví je CSS proměnné výběru (a Design tab elementu).
+ */
+function status_style(string $key, string $color): string
+{
+    if (isset(statuses()[$key])) {
+        return '';
+    }
+    $color = sanitize_css_color($color);
+    return ' data-status-key="' . esc_attr($key) . '"' . ($color !== '' ? ' style="' . esc_attr('--c:' . $color) . '"' : '');
 }

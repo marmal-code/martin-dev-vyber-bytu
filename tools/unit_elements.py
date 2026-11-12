@@ -111,6 +111,52 @@ ELEMENTS = {
             ]),
         ]),
     },
+    'StitekStavu': {
+        'name': 'Marmal – Štítek stavu',
+        'class': 'martin-dv-stitek-element',
+        'section': 'stitek',
+        'order': 105,
+        'content': [
+            c('stitek', 'Štítek stavu', [
+                number('jednotka_id', ID_HELP, 0),
+                toggle('plny', 'Plné pozadí v barvě stavu (bílý text)'),
+            ], "['type' => 'section', 'layout' => 'vertical']"),
+        ],
+        'design': common_design([
+            section('vzhled', 'Štítek', [
+                preset('spacing_padding_all', 'Odsazení', 'odsazeni'),
+                unit('zaobleni', 'Zaoblení'),
+                color('pozadi', 'Pozadí (prázdné = podle stavu)'),
+                color('text', 'Text (prázdné = podle stavu)'),
+            ]),
+        ]),
+    },
+    'Dokumenty': {
+        'name': 'Marmal – Dokumenty',
+        'class': 'martin-dv-dokumenty-element',
+        'section': 'dokumenty',
+        'order': 106,
+        'content': [
+            c('dokumenty', 'Dokumenty projektu', [
+                number('projekt_id', 'ID projektu (prázdné = projekt jednotky / výchozí)', 0),
+                toggle('skryt_info', 'Skrýt typ a velikost souboru'),
+                toggle('stejne_okno', 'Otevírat ve stejném okně'),
+            ], "['type' => 'section', 'layout' => 'vertical']"),
+        ],
+        'design': common_design([
+            section('vzhled', 'Položky', [
+                preset('typography_with_effects_and_align', 'Písmo názvu', 'nazev'),
+                preset('spacing_padding_all', 'Odsazení položky', 'odsazeni'),
+                unit('mezera', 'Mezera mezi položkami', True),
+                unit('zaobleni', 'Zaoblení'),
+                color('pozadi', 'Pozadí'),
+                color('pozadi_hover', 'Pozadí po najetí'),
+                color('ramecek', 'Rámeček'),
+                color('zvyrazneni', 'Rámeček po najetí a ikona (prázdné = Brand)'),
+                color('info', 'Typ a velikost souboru'),
+            ]),
+        ]),
+    },
 }
 
 SSR = {
@@ -180,6 +226,48 @@ $martin_dv_html = \\MartinDV\\render_schema(absint($martin_dv_c['jednotka_id'] ?
 // render_schema() vrací hotové HTML, každá hodnota je escapovaná (esc_html/esc_attr), obrázek přes wp_get_attachment_image().
 echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 ''',
+    'StitekStavu': '''<?php
+/**
+ * Server-side render elementu „Štítek stavu“ (MartinDV\\StitekStavu).
+ * Element Studio tento soubor neupravuje – mění se jen tady v pluginu.
+ *
+ * @var array $propertiesData
+ */
+
+if (!function_exists('\\MartinDV\\render_status_badge')) {
+    echo '<p>Plugin „Marmal – Developerské projekty“ není aktivní.</p>';
+    return;
+}
+
+$martin_dv_c = $propertiesData['content']['stitek'] ?? [];
+$martin_dv_html = \\MartinDV\\render_status_badge(absint($martin_dv_c['jednotka_id'] ?? 0));
+if (!empty($martin_dv_c['plny'])) {
+    $martin_dv_html = str_replace('class="martin-dv-badge"', 'class="martin-dv-badge martin-dv-badge--solid"', $martin_dv_html);
+}
+// render_status_badge() vrací hotové HTML, každá hodnota je escapovaná (esc_html/esc_attr).
+echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+''',
+    'Dokumenty': '''<?php
+/**
+ * Server-side render elementu „Dokumenty“ (MartinDV\\Dokumenty).
+ * Element Studio tento soubor neupravuje – mění se jen tady v pluginu.
+ *
+ * @var array $propertiesData
+ */
+
+if (!function_exists('\\MartinDV\\render_documents')) {
+    echo '<p>Plugin „Marmal – Developerské projekty“ není aktivní.</p>';
+    return;
+}
+
+$martin_dv_c = $propertiesData['content']['dokumenty'] ?? [];
+$martin_dv_html = \\MartinDV\\render_documents(absint($martin_dv_c['projekt_id'] ?? 0), [
+    'hide_meta' => !empty($martin_dv_c['skryt_info']),
+    'same_tab'  => !empty($martin_dv_c['stejne_okno']),
+]);
+// render_documents() vrací hotové HTML, každá hodnota je escapovaná (esc_html/esc_attr/esc_url).
+echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+''',
 }
 
 CONTAINER_CSS = '''%%SELECTOR%% {
@@ -229,6 +317,33 @@ CSS = {
   {% if design.vzhled.ostatni_obrys %}--mdj-other-line: {{ design.vzhled.ostatni_obrys }};{% endif %}
   {% if design.vzhled.zaobleni.style %}--mdj-radius: {{ design.vzhled.zaobleni.style }};{% endif %}
   {% if design.vzhled.popisek %}--mdj-muted: {{ design.vzhled.popisek }};{% endif %}
+}
+''',
+    'StitekStavu': CONTAINER_CSS + '''
+{# Vzhled štítku (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
+%%SELECTOR%% .martin-dv-badge {
+  {{ macros.spacing_padding_all(design.vzhled.odsazeni) }}
+  {% if design.vzhled.zaobleni.style %}border-radius: {{ design.vzhled.zaobleni.style }};{% endif %}
+  {% if design.vzhled.pozadi %}background: {{ design.vzhled.pozadi }};{% endif %}
+  {% if design.vzhled.text %}color: {{ design.vzhled.text }};{% endif %}
+}
+''',
+    'Dokumenty': CONTAINER_CSS + '''
+{# Vzhled přes CSS proměnné (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
+%%SELECTOR%% .martin-dv-docs {
+  {% if design.vzhled.mezera.style %}--mdj-docs-gap: {{ design.vzhled.mezera.style }};{% endif %}
+  {% if design.vzhled.zaobleni.style %}--mdj-docs-radius: {{ design.vzhled.zaobleni.style }};{% endif %}
+  {% if design.vzhled.pozadi %}--mdj-docs-bg: {{ design.vzhled.pozadi }};{% endif %}
+  {% if design.vzhled.pozadi_hover %}--mdj-docs-bg-hover: {{ design.vzhled.pozadi_hover }};{% endif %}
+  {% if design.vzhled.ramecek %}--mdj-line: {{ design.vzhled.ramecek }};{% endif %}
+  {% if design.vzhled.zvyrazneni %}--mdj-accent: {{ design.vzhled.zvyrazneni }};{% endif %}
+  {% if design.vzhled.info %}--mdj-muted: {{ design.vzhled.info }};{% endif %}
+}
+%%SELECTOR%% .martin-dv-docs .martin-dv-docs__link {
+  {{ macros.spacing_padding_all(design.vzhled.odsazeni) }}
+}
+%%SELECTOR%% .martin-dv-docs .martin-dv-docs__name {
+  {{ macros.typography(design.vzhled.nazev, globalSettings) }}
 }
 ''',
 }

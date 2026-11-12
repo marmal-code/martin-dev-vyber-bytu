@@ -7,6 +7,11 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
+  // Vlastní stav projektu (od 0.15.0): barva přes --c; hodnota je ze serveru ověřená sanitize_css_color().
+  function stStyle(u) {
+    return u.statusColor && /^(#[0-9a-f]{3,8}|var\(--[a-z0-9_-]+\)|(rgb|rgba|hsl|hsla)\([0-9.,%\s\/]+\))$/i.test(u.statusColor)
+      ? ' style="--c:' + esc(u.statusColor) + '"' : '';
+  }
   function q(key) { return window.CSS && CSS.escape ? CSS.escape(key) : key; }
 
   function init(root) {
@@ -97,7 +102,7 @@
     function cardHTML(u) {
       return '<p class="martin-dv__kicker">' + esc(u.typeLabel) + '</p>' +
         '<div class="martin-dv__card-head"><h4 class="martin-dv__card-title">' + esc(u.num) + '</h4>' +
-        '<span class="martin-dv__status" data-status="' + esc(u.status) + '">' + esc(u.statusLabel) + '</span></div>' +
+        '<span class="martin-dv__status" data-status="' + esc(u.status) + '"' + stStyle(u) + '>' + esc(u.statusLabel) + '</span></div>' +
         '<dl class="martin-dv__dl">' +
         row(D.i18n.disp, u.disp) + row(D.i18n.floor, u.floorTxt) + row(D.i18n.area, u.areaTxt) +
         (u.outLabel ? row(u.outLabel, u.outAreaTxt || '✓') : '') + row(D.i18n.price, u.priceTxt) +
@@ -131,7 +136,7 @@
         if (S.tip_area && u.areaTxt) h += '<span>' + esc(D.i18n.area) + ': ' + esc(u.areaTxt) + '</span>';
         if (S.tip_outdoor && u.outTxt) h += '<span>' + esc(u.outTxt) + '</span>';
         if (S.tip_price && u.priceTxt) h += '<span class="martin-dv__tip-price">' + esc(u.priceTxt) + '</span>';
-        if (S.tip_status) h += '<span><span class="martin-dv__status" data-status="' + esc(u.status) + '">' + esc(u.statusLabel) + '</span></span>';
+        if (S.tip_status) h += '<span><span class="martin-dv__status" data-status="' + esc(u.status) + '"' + stStyle(u) + '>' + esc(u.statusLabel) + '</span></span>';
         if (u.clickable) h += '<em>' + esc(D.i18n.clickUnit) + '</em>';
         return h;
       }

@@ -182,6 +182,34 @@
       '<label class="mdv-fld"><span>' + esc(T.buildings) + '</span><textarea rows="3" data-set="buildings">' + esc(bTxt) + '</textarea><small>' + esc(T.buildingsHelp) + '</small></label></div>';
   }
 
+  /* Od 0.15.0: stavy jednotek – název a barva tří základních, vlastní stavy s chováním základního. */
+  var KINDS = ['volny', 'rezervovany', 'prodany'];
+  if (!Array.isArray(S.settings.statuses) || !S.settings.statuses.length) {
+    S.settings.statuses = KINDS.map(function (k) {
+      return { key: k, label: '', color: k === 'rezervovany' ? (S.settings.color_reserved || '#d39b2a') : k === 'prodany' ? (S.settings.color_sold || '#9aa0a8') : '', kind: k };
+    });
+  }
+  function statusesHTML() {
+    var rows = S.settings.statuses.map(function (st, i) {
+      var base = KINDS.indexOf(st.key) !== -1;
+      var color = st.key === 'volny'
+        ? '<input type="text" class="mdv-st-color" data-st="' + i + '" data-k="color" value="' + esc(st.color || '') + '" placeholder="' + esc(T.stFreeColorPh) + '" title="' + esc(T.stFreeColorPh) + '">'
+        : '<input type="color" data-st="' + i + '" data-k="color" value="' + esc(st.color || '#6b7280') + '">';
+      var kind = base ? '<span class="mdv-st-base">' + esc(T.stBase) + '</span>'
+        : '<select data-st="' + i + '" data-k="kind" title="' + esc(T.stKind) + '">' + KINDS.map(function (k) {
+          return '<option value="' + k + '"' + (st.kind === k ? ' selected' : '') + '>' + esc(T.stKinds[k]) + '</option>';
+        }).join('') + '</select>';
+      return '<li class="mdv-st">' +
+        '<input type="text" data-st="' + i + '" data-k="label" value="' + esc(st.label || '') + '" placeholder="' + esc(T.stDefaults[st.key] || T.stName) + '">' +
+        color + kind +
+        (base ? '' : '<button type="button" class="button-link mdv-st-del" data-st-act="del" data-st-i="' + i + '" aria-label="' + esc(T.stDelete) + '">×</button>') +
+        '</li>';
+    }).join('');
+    return '<div class="mdv-group"><span class="mdv-kicker">' + esc(T.stTitle) + '</span><small class="mdv-help">' + esc(T.stHelp) + '</small>' +
+      '<ul class="mdv-sts">' + rows + '</ul>' +
+      '<button type="button" class="button" data-st-act="add">+ ' + esc(T.stAdd) + '</button></div>';
+  }
+
   function settingsHTML() {
     var s = S.settings;
     return '<div class="mdv-title"><span class="mdv-kicker">' + esc(T.project) + '</span><strong>' + esc(T.settings) + '</strong></div>' +
@@ -196,9 +224,7 @@
       '<label class="mdv-fld"><span>' + esc(T.hintFloor) + '</span><input type="text" data-set="hint_floor" value="' + esc(s.hint_floor) + '" placeholder="' + esc(T.hintFloorPh) + '"><small>' + esc(T.hintHelp) + '</small></label>' +
       '<div class="mdv-group"><span class="mdv-kicker">' + esc(T.colors) + '</span>' +
       '<label class="mdv-fld"><span>' + esc(T.accent) + '</span><input type="text" data-set="color_accent" value="' + esc(s.color_accent) + '" placeholder="var(--bde-brand-primary-color)"><small>' + esc(T.accentHelp) + '</small></label>' +
-      '<div class="mdv-row"><label class="mdv-fld"><span>' + esc(T.reserved) + '</span><input type="color" data-set="color_reserved" value="' + esc(s.color_reserved) + '"></label>' +
-      '<label class="mdv-fld"><span>' + esc(T.sold) + '</span><input type="color" data-set="color_sold" value="' + esc(s.color_sold) + '"></label></div>' +
-      '</div></div>';
+      '</div>' + statusesHTML() + '</div>';
   }
 
   function inspHTML() {
@@ -357,6 +383,19 @@
       render();
       return;
     }
+    if ((el = t.closest('[data-st-act]'))) {
+      e.preventDefault();
+      if (el.getAttribute('data-st-act') === 'add') {
+        S.settings.statuses.push({ key: 'x' + Math.random().toString(36).slice(2, 8).replace(/[^a-z0-9]/g, '0'), label: T.stNew, color: '#6b7280', kind: 'rezervovany' });
+      } else {
+        var si = +el.getAttribute('data-st-i');
+        if (S.settings.statuses[si] && KINDS.indexOf(S.settings.statuses[si].key) === -1 && window.confirm(T.stConfirm)) {
+          S.settings.statuses.splice(si, 1);
+        }
+      }
+      render();
+      return;
+    }
     if (!(el = t.closest('[data-act]'))) return;
     var act = el.getAttribute('data-act');
     var o = ctxObj();
@@ -428,6 +467,12 @@
     if (t.hasAttribute('data-col')) {
       var col = S.settings.table_columns[+t.getAttribute('data-col')];
       if (col) col.on = t.checked;
+      sync();
+      return;
+    }
+    if (t.hasAttribute('data-st')) {
+      var st = S.settings.statuses[+t.getAttribute('data-st')];
+      if (st) st[t.getAttribute('data-k')] = t.value;
       sync();
       return;
     }

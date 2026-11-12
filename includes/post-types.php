@@ -83,8 +83,7 @@ add_action('manage_' . PT_UNIT . '_posts_custom_column', function ($col, $post_i
             echo esc_html(get_post_meta($post_id, 'dv_dispozice', true) ?: '—');
             break;
         case 'dv_stav':
-            $s = statuses();
-            echo esc_html($s[get_post_meta($post_id, 'dv_stav', true)] ?? '—');
+            echo esc_html(unit_status((int) $post_id)['label']); // od 0.15.0 i vlastní stavy projektu
             break;
         case 'dv_projekt':
             $pid = (int) get_post_meta($post_id, 'dv_projekt', true);

@@ -58,13 +58,12 @@ function editor_units(int $project_id): array
         'order'       => 'ASC',
     ]);
     $types = unit_types();
-    $sts   = statuses();
     $out   = [];
     foreach ($posts as $p) {
         $num    = trim((string) get_post_meta($p->ID, 'dv_cislo', true));
         $type   = $types[get_post_meta($p->ID, 'dv_typ', true)] ?? $types['byt'];
         $disp   = (string) get_post_meta($p->ID, 'dv_dispozice', true);
-        $status = $sts[get_post_meta($p->ID, 'dv_stav', true)] ?? '';
+        $status = unit_status((int) $p->ID, $project_id)['label'];
         $short  = $num !== '' ? $num : get_the_title($p);
         $label  = ($num !== '' ? $type . ' ' . $num : get_the_title($p))
             . ($disp ? ' · ' . $disp : '')
@@ -180,6 +179,18 @@ add_action('admin_enqueue_scripts', function ($hook) {
             'sold'         => __('Prodané', 'martin-dev-vyber-bytu'),
             'unnamed'      => __('bez názvu', 'martin-dev-vyber-bytu'),
             'unitData'     => __('Údaje jednotek', 'martin-dev-vyber-bytu'),
+            'stTitle'      => __('Stavy jednotek', 'martin-dev-vyber-bytu'),
+            'stHelp'       => __('Název a barva štítku. Vlastní stav se chová jako vybraný základní (cena, klikání, filtr „Jen volné“). Prázdný název = výchozí.', 'martin-dev-vyber-bytu'),
+            'stBase'       => __('základní', 'martin-dev-vyber-bytu'),
+            'stKind'       => __('Chová se jako', 'martin-dev-vyber-bytu'),
+            'stKinds'      => ['volny' => __('jako Volný', 'martin-dev-vyber-bytu'), 'rezervovany' => __('jako Rezervovaný', 'martin-dev-vyber-bytu'), 'prodany' => __('jako Prodaný', 'martin-dev-vyber-bytu')],
+            'stDefaults'   => statuses(),
+            'stName'       => __('Název stavu', 'martin-dev-vyber-bytu'),
+            'stNew'        => __('Nový stav', 'martin-dev-vyber-bytu'),
+            'stAdd'        => __('Přidat stav', 'martin-dev-vyber-bytu'),
+            'stDelete'     => __('Smazat stav', 'martin-dev-vyber-bytu'),
+            'stConfirm'    => __('Smazat stav? Jednotky s tímto stavem se budou zobrazovat jako Volné, dokud jim stav nezměníš.', 'martin-dev-vyber-bytu'),
+            'stFreeColorPh'=> __('barva zvýraznění', 'martin-dev-vyber-bytu'),
             'labelTotal'   => __('Název celkové plochy', 'martin-dev-vyber-bytu'),
             'labelTotalPh' => __('Celková plocha', 'martin-dev-vyber-bytu'),
             'labelTotalHelp'=> __('Plocha jednotky včetně příček a zdí (pole „Plocha“ u jednotky). Prázdné = Celková plocha.', 'martin-dev-vyber-bytu'),
