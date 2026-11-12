@@ -14,12 +14,29 @@
   {% if design.vzhled.pozadi %}--mdj-docs-bg: {{ design.vzhled.pozadi }};{% endif %}
   {% if design.vzhled.pozadi_hover %}--mdj-docs-bg-hover: {{ design.vzhled.pozadi_hover }};{% endif %}
   {% if design.vzhled.ramecek %}--mdj-line: {{ design.vzhled.ramecek }};{% endif %}
+  {% if design.vzhled.ramecek_hover %}--mdj-docs-line-hover: {{ design.vzhled.ramecek_hover }};{% endif %}
   {% if design.vzhled.zvyrazneni %}--mdj-accent: {{ design.vzhled.zvyrazneni }};{% endif %}
   {% if design.vzhled.info %}--mdj-muted: {{ design.vzhled.info }};{% endif %}
+  {% if design.stitek.velikost.style %}--mdj-badge-size: {{ design.stitek.velikost.style }};{% endif %}
+  {% if design.stitek.zaobleni.style %}--mdj-badge-radius: {{ design.stitek.zaobleni.style }};{% endif %}
+  {% if design.stitek.pozadi %}--mdj-docs-badge-bg: {{ design.stitek.pozadi }};{% endif %}
+  {% if design.stitek.text %}--mdj-docs-badge-text: {{ design.stitek.text }};{% endif %}
+  {% if design.tlacitko.zaobleni.style %}--mdj-btn-radius: {{ design.tlacitko.zaobleni.style }};{% endif %}
+  {% if design.tlacitko.pozadi %}--mdj-btn-bg: {{ design.tlacitko.pozadi }};{% endif %}
+  {% if design.tlacitko.text %}--mdj-btn-text: {{ design.tlacitko.text }};{% endif %}
+  {% if design.tlacitko.pozadi_hover %}--mdj-btn-bg-hover: {{ design.tlacitko.pozadi_hover }};{% endif %}
+  {% if design.tlacitko.text_hover %}--mdj-btn-text-hover: {{ design.tlacitko.text_hover }};{% endif %}
 }
-%%SELECTOR%% .martin-dv-docs .martin-dv-docs__link {
+%%SELECTOR%% .martin-dv-docs .martin-dv-docs__item {
   {{ macros.spacing_padding_all(design.vzhled.odsazeni) }}
 }
 %%SELECTOR%% .martin-dv-docs .martin-dv-docs__name {
   {{ macros.typography(design.vzhled.nazev, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv-docs .martin-dv-docs__desc {
+  {{ macros.typography(design.vzhled.popis_pismo, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv-docs .martin-dv-docs__btn {
+  {{ macros.spacing_padding_all(design.tlacitko.odsazeni) }}
+  {{ macros.typography(design.tlacitko.pismo, globalSettings) }}
 }

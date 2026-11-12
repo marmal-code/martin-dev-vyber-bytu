@@ -8,7 +8,7 @@
  *   dv_vizualizace   [ID, …]  vizualizace
  *   dv_galerie_vse   [ID, …]  fotky + vizualizace dohromady (počítá se při uložení)
  *   dv_video         URL      YouTube / Vimeo / soubor MP4
- *   _dv_dokumenty    JSON     [{nazev, soubor}]
+ *   _dv_dokumenty    JSON     [{nazev, popis, soubor}]
  * Galerie mají názvy bez podtržítka, aby je Galerie Plus (Breakdance Plus) načetla jako „ACF pole“
  * (get_field vrátí uložené pole ID) – v elementu Galerie Plus: Zdroj = ACF pole, název dv_galerie.
  */
@@ -50,7 +50,7 @@ function sanitize_unit_docs($rows): array
         }
         $file = clean_attachment($d['soubor'] ?? 0);
         if ($file) {
-            $out[] = ['nazev' => clean_text($d['nazev'] ?? '', 120), 'soubor' => $file];
+            $out[] = ['nazev' => clean_text($d['nazev'] ?? '', 120), 'popis' => clean_text($d['popis'] ?? '', 200), 'soubor' => $file];
         }
     }
     return $out;
@@ -80,7 +80,13 @@ function unit_documents(int $unit_id): array
     $karta = get_post_meta($unit_id, 'dv_karta', true); // ACF file ukládá ID přílohy
     $kid   = clean_attachment($karta);
     if ($kid) {
-        $out[] = ['nazev' => __('Karta jednotky', 'martin-dev-vyber-bytu'), 'soubor' => $kid];
+        $num   = trim((string) get_post_meta($unit_id, 'dv_cislo', true));
+        $out[] = [
+            /* translators: %s: číslo jednotky (v Nastavení lze přepsat např. na „Karta bytu %s“) */
+            'nazev'  => $num !== '' ? sprintf(__('Karta jednotky %s', 'martin-dev-vyber-bytu'), $num) : __('Karta jednotky', 'martin-dev-vyber-bytu'),
+            'popis'  => __('Půdorys, plochy místností a poloha v domě', 'martin-dev-vyber-bytu'),
+            'soubor' => $kid,
+        ];
     }
     foreach (sanitize_unit_docs(read_json_meta($unit_id, META_UNIT_DOCS)) as $d) {
         if ($d['soubor'] !== $kid) {
@@ -177,6 +183,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
             'docs'        => __('Dokumenty jednotky', 'martin-dev-vyber-bytu'),
             'docsHelp'    => __('Karta jednotky (pole výše) se do seznamu přidá sama jako první. Na webu element „Marmal – Dokumenty“.', 'martin-dev-vyber-bytu'),
             'docNamePh'   => __('např. Technický list', 'martin-dev-vyber-bytu'),
+            'docDescPh'   => __('popis – nepovinný', 'martin-dev-vyber-bytu'),
             'chooseFile'  => __('Vybrat soubor', 'martin-dev-vyber-bytu'),
             'changeFile'  => __('Změnit', 'martin-dev-vyber-bytu'),
             'addDoc'      => __('Přidat dokument', 'martin-dev-vyber-bytu'),

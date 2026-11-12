@@ -41,7 +41,8 @@
     var D = S.dokumenty, n = D.length;
     var rows = D.map(function (d, i) {
       var f = FILES[d.soubor] || {};
-      return '<tr><td><input type="text" data-doc="' + i + '" value="' + esc(d.nazev) + '" placeholder="' + esc(T.docNamePh) + '"></td>' +
+      return '<tr><td><input type="text" data-doc="' + i + '" value="' + esc(d.nazev) + '" placeholder="' + esc(T.docNamePh) + '">' +
+        '<input type="text" class="mdi-desc" data-doc-desc="' + i + '" value="' + esc(d.popis || '') + '" placeholder="' + esc(T.docDescPh) + '"></td>' +
         '<td class="mdi-file"><span>' + esc(f.file || '') + '</span> <button type="button" class="button button-small" data-act="file" data-list="dokumenty" data-i="' + i + '">' + esc(T.changeFile) + '</button></td>' +
         '<td class="mdu-tools">' +
         '<button type="button" class="button-link" data-act="up" data-list="dokumenty" data-i="' + i + '" aria-label="' + esc(T.up) + '"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
@@ -90,7 +91,7 @@
       return;
     }
     if (act === 'adddoc') {
-      pick({ title: T.chooseFile }, function (sel) { if (sel[0]) { S.dokumenty.push({ nazev: sel[0].title || '', soubor: sel[0].id }); render(); } });
+      pick({ title: T.chooseFile }, function (sel) { if (sel[0]) { S.dokumenty.push({ nazev: sel[0].title || '', popis: '', soubor: sel[0].id }); render(); } });
       return;
     }
     if (act === 'file') {
@@ -107,7 +108,8 @@
   function onField(e) {
     var t = e.target;
     if (t.hasAttribute('data-video')) { S.video = t.value.trim(); sync(); return; }
-    if (t.hasAttribute('data-doc')) { var d = S.dokumenty[+t.getAttribute('data-doc')]; if (d) d.nazev = t.value; sync(); }
+    if (t.hasAttribute('data-doc')) { var d = S.dokumenty[+t.getAttribute('data-doc')]; if (d) d.nazev = t.value; sync(); return; }
+    if (t.hasAttribute('data-doc-desc')) { var dd = S.dokumenty[+t.getAttribute('data-doc-desc')]; if (dd) dd.popis = t.value; sync(); }
   }
   root.addEventListener('input', onField);
   root.addEventListener('change', onField);

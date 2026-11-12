@@ -72,3 +72,6 @@
 #martin-dv-media-editor .mdi-file { white-space: nowrap; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
 #martin-dv-media-editor .mdu-tools { width: 82px; white-space: nowrap; text-align: right; }
 #martin-dv-media-editor .mdu-tools button { padding: 2px 5px; font-size: 15px; text-decoration: none; }
+
+/* Popis dokumentu pod názvem (od 0.18.0) */
+#martin-dv-info-editor .mdi-desc, #martin-dv-media-editor .mdi-desc { margin-top: 4px; font-size: 12px; color: #50575e; }

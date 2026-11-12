@@ -57,7 +57,7 @@ function overridable_texts(): array
             'Jednotka', 'Detail jednotky', 'Všechny jednotky', 'Přehled jednotek', 'Jednotky: %1$d · volné: %2$d',
             'Tato jednotka je prodaná.', 'Filtru neodpovídá žádná jednotka.', 'Projekt zatím nemá žádné jednotky.', 'Jen volné',
         ],
-        __('Detail jednotky', 'martin-dev-vyber-bytu') => ['Místnost', 'Podobné jednotky', 'Předchozí', 'Další', 'Karta jednotky', 'Příslušenství', 'Venkovní plochy celkem'],
+        __('Detail jednotky', 'martin-dev-vyber-bytu') => ['Místnost', 'Podobné jednotky', 'Předchozí', 'Další', 'Karta jednotky', 'Karta jednotky %s', 'Půdorys, plochy místností a poloha v domě', 'Stáhnout', 'Příslušenství', 'Venkovní plochy celkem'],
     ]);
 }
 

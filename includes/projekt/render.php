@@ -18,10 +18,12 @@ add_shortcode('martin_dv_stav', function ($atts) {
 });
 
 add_shortcode('martin_dv_dokumenty', function ($atts) {
-    $atts = shortcode_atts(['projekt' => 0, 'jednotka' => 0, 'info' => 'ano', 'novy' => 'ano', 'jednotky' => 'ano', 'projektu' => 'ano'], $atts, 'martin_dv_dokumenty');
+    $atts = shortcode_atts(['projekt' => 0, 'jednotka' => 0, 'info' => 'ano', 'velikost' => 'ne', 'novy' => 'ano', 'jednotky' => 'ano', 'projektu' => 'ano', 'tlacitko' => ''], $atts, 'martin_dv_dokumenty');
     return render_documents(absint($atts['projekt']), [
         'unit'         => absint($atts['jednotka']),
         'hide_meta'    => $atts['info'] === 'ne',
+        'show_size'    => $atts['velikost'] === 'ano',
+        'button_text'  => sanitize_text_field($atts['tlacitko']),
         'same_tab'     => $atts['novy'] === 'ne',
         'hide_unit'    => $atts['jednotky'] === 'ne',
         'hide_project' => $atts['projektu'] === 'ne',
@@ -47,8 +49,8 @@ function render_status_badge(int $id): string
  * Dokumenty ke stažení: na detailu jednotky nejdřív dokumenty jednotky (karta jednotky + vlastní, od 0.16.0),
  * pak dokumenty projektu. Bez ID projektu: projekt jednotky, jinak výchozí projekt.
  *
- * @param array $args unit (ID jednotky, 0 = aktuální), hide_unit, hide_project, hide_meta (bez typu a velikosti),
- *                    same_tab (otevřít ve stejném okně)
+ * @param array $args unit (ID jednotky, 0 = aktuální), hide_unit, hide_project, hide_meta (bez štítku s typem souboru),
+ *                    show_size (velikost souboru za popisem), same_tab (bez nového okna), button_text (výchozí „Stáhnout“)
  */
 function render_documents(int $project_id, array $args = []): string
 {
@@ -74,7 +76,10 @@ function render_documents(int $project_id, array $args = []): string
     if (!$docs) {
         return editor_notice(__('Dokumenty: zatím žádné (Jednotka → Fotky, video a dokumenty, nebo Projekt → Údaje projektu → Dokumenty).', 'martin-dev-vyber-bytu'));
     }
-    $h = ensure_unit_assets() . '<ul class="martin-dv-docs">';
+    // Od 0.18.0 každý dokument na celý řádek: vlevo typ souboru, název a popis, vpravo tlačítko Stáhnout.
+    $btn_text = trim((string) ($args['button_text'] ?? '')) ?: __('Stáhnout', 'martin-dev-vyber-bytu');
+    $icon     = '<svg class="martin-dv-docs__btn-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    $h        = ensure_unit_assets() . '<ul class="martin-dv-docs">';
     foreach ($docs as $d) {
         $url = wp_get_attachment_url($d['soubor']);
         if (!$url) {
@@ -82,15 +87,20 @@ function render_documents(int $project_id, array $args = []): string
         }
         $path = (string) get_attached_file($d['soubor']);
         $ext  = strtoupper((string) pathinfo($path, PATHINFO_EXTENSION));
-        $size = ($path !== '' && file_exists($path)) ? size_format((int) filesize($path), 1) : '';
+        $size = (!empty($args['show_size']) && $path !== '' && file_exists($path)) ? size_format((int) filesize($path), 1) : '';
         $name = $d['nazev'] !== '' ? $d['nazev'] : get_the_title($d['soubor']);
-        $meta = empty($args['hide_meta']) ? trim($ext . ($ext && $size ? ', ' : '') . $size) : '';
-        $h   .= '<li class="martin-dv-docs__item"><a class="martin-dv-docs__link" href="' . esc_url($url) . '"'
-            . (empty($args['same_tab']) ? ' target="_blank" rel="noopener"' : '') . '>'
-            . '<svg class="martin-dv-docs__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 3v5h5M9 13h6M9 17h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
-            . '<span class="martin-dv-docs__name">' . esc_html($name) . '</span>'
-            . ($meta !== '' ? '<span class="martin-dv-docs__meta">' . esc_html($meta) . '</span>' : '')
-            . '</a></li>';
+        $desc = trim((string) ($d['popis'] ?? ''));
+        $sub  = implode(' · ', array_filter([$desc, $size]));
+        $h   .= '<li class="martin-dv-docs__item">'
+            . (empty($args['hide_meta']) && $ext !== '' ? '<span class="martin-dv-docs__badge" aria-hidden="true">' . esc_html(mb_substr($ext, 0, 4)) . '</span>' : '')
+            . '<span class="martin-dv-docs__text"><span class="martin-dv-docs__name">' . esc_html($name) . '</span>'
+            . ($sub !== '' ? '<span class="martin-dv-docs__desc">' . esc_html($sub) . '</span>' : '') . '</span>'
+            . '<a class="martin-dv-docs__btn" href="' . esc_url($url) . '" download'
+            . (empty($args['same_tab']) ? ' target="_blank" rel="noopener"' : '')
+            /* translators: 1: text tlačítka, 2: název dokumentu */
+            . ' aria-label="' . esc_attr(sprintf(__('%1$s: %2$s', 'martin-dev-vyber-bytu'), $btn_text, $name) . ($ext !== '' ? ' (' . $ext . ')' : '')) . '">'
+            . $icon . '<span class="martin-dv-docs__btn-text">' . esc_html($btn_text) . '</span></a>'
+            . '</li>';
     }
     return $h . '</ul>';
 }

@@ -54,7 +54,7 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 - Ukládá se `dv_galerie`, `dv_vizualizace`, `dv_galerie_vse` (pole ID obrázků), `dv_video`, `_dv_dokumenty` (JSON).
 - Galerie na webu: element **Galerie Plus** (Breakdance Plus) → Zdroj = ACF pole → `dv_galerie` / `dv_vizualizace` / `dv_galerie_vse`.
 - Video: element Video → dynamická data „Developerské projekty → Jednotka → Video“.
-- Element **Marmal – Dokumenty**: na detailu jednotky nejdřív dokumenty jednotky, pak projektu (oboje jde skrýt); shortcode `[martin_dv_dokumenty jednotky="ne" projektu="ne"]`.
+- Element **Marmal – Dokumenty**: na detailu jednotky nejdřív dokumenty jednotky, pak projektu (oboje jde skrýt); od 0.18.0 každý dokument na celý řádek – vlevo štítek typu (PDF), název a popis, vpravo tlačítko Stáhnout; popis se zadává u dokumentu (karta jednotky má výchozí „Půdorys, plochy místností a poloha v domě“, název „Karta jednotky 3.22“ – oba texty jdou přepsat v Nastavení). Shortcode `[martin_dv_dokumenty jednotky="ne" projektu="ne" velikost="ano" tlacitko="Stáhnout PDF"]`.
 - Nová dynamická data jednotky: Obrázek (hlavní fotka, jinak první vizualizace / fotka – pro karty v Post Loop), První vizualizace, Video, Video – odkaz, Karta jednotky – odkaz na PDF, Počet fotek a vizualizací.
 
 ### Příslušenství, cena, předchozí / další a podobné jednotky (od 0.17.0)
@@ -122,7 +122,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
-- **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář; staré příslušenství odebráno a převedeno do seznamu.
+- **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář; staré příslušenství odebráno a převedeno do seznamu; Dokumenty jako řádky s popisem a tlačítkem Stáhnout.
 - **0.17.0** – příslušenství jako seznam s vazbou na sklep / garáž, cena platná od, rezervace do (interně), elementy Příslušenství, Předchozí / další jednotka, Podobné jednotky, nová dynamická data.
 - **0.16.0** – fotky, vizualizace, video a dokumenty jednotky (galerie přes Galerii Plus, video přes dynamická data), element Dokumenty i s dokumenty jednotky, dynamická data Obrázek / Video / Karta jednotky.
 - **0.15.0** – údaje projektu (developer, dodavatel, lokalita, termín, předprodej, kontakt prodejce s fotkou, texty, dokumenty), vlastní stavy jednotek s barvou, Breakdance dynamická data (jednotka + projekt, český formát čísel), elementy Štítek stavu a Dokumenty, text místo ceny.

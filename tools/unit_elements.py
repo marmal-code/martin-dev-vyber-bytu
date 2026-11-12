@@ -137,7 +137,7 @@ ELEMENTS = {
         ]),
     },
     'Dokumenty': {
-        'name': 'Marmal – Dokumenty',  # od 0.16.0 i dokumenty jednotky
+        'name': 'Marmal – Dokumenty',  # od 0.16.0 i dokumenty jednotky, od 0.18.0 řádek s tlačítkem Stáhnout
         'class': 'martin-dv-dokumenty-element',
         'section': 'dokumenty',
         'order': 106,
@@ -146,21 +146,40 @@ ELEMENTS = {
                 number('projekt_id', 'ID projektu (prázdné = projekt jednotky / výchozí)', 0),
                 toggle('skryt_jednotky', 'Skrýt dokumenty jednotky (karta jednotky…)'),
                 toggle('skryt_projektu', 'Skrýt dokumenty projektu'),
-                toggle('skryt_info', 'Skrýt typ a velikost souboru'),
+                text('text_tlacitka', 'Text tlačítka (prázdné = Stáhnout)'),
+                toggle('skryt_info', 'Skrýt štítek s typem souboru (PDF)'),
+                toggle('zobrazit_velikost', 'Zobrazit velikost souboru za popisem'),
                 toggle('stejne_okno', 'Otevírat ve stejném okně'),
             ], "['type' => 'section', 'layout' => 'vertical']"),
         ],
         'design': common_design([
-            section('vzhled', 'Položky', [
+            section('vzhled', 'Řádky', [
                 preset('typography_with_effects_and_align', 'Písmo názvu', 'nazev'),
-                preset('spacing_padding_all', 'Odsazení položky', 'odsazeni'),
-                unit('mezera', 'Mezera mezi položkami', True),
-                unit('zaobleni', 'Zaoblení'),
-                color('pozadi', 'Pozadí'),
-                color('pozadi_hover', 'Pozadí po najetí'),
+                preset('typography_with_effects_and_align', 'Písmo popisu', 'popis_pismo'),
+                preset('spacing_padding_all', 'Odsazení řádku', 'odsazeni'),
+                unit('mezera', 'Mezera mezi řádky', True),
+                unit('zaobleni', 'Zaoblení řádku'),
+                color('pozadi', 'Pozadí řádku'),
+                color('pozadi_hover', 'Pozadí řádku po najetí'),
                 color('ramecek', 'Rámeček'),
-                color('zvyrazneni', 'Rámeček po najetí a ikona (prázdné = Brand)'),
-                color('info', 'Typ a velikost souboru'),
+                color('ramecek_hover', 'Rámeček po najetí'),
+                color('info', 'Barva popisu'),
+                color('zvyrazneni', 'Hlavní barva – tlačítko a štítek (prázdné = Brand)'),
+            ]),
+            section('stitek', 'Štítek typu souboru', [
+                unit('velikost', 'Velikost'),
+                unit('zaobleni', 'Zaoblení'),
+                color('pozadi', 'Pozadí (prázdné = světlá hlavní barva)'),
+                color('text', 'Text'),
+            ]),
+            section('tlacitko', 'Tlačítko Stáhnout', [
+                preset('typography_with_effects_and_align', 'Písmo', 'pismo'),
+                preset('spacing_padding_all', 'Odsazení', 'odsazeni'),
+                unit('zaobleni', 'Zaoblení'),
+                color('pozadi', 'Pozadí (prázdné = hlavní barva)'),
+                color('text', 'Text a ikona'),
+                color('pozadi_hover', 'Pozadí po najetí'),
+                color('text_hover', 'Text po najetí'),
             ]),
         ]),
     },
@@ -351,7 +370,9 @@ $martin_dv_html = \\MartinDV\\render_documents(absint($martin_dv_c['projekt_id']
     'hide_unit'    => !empty($martin_dv_c['skryt_jednotky']),
     'hide_project' => !empty($martin_dv_c['skryt_projektu']),
     'hide_meta'    => !empty($martin_dv_c['skryt_info']),
+    'show_size'    => !empty($martin_dv_c['zobrazit_velikost']),
     'same_tab'     => !empty($martin_dv_c['stejne_okno']),
+    'button_text'  => sanitize_text_field((string) ($martin_dv_c['text_tlacitka'] ?? '')),
 ]);
 // render_documents() vrací hotové HTML, každá hodnota je escapovaná (esc_html/esc_attr/esc_url).
 echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -493,14 +514,31 @@ CSS = {
   {% if design.vzhled.pozadi %}--mdj-docs-bg: {{ design.vzhled.pozadi }};{% endif %}
   {% if design.vzhled.pozadi_hover %}--mdj-docs-bg-hover: {{ design.vzhled.pozadi_hover }};{% endif %}
   {% if design.vzhled.ramecek %}--mdj-line: {{ design.vzhled.ramecek }};{% endif %}
+  {% if design.vzhled.ramecek_hover %}--mdj-docs-line-hover: {{ design.vzhled.ramecek_hover }};{% endif %}
   {% if design.vzhled.zvyrazneni %}--mdj-accent: {{ design.vzhled.zvyrazneni }};{% endif %}
   {% if design.vzhled.info %}--mdj-muted: {{ design.vzhled.info }};{% endif %}
+  {% if design.stitek.velikost.style %}--mdj-badge-size: {{ design.stitek.velikost.style }};{% endif %}
+  {% if design.stitek.zaobleni.style %}--mdj-badge-radius: {{ design.stitek.zaobleni.style }};{% endif %}
+  {% if design.stitek.pozadi %}--mdj-docs-badge-bg: {{ design.stitek.pozadi }};{% endif %}
+  {% if design.stitek.text %}--mdj-docs-badge-text: {{ design.stitek.text }};{% endif %}
+  {% if design.tlacitko.zaobleni.style %}--mdj-btn-radius: {{ design.tlacitko.zaobleni.style }};{% endif %}
+  {% if design.tlacitko.pozadi %}--mdj-btn-bg: {{ design.tlacitko.pozadi }};{% endif %}
+  {% if design.tlacitko.text %}--mdj-btn-text: {{ design.tlacitko.text }};{% endif %}
+  {% if design.tlacitko.pozadi_hover %}--mdj-btn-bg-hover: {{ design.tlacitko.pozadi_hover }};{% endif %}
+  {% if design.tlacitko.text_hover %}--mdj-btn-text-hover: {{ design.tlacitko.text_hover }};{% endif %}
 }
-%%SELECTOR%% .martin-dv-docs .martin-dv-docs__link {
+%%SELECTOR%% .martin-dv-docs .martin-dv-docs__item {
   {{ macros.spacing_padding_all(design.vzhled.odsazeni) }}
 }
 %%SELECTOR%% .martin-dv-docs .martin-dv-docs__name {
   {{ macros.typography(design.vzhled.nazev, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv-docs .martin-dv-docs__desc {
+  {{ macros.typography(design.vzhled.popis_pismo, globalSettings) }}
+}
+%%SELECTOR%% .martin-dv-docs .martin-dv-docs__btn {
+  {{ macros.spacing_padding_all(design.tlacitko.odsazeni) }}
+  {{ macros.typography(design.tlacitko.pismo, globalSettings) }}
 }
 ''',
     'Prislusenstvi': CONTAINER_CSS + '''

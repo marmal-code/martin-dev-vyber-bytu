@@ -81,6 +81,8 @@ add_action('admin_enqueue_scripts', function ($hook) {
             'docsHelp'     => __('Brožura, standardy, platební podmínky… Na webu element „Marmal – Dokumenty“ nebo shortcode [martin_dv_dokumenty]. Soubory v knihovně médií jsou veřejně dostupné.', 'martin-dev-vyber-bytu'),
             'docName'      => __('Název', 'martin-dev-vyber-bytu'),
             'docNamePh'    => __('např. Standardy provedení', 'martin-dev-vyber-bytu'),
+            'docDesc'      => __('Popis', 'martin-dev-vyber-bytu'),
+            'docDescPh'    => __('např. Materiály, okna, podlahy a koupelny', 'martin-dev-vyber-bytu'),
             'docFile'      => __('Soubor', 'martin-dev-vyber-bytu'),
             'chooseFile'   => __('Vybrat soubor', 'martin-dev-vyber-bytu'),
             'changeFile'   => __('Změnit', 'martin-dev-vyber-bytu'),
