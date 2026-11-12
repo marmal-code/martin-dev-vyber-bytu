@@ -47,8 +47,8 @@ add_action('admin_enqueue_scripts', function ($hook) {
     global $post;
     $info = project_info($post instanceof \WP_Post ? (int) $post->ID : 0);
     wp_enqueue_media();
-    wp_enqueue_style('martin-dv-unit-editor', MARTIN_DV_URL . 'assets/admin/jednotka-editor.css', [], VERSION);
-    wp_enqueue_script('martin-dv-info-editor', MARTIN_DV_URL . 'assets/admin/projekt-info.js', ['media-editor'], VERSION, true);
+    wp_enqueue_style('martin-dv-unit-editor', MARTIN_DV_URL . 'assets/admin/jednotka-editor.css', [], asset_ver('assets/admin/jednotka-editor.css'));
+    wp_enqueue_script('martin-dv-info-editor', MARTIN_DV_URL . 'assets/admin/projekt-info.js', ['media-editor'], asset_ver('assets/admin/projekt-info.js'), true);
     $cfg = [
         'files' => (object) info_attachments($info),
         'i18n'  => [
@@ -81,6 +81,8 @@ add_action('admin_enqueue_scripts', function ($hook) {
             'docsHelp'     => __('Brožura, standardy, platební podmínky… Na webu element „Marmal – Dokumenty“ nebo shortcode [martin_dv_dokumenty]. Soubory v knihovně médií jsou veřejně dostupné.', 'martin-dev-vyber-bytu'),
             'docName'      => __('Název', 'martin-dev-vyber-bytu'),
             'docNamePh'    => __('např. Standardy provedení', 'martin-dev-vyber-bytu'),
+            'docDesc'      => __('Popis', 'martin-dev-vyber-bytu'),
+            'docDescPh'    => __('např. Materiály, okna, podlahy a koupelny', 'martin-dev-vyber-bytu'),
             'docFile'      => __('Soubor', 'martin-dev-vyber-bytu'),
             'chooseFile'   => __('Vybrat soubor', 'martin-dev-vyber-bytu'),
             'changeFile'   => __('Změnit', 'martin-dev-vyber-bytu'),

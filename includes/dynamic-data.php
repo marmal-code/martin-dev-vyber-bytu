@@ -38,6 +38,22 @@ function dynamic_fields(): array
         'marmal_dv_jednotka_cena_m2'    => [__('Cena za m²', 'martin-dev-vyber-bytu'), $u, 'string'],
         'marmal_dv_jednotka_stav'       => [__('Stav', 'martin-dev-vyber-bytu'), $u, 'string'],
         'marmal_dv_jednotka_projekt'    => [__('Název projektu', 'martin-dev-vyber-bytu'), $u, 'string'],
+        // Od 0.16.0 – média jednotky.
+        'marmal_dv_jednotka_obrazek'    => [__('Obrázek (hlavní fotka, jinak první vizualizace / fotka)', 'martin-dev-vyber-bytu'), $u, 'image'],
+        'marmal_dv_jednotka_vizualizace_1' => [__('První vizualizace', 'martin-dev-vyber-bytu'), $u, 'image'],
+        'marmal_dv_jednotka_video'      => [__('Video', 'martin-dev-vyber-bytu'), $u, 'oembed'],
+        'marmal_dv_jednotka_video_odkaz' => [__('Video – odkaz', 'martin-dev-vyber-bytu'), $u, 'url'],
+        'marmal_dv_jednotka_karta_odkaz' => [__('Karta jednotky – odkaz na PDF', 'martin-dev-vyber-bytu'), $u, 'url'],
+        'marmal_dv_jednotka_pocet_fotek' => [__('Počet fotek a vizualizací', 'martin-dev-vyber-bytu'), $u, 'string'],
+        // Od 0.17.0 – cena, příslušenství, navigace.
+        'marmal_dv_jednotka_cena_platnost' => [__('Cena platná od', 'martin-dev-vyber-bytu'), $u, 'string'],
+        'marmal_dv_jednotka_prislusenstvi' => [__('Příslušenství (Garáž G3, Sklep S12)', 'martin-dev-vyber-bytu'), $u, 'string'],
+        'marmal_dv_jednotka_patri_k'    => [__('Patří k jednotce (u sklepa / garáže)', 'martin-dev-vyber-bytu'), $u, 'string'],
+        'marmal_dv_jednotka_patri_k_odkaz' => [__('Patří k jednotce – odkaz', 'martin-dev-vyber-bytu'), $u, 'url'],
+        'marmal_dv_jednotka_predchozi'  => [__('Předchozí jednotka – označení', 'martin-dev-vyber-bytu'), $u, 'string'],
+        'marmal_dv_jednotka_predchozi_odkaz' => [__('Předchozí jednotka – odkaz', 'martin-dev-vyber-bytu'), $u, 'url'],
+        'marmal_dv_jednotka_dalsi'      => [__('Další jednotka – označení', 'martin-dev-vyber-bytu'), $u, 'string'],
+        'marmal_dv_jednotka_dalsi_odkaz' => [__('Další jednotka – odkaz', 'martin-dev-vyber-bytu'), $u, 'url'],
 
         'marmal_dv_projekt_nazev'       => [__('Název projektu', 'martin-dev-vyber-bytu'), $p, 'string'],
         'marmal_dv_projekt_developer'   => [__('Developer', 'martin-dev-vyber-bytu'), $p, 'string'],
@@ -131,6 +147,47 @@ function dv_unit_value(string $slug, int $id = 0): string
             return unit_status($unit, $project)['label'];
         case 'projekt':
             return $project ? get_the_title($project) : '';
+        case 'obrazek':
+            $thumb = (int) get_post_thumbnail_id($unit);
+            if ($thumb) {
+                return (string) $thumb;
+            }
+            $all = unit_gallery($unit, 'dv_vizualizace') ?: unit_gallery($unit, 'dv_galerie');
+            return $all ? (string) $all[0] : '';
+        case 'vizualizace_1':
+            $viz = unit_gallery($unit, 'dv_vizualizace');
+            return $viz ? (string) $viz[0] : '';
+        case 'video':
+        case 'video_odkaz':
+            return unit_video($unit);
+        case 'karta_odkaz':
+            $kid = clean_attachment(get_post_meta($unit, 'dv_karta', true));
+            return $kid ? (string) wp_get_attachment_url($kid) : '';
+        case 'cena_platnost':
+            $raw = (string) $m('dv_cena_od'); // ACF date_picker ukládá Ymd
+            return preg_match('/^(\d{4})(\d{2})(\d{2})$/', $raw, $d) ? fmt_date($d[1] . '-' . $d[2] . '-' . $d[3]) : '';
+        case 'prislusenstvi':
+            return implode(', ', array_column(unit_accessory_rows($unit), 'label'));
+        case 'patri_k':
+        case 'patri_k_odkaz':
+            $parent = unit_parent($unit);
+            if (!$parent || get_post_status($parent) !== 'publish') {
+                return '';
+            }
+            return $key === 'patri_k' ? unit_label($parent) : (string) get_permalink($parent);
+        case 'predchozi':
+        case 'predchozi_odkaz':
+        case 'dalsi':
+        case 'dalsi_odkaz':
+            $n  = unit_neighbors($unit);
+            $to = strpos($key, 'predchozi') === 0 ? $n['prev'] : $n['next'];
+            if (!$to) {
+                return '';
+            }
+            return substr($key, -6) === '_odkaz' ? (string) get_permalink($to) : unit_label($to);
+        case 'pocet_fotek':
+            $n = count(unit_gallery($unit, 'dv_galerie_vse'));
+            return $n ? (string) $n : '';
     }
     return '';
 }
@@ -232,6 +289,7 @@ add_action('init', function () {
         return;
     }
     require_once __DIR__ . '/dynamic-data/fields.php';
+    $oembed = class_exists('\Breakdance\DynamicData\OembedField') && class_exists(__NAMESPACE__ . '\DynOembed');
     foreach (dynamic_fields() as $slug => [$label, $sub, $type]) {
         $is_unit = strpos($slug, 'marmal_dv_jednotka_') === 0;
         $cb      = function () use ($slug, $is_unit) {
@@ -239,6 +297,10 @@ add_action('init', function () {
         };
         if ($type === 'image') {
             \Breakdance\DynamicData\registerField(new DynImage($slug, $label, $sub, $cb));
+        } elseif ($type === 'oembed') {
+            if ($oembed) {
+                \Breakdance\DynamicData\registerField(new DynOembed($slug, $label, $sub, $cb));
+            }
         } else {
             \Breakdance\DynamicData\registerField(new DynText($slug, $label, $sub, $cb, [$type]));
         }

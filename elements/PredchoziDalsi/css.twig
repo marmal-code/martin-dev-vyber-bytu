@@ -1,0 +1,25 @@
+%%SELECTOR%% {
+  width: {{ design.container.width.style }};
+  {{ macros.backgroundColor(design.container.background) }}
+  {{ macros.borders(design.container.borders) }}
+  {{ macros.spacing_padding_all(design.container.padding) }}
+  {{ macros.typography(design.typography, globalSettings)  }}
+  {{ macros.spacing_margin_y(design.spacing) }}
+}
+
+{# Vzhled přes CSS proměnné (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
+%%SELECTOR%% .martin-dv-nav {
+  {% if design.vzhled.mezera.style %}--mdj-nav-gap: {{ design.vzhled.mezera.style }};{% endif %}
+  {% if design.vzhled.zaobleni.style %}--mdj-nav-radius: {{ design.vzhled.zaobleni.style }};{% endif %}
+  {% if design.vzhled.pozadi %}--mdj-nav-bg: {{ design.vzhled.pozadi }};{% endif %}
+  {% if design.vzhled.pozadi_hover %}--mdj-nav-bg-hover: {{ design.vzhled.pozadi_hover }};{% endif %}
+  {% if design.vzhled.ramecek %}--mdj-line: {{ design.vzhled.ramecek }};{% endif %}
+  {% if design.vzhled.zvyrazneni %}--mdj-accent: {{ design.vzhled.zvyrazneni }};{% endif %}
+  {% if design.vzhled.popis %}--mdj-muted: {{ design.vzhled.popis }};{% endif %}
+}
+%%SELECTOR%% .martin-dv-nav a {
+  {{ macros.spacing_padding_all(design.vzhled.odsazeni) }}
+}
+%%SELECTOR%% .martin-dv-nav .martin-dv-nav__label {
+  {{ macros.typography(design.vzhled.nazev, globalSettings) }}
+}

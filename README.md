@@ -47,6 +47,32 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 - Elementy **Marmal – Štítek stavu** a **Marmal – Dokumenty**, shortcody `[martin_dv_stav]`, `[martin_dv_dokumenty projekt="" info="ne" novy="ne"]`.
 - Kód: `includes/projekt/`, `includes/dynamic-data.php` (+ třídy v `includes/dynamic-data/fields.php`), `assets/admin/projekt-info.js`, elementy `StitekStavu`, `Dokumenty`.
 
+### Fotky, vizualizace, video a dokumenty jednotky (od 0.16.0)
+
+- **Hlavní fotka** = náhledový obrázek jednotky (Featured Image).
+- U jednotky box **Fotky, vizualizace, video a dokumenty**: fotky a vizualizace (výběr z knihovny médií, pořadí šipkami), odkaz na video (YouTube / Vimeo / MP4), dokumenty jednotky (název + soubor). Karta jednotky (`dv_karta`) se do dokumentů přidá sama jako první.
+- Ukládá se `dv_galerie`, `dv_vizualizace`, `dv_galerie_vse` (pole ID obrázků), `dv_video`, `_dv_dokumenty` (JSON).
+- Galerie na webu: element **Galerie Plus** (Breakdance Plus) → Zdroj = ACF pole → `dv_galerie` / `dv_vizualizace` / `dv_galerie_vse`.
+- Video: element Video → dynamická data „Developerské projekty → Jednotka → Video“.
+- Element **Marmal – Dokumenty**: na detailu jednotky nejdřív dokumenty jednotky, pak projektu (oboje jde skrýt); od 0.18.0 každý dokument na celý řádek – vlevo štítek typu (PDF), název a popis, vpravo tlačítko Stáhnout; popis se zadává u dokumentu (karta jednotky má výchozí „Půdorys, plochy místností a poloha v domě“, název „Karta jednotky 3.22“ – oba texty jdou přepsat v Nastavení). Dokumenty jako karty v mřížce: sloupce na počítači / tabletu / mobilu (Design → Rozložení karet) a rozložení karty (Content → Rozložení karty: automaticky podle šířky, tlačítko vpravo, tlačítko pod textem přes celou šířku – ve sloupcích zarovnané dolů). Shortcode `[martin_dv_dokumenty jednotky="ne" projektu="ne" velikost="ano" tlacitko="Stáhnout PDF" rozlozeni="auto|radek|pod" sloupce="3"]`.
+- Nová dynamická data jednotky: Obrázek (hlavní fotka, jinak první vizualizace / fotka – pro karty v Post Loop), První vizualizace, Video, Video – odkaz, Karta jednotky – odkaz na PDF, Počet fotek a vizualizací.
+
+### Příslušenství, cena, předchozí / další a podobné jednotky (od 0.17.0)
+
+- **Příslušenství** v boxu Místnosti, venkovní plochy a parametry: typ (stání, garáž, sklep, jiné), název, označení, plocha, cena, „v ceně“ a volitelná vazba na samostatnou jednotku Sklep / Garáž / Stání (prázdné údaje převezme z ní, u ní se uloží zpětný odkaz `_dv_patri_k`). JSON `_dv_prislusenstvi`. Od 0.18.0 jediný způsob – stará pole `dv_acc_*` jsou z administrace odebraná a jejich data se při první návštěvě administrace jednorázově převedla do seznamu (option `martin_dv_migrace_prislusenstvi`; stará meta zůstávají v databázi jen pro návrat ke starší verzi).
+- U jednotky **Cena platná od** (`dv_cena_od`, na webu) a **Rezervace do** (`dv_rezervace_do`, jen interně – sloupec v přehledu jednotek, po termínu červeně).
+- Elementy **Marmal – Příslušenství**, **Marmal – Předchozí / další jednotka**, **Marmal – Podobné jednotky**; shortcody `[martin_dv_prislusenstvi plocha="ne" cena="ne" odkazy="ne"]`, `[martin_dv_navigace predchozi="" dalsi=""]`, `[martin_dv_podobne pocet="3" sloupce="3" prodane="ano" jen_shoda="ano" obrazek="ne"]`.
+- Pořadí jednotek (předchozí / další) jako v tabulce výběru: od nejnižšího podlaží, pak podle čísla; sklepy, garáže a stání mají vlastní řadu. Podobné: stejná dispozice a podlaží → stejná dispozice → stejné podlaží, uvnitř podle rozdílu plochy, bez prodaných (volba).
+- Dynamická data jednotky: Cena platná od, Příslušenství, Patří k jednotce (+ odkaz), Předchozí / Další jednotka (+ odkaz).
+- Kód: `includes/jednotka/prislusenstvi.php`, `includes/jednotka/render-dalsi.php`.
+
+### Import / export, hromadné úpravy a nastavení (od 0.18.0)
+
+- **Developerské projekty → Import / export**: export jednotek (1 řádek = 1 jednotka) a místností (1 řádek = 1 místnost) do CSV pro Excel (středník, UTF-8 s BOM, buňky chráněné proti vzorcům). Import ve dvou krocích – nahrání → náhled změn (nové / změna / beze změny / chyba, staré → nové hodnoty) → potvrzení. Jednotka se páruje podle `id`, jinak projekt + `cislo`, jinak se založí nová (koncept). Mění se jen sloupce, které v souboru jsou; prázdná buňka hodnotu smaže (kromě názvu a projektu). Přijímá i Windows-1250 a čárku jako oddělovač. Seznamy v buňce: `venkovni` „Balkon: 4,2: J JZ | Terasa: 10“, `parametry` „Výška stropů = 2,7 m | PENB = B“, `prislusenstvi` „Garáž: G3: 18: 450000 | Nabíječka: : : v ceně“ (vazby na samostatné jednotky se zachovají podle typu + označení). Soubor místností nahradí místnosti uvedených jednotek. Oprávnění `manage_options` (filtr `martin_dv_import_capability`), max. 2 MB / 2000 řádků.
+- **Přehled jednotek**: Rychlé úpravy – stav a cena; Hromadné úpravy – stav, nová cena nebo změna ceny o % se zaokrouhlením (Kč / tisíce / desetitisíce). Stav se nastaví jen tam, kde existuje v projektu jednotky.
+- **Developerské projekty → Nastavení**: které typy jednotek se nabízejí (nově i Kancelář), adresa detailu (výchozí `/byty/`, např. `/domy/`), vlastní texty místo výchozích (Jednotka → Byt / Dům …, typy jednotek, texty výběru a detailu) – přes filtr `gettext_martin-dev-vyber-bytu`, zástupné symboly (%1$d) se kontrolují. Option `martin_dv_settings`.
+- Kód: `includes/csv.php`, `includes/hromadne.php`, `includes/nastaveni.php`.
+
 ### Společné
 
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
@@ -78,7 +104,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 | Filtr | Výchozí | Účel |
 |---|---|---|
-| `martin_dv_unit_slug` | `byty` | URL slug jednotek (po změně uložit trvalé odkazy) |
+| `martin_dv_unit_slug` | `byty` | URL slug jednotek (od 0.18.0 i v Nastavení – trvalé odkazy se přegenerují samy) |
 | `martin_dv_accessories` | stání, garáž, sklepní kóje | pevné položky příslušenství (každá má zaškrtávátko + cenu) |
 | `martin_dv_dispositions` | 1+kk … 6+kk | seznam dispozic v ACF |
 | `martin_dv_load_everywhere` | `false` | načíst CSS/JS na všech stránkách |
@@ -89,10 +115,16 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 | `martin_dv_param_suggestions` | výška stropů, PENB… | návrhy názvů vlastních parametrů v editoru jednotky |
 | `martin_dv_default_project` | první publikovaný projekt | projekt pro dynamická data a dokumenty mimo detail jednotky |
 | `martin_dv_date_format` | `j. n. Y` | formát data předprodeje |
+| `martin_dv_accessory_unit_types` | sklep, garaz, stani | typy jednotek, které jsou příslušenstvím (mimo navigaci a Podobné) |
+| `martin_dv_import_capability` | `manage_options` | kdo smí importovat / exportovat CSV |
+| `martin_dv_overridable_texts` | seznam textů | texty, které jde přepsat v Nastavení |
 | `martin_dv_editor_config` | – | data pro editor projektu v administraci (používá mapa okolí) |
 
 ## Verze
 
+- **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář; staré příslušenství odebráno a převedeno do seznamu; Dokumenty jako řádky s popisem a tlačítkem Stáhnout.
+- **0.17.0** – příslušenství jako seznam s vazbou na sklep / garáž, cena platná od, rezervace do (interně), elementy Příslušenství, Předchozí / další jednotka, Podobné jednotky, nová dynamická data.
+- **0.16.0** – fotky, vizualizace, video a dokumenty jednotky (galerie přes Galerii Plus, video přes dynamická data), element Dokumenty i s dokumenty jednotky, dynamická data Obrázek / Video / Karta jednotky.
 - **0.15.0** – údaje projektu (developer, dodavatel, lokalita, termín, předprodej, kontakt prodejce s fotkou, texty, dokumenty), vlastní stavy jednotek s barvou, Breakdance dynamická data (jednotka + projekt, český formát čísel), elementy Štítek stavu a Dokumenty, text místo ceny.
 - **0.14.0** – údaje jednotky: místnosti se součtem a kontrolou proti celkové ploše (součet smí být menší – příčky a zdi), seznam venkovních ploch s orientací, vlastní parametry, poloha v domě (budova, číslo podlaží, umístění, orientace, výhled); v projektu název hlavní plochy a seznam budov; nové elementy Tabulka místností, Parametry jednotky, Schéma podlaží a shortcody.
 - **0.13.0** – nová funkce **Mapa okolí** (projekt → Okolí, element „Marmal – Mapa okolí“, shortcode `[martin_mapa_okoli]`); plugin přejmenován na „Marmal – Developerské projekty“; oprava: tlačítka v levém panelu editoru se už neroztahují do výšky; menu v administraci „Výběr bytů“ přejmenováno na „Developerské projekty“.

@@ -9,6 +9,7 @@
 #martin-dv-unit-editor .mdu-table select { width: 100%; max-width: none; }
 #martin-dv-unit-editor .mdu-w-num { width: 110px; }
 #martin-dv-unit-editor .mdu-w-type { width: 150px; }
+#martin-dv-unit-editor .mdu-w-code { width: 90px; }
 #martin-dv-unit-editor .mdu-num { text-align: right; }
 #martin-dv-unit-editor .mdu-c { text-align: center; width: 70px; }
 #martin-dv-unit-editor .mdu-tools { width: 82px; white-space: nowrap; text-align: right; }
@@ -51,3 +52,26 @@
 #martin-dv-info-editor .mdu-del { color: #b32d2e; }
 #martin-dv-info-editor .mdu-empty { color: #757575; font-style: italic; }
 @media (max-width: 1100px) { #martin-dv-info-editor .mdi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Fotky, vizualizace, video a dokumenty jednotky (od 0.16.0) */
+#martin-dv-media-editor .mdu-sec { margin: 0 0 22px; }
+#martin-dv-media-editor h4 { margin: 14px 0 2px; font-size: 14px; }
+#martin-dv-media-editor .mdm-count { color: #757575; font-weight: 400; }
+#martin-dv-media-editor .description { margin: 2px 0 8px; }
+#martin-dv-media-editor .mdm-note { margin: 4px 0 0; padding: 8px 10px; background: #f6f7f7; border-radius: 4px; }
+#martin-dv-media-editor .mdm-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; padding: 0; list-style: none; }
+#martin-dv-media-editor .mdm-img { position: relative; width: 110px; margin: 0; }
+#martin-dv-media-editor .mdm-img img { display: block; width: 110px; height: 82px; object-fit: cover; border-radius: 4px; background: #f0f0f1; }
+#martin-dv-media-editor .mdm-tools { display: flex; justify-content: space-between; padding-top: 2px; }
+#martin-dv-media-editor .mdm-tools button { padding: 0 6px; font-size: 15px; text-decoration: none; }
+#martin-dv-media-editor .mdm-tools button:disabled { opacity: .3; }
+#martin-dv-media-editor .mdu-del { color: #b32d2e; }
+#martin-dv-media-editor .mdu-empty { color: #757575; font-style: italic; margin: 4px 0 8px; }
+#martin-dv-media-editor .mdu-table td { padding: 4px 6px; vertical-align: middle; }
+#martin-dv-media-editor .mdu-table input[type="text"] { width: 100%; }
+#martin-dv-media-editor .mdi-file { white-space: nowrap; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
+#martin-dv-media-editor .mdu-tools { width: 82px; white-space: nowrap; text-align: right; }
+#martin-dv-media-editor .mdu-tools button { padding: 2px 5px; font-size: 15px; text-decoration: none; }
+
+/* Popis dokumentu pod názvem (od 0.18.0) */
+#martin-dv-info-editor .mdi-desc, #martin-dv-media-editor .mdi-desc { margin-top: 4px; font-size: 12px; color: #50575e; }

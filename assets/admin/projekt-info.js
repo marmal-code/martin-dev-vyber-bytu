@@ -58,7 +58,8 @@
     var n = S.dokumenty.length;
     var rows = S.dokumenty.map(function (d, i) {
       var f = FILES[d.soubor];
-      return '<tr><td><input type="text" data-doc="' + i + '" value="' + esc(d.nazev) + '" placeholder="' + esc(T.docNamePh) + '"></td>' +
+      return '<tr><td><input type="text" data-doc="' + i + '" value="' + esc(d.nazev) + '" placeholder="' + esc(T.docNamePh) + '">' +
+        '<input type="text" class="mdi-desc" data-doc-desc="' + i + '" value="' + esc(d.popis || '') + '" placeholder="' + esc(T.docDescPh) + '"></td>' +
         '<td class="mdi-file">' + (f ? '<span title="' + esc(f.file) + '">' + esc(f.file) + '</span> ' : '<em>' + esc(T.noFile) + '</em> ') +
         '<button type="button" class="button button-small" data-act="file" data-i="' + i + '">' + esc(f ? T.changeFile : T.chooseFile) + '</button></td>' +
         '<td class="mdu-tools">' +
@@ -110,7 +111,7 @@
     if (act === 'photo') { pick({ title: T.choosePhoto, image: true }, function (a) { S.prodejce.foto = a.id; render(); }); return; }
     if (act === 'nophoto') { S.prodejce.foto = 0; render(); return; }
     if (act === 'adddoc') {
-      pick({ title: T.chooseFile }, function (a) { D.push({ nazev: a.title || '', soubor: a.id }); render(); });
+      pick({ title: T.chooseFile }, function (a) { D.push({ nazev: a.title || '', popis: '', soubor: a.id }); render(); });
       return;
     }
     if (act === 'file') { pick({ title: T.chooseFile }, function (a) { D[i].soubor = a.id; if (!D[i].nazev) D[i].nazev = a.title || ''; render(); }); return; }
@@ -123,7 +124,8 @@
   function onField(e) {
     var t = e.target;
     if (t.hasAttribute('data-path')) { set(t.getAttribute('data-path'), t.value); sync(); return; }
-    if (t.hasAttribute('data-doc')) { var d = S.dokumenty[+t.getAttribute('data-doc')]; if (d) d.nazev = t.value; sync(); }
+    if (t.hasAttribute('data-doc')) { var d = S.dokumenty[+t.getAttribute('data-doc')]; if (d) d.nazev = t.value; sync(); return; }
+    if (t.hasAttribute('data-doc-desc')) { var dd = S.dokumenty[+t.getAttribute('data-doc-desc')]; if (dd) dd.popis = t.value; sync(); }
   }
   root.addEventListener('input', onField);
   root.addEventListener('change', onField);

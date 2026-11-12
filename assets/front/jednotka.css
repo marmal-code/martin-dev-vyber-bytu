@@ -65,19 +65,107 @@
 }
 .martin-dv-badge--solid { background: var(--c); color: #fff; }
 
-/* ---- Dokumenty (od 0.15.0) ---- */
-.martin-dv-docs { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--mdj-docs-gap, 8px); }
-.martin-dv-docs__link {
-  display: flex; align-items: center; gap: 12px; padding: var(--mdj-docs-pad, 12px 14px);
-  border: 1px solid var(--mdj-line, rgba(0, 0, 0, .14)); border-radius: var(--mdj-docs-radius, 8px);
-  color: inherit; text-decoration: none; background: var(--mdj-docs-bg, transparent);
+/* ---- Dokumenty (od 0.15.0; od 0.18.0 karty se sloupci a rozložením) ----
+ * ul = mřížka (sloupce --mdj-docs-cols / -t tablet / -m mobil), li = karta (rámeček, pozadí, odsazení),
+ * __in = obsah karty. Rozložení: --radek (tlačítko vpravo), --pod (tlačítko pod textem přes celou šířku),
+ * --auto (podle šířky karty – container query, pod 520 px jako --pod). */
+.martin-dv-docs {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(var(--mdj-docs-cols, 1), minmax(0, 1fr));
+  gap: var(--mdj-docs-gap, 12px); --mdj-accent: var(--bde-brand-primary-color, #2f6b4f);
+}
+@media (max-width: 1023px) { .martin-dv-docs { grid-template-columns: repeat(var(--mdj-docs-cols-t, min(var(--mdj-docs-cols, 1), 2)), minmax(0, 1fr)); } }
+@media (max-width: 767px) { .martin-dv-docs { grid-template-columns: repeat(var(--mdj-docs-cols-m, 1), minmax(0, 1fr)); } }
+.martin-dv-docs__item {
+  margin: 0; padding: var(--mdj-docs-pad, 16px 20px); container-type: inline-size; min-width: 0;
+  border: 1px solid var(--mdj-line, rgba(0, 0, 0, .1)); border-radius: var(--mdj-docs-radius, 10px);
+  background: var(--mdj-docs-bg, #fff); transition: border-color .15s, background-color .15s;
+}
+.martin-dv-docs__item:hover, .martin-dv-docs__item:focus-within { background: var(--mdj-docs-bg-hover, var(--mdj-docs-bg, #fff)); border-color: var(--mdj-docs-line-hover, var(--mdj-line, rgba(0, 0, 0, .1))); }
+/* Řádek: štítek | text | tlačítko */
+.martin-dv-docs__in { height: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 18px; row-gap: 16px; }
+.martin-dv-docs__in > .martin-dv-docs__text:first-child { grid-column: 1 / 3; } /* bez štítku */
+/* Pod sebou: štítek + text nahoře, tlačítko dole přes celou šířku (ve sloupcích zarovnané dolů) */
+.martin-dv-docs--pod .martin-dv-docs__in { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr auto; row-gap: 0; }
+.martin-dv-docs--pod .martin-dv-docs__btn { grid-column: 1 / -1; grid-row: 3; margin-top: var(--mdj-btn-gap, 16px); }
+@container (max-width: 519px) {
+  .martin-dv-docs--auto .martin-dv-docs__in { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr auto; row-gap: 0; }
+  .martin-dv-docs--auto .martin-dv-docs__btn { grid-column: 1 / -1; grid-row: 3; margin-top: var(--mdj-btn-gap, 16px); }
+}
+/* I „tlačítko vpravo“ se ve velmi úzké kartě (pod 360 px) složí pod sebe – jinak by se název lámal po písmenech. */
+@container (max-width: 359px) {
+  .martin-dv-docs--radek .martin-dv-docs__in { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr auto; row-gap: 0; }
+  .martin-dv-docs--radek .martin-dv-docs__btn { grid-column: 1 / -1; grid-row: 3; margin-top: var(--mdj-btn-gap, 16px); }
+}
+.martin-dv-docs__badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--mdj-badge-size, 44px); height: var(--mdj-badge-size, 44px); border-radius: var(--mdj-badge-radius, 8px);
+  background: var(--mdj-docs-badge-bg, color-mix(in srgb, var(--mdj-accent) 18%, #fff));
+  color: var(--mdj-docs-badge-text, color-mix(in srgb, var(--mdj-accent) 30%, #1f2933));
+  font-size: .6875rem; font-weight: 700; letter-spacing: .04em;
+}
+.martin-dv-docs__text { min-width: 0; display: flex; flex-direction: column; gap: 2px; align-self: center; }
+.martin-dv-docs__name { font-weight: 700; overflow-wrap: break-word; }
+.martin-dv-docs__desc { font-size: .875em; color: var(--mdj-muted, rgba(0, 0, 0, .6)); }
+.martin-dv-docs__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; white-space: nowrap;
+  padding: var(--mdj-btn-pad, 12px 28px); border-radius: var(--mdj-btn-radius, 8px);
+  background: var(--mdj-btn-bg, var(--mdj-accent)); color: var(--mdj-btn-text, #fff);
+  font-weight: 600; text-decoration: none; line-height: 1.2; transition: background-color .15s, color .15s;
+}
+.martin-dv-docs__btn:hover, .martin-dv-docs__btn:focus-visible {
+  background: var(--mdj-btn-bg-hover, color-mix(in srgb, var(--mdj-btn-bg, var(--mdj-accent)) 85%, #000));
+  color: var(--mdj-btn-text-hover, var(--mdj-btn-text, #fff));
+}
+.martin-dv-docs__btn:focus-visible { outline: 2px solid var(--mdj-accent); outline-offset: 2px; }
+.martin-dv-docs__btn-icon { width: 20px; height: 20px; flex: 0 0 auto; }
+
+/* ---- Příslušenství (od 0.17.0; třídy kompatibilní se starým shortcodem) ---- */
+.martin-dv-acc { list-style: none; margin: 0; padding: 0; }
+.martin-dv-acc__item {
+  display: flex; align-items: baseline; gap: 16px; padding: var(--mdj-row-pad, 10px) 0;
+  border-bottom: 1px solid var(--mdj-line, rgba(0, 0, 0, .14));
+}
+.martin-dv-acc__label { flex: 1 1 auto; }
+.martin-dv-acc__label a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.martin-dv-acc__area { color: var(--mdj-muted, rgba(0, 0, 0, .6)); white-space: nowrap; }
+.martin-dv-acc__price { font-weight: 600; white-space: nowrap; text-align: right; min-width: 7em; }
+
+/* ---- Předchozí / další (od 0.17.0) ---- */
+.martin-dv-nav { display: grid; grid-template-columns: 1fr 1fr; gap: var(--mdj-nav-gap, 16px); }
+.martin-dv-nav a {
+  display: flex; flex-direction: column; gap: 2px; padding: var(--mdj-nav-pad, 14px 18px);
+  border: 1px solid var(--mdj-line, rgba(0, 0, 0, .14)); border-radius: var(--mdj-nav-radius, 8px);
+  color: inherit; text-decoration: none; background: var(--mdj-nav-bg, transparent);
   transition: border-color .15s, background-color .15s;
 }
-.martin-dv-docs__link:hover, .martin-dv-docs__link:focus-visible {
+.martin-dv-nav a:hover, .martin-dv-nav a:focus-visible {
   border-color: var(--mdj-accent, var(--bde-brand-primary-color, #2f6b4f));
-  background: var(--mdj-docs-bg-hover, color-mix(in srgb, var(--mdj-accent, #2f6b4f) 6%, transparent));
+  background: var(--mdj-nav-bg-hover, color-mix(in srgb, var(--mdj-accent, #2f6b4f) 6%, transparent));
 }
-.martin-dv-docs__icon { flex: 0 0 auto; width: 22px; height: 22px; color: var(--mdj-docs-icon, var(--mdj-accent, var(--bde-brand-primary-color, #2f6b4f))); }
-.martin-dv-docs__name { flex: 1 1 auto; font-weight: 600; }
-.martin-dv-docs__meta { flex: 0 0 auto; font-size: .85em; color: var(--mdj-muted, rgba(0, 0, 0, .6)); }
-.martin-dv-docs, .martin-dv-badge { --mdj-accent: var(--bde-brand-primary-color, #2f6b4f); }
+.martin-dv-nav__next { text-align: right; align-items: flex-end; }
+.martin-dv-nav__dir { font-size: .8125em; text-transform: uppercase; letter-spacing: .06em; color: var(--mdj-accent, var(--bde-brand-primary-color, #2f6b4f)); font-weight: 700; }
+.martin-dv-nav__label { font-weight: 700; }
+.martin-dv-nav__meta { font-size: .875em; color: var(--mdj-muted, rgba(0, 0, 0, .6)); }
+.martin-dv-nav { --mdj-accent: var(--bde-brand-primary-color, #2f6b4f); }
+
+/* ---- Podobné jednotky (od 0.17.0) ---- */
+.martin-dv-similar { display: grid; grid-template-columns: repeat(var(--mdj-cols, 3), minmax(0, 1fr)); gap: var(--mdj-sim-gap, 24px); --mdj-accent: var(--bde-brand-primary-color, #2f6b4f); }
+.martin-dv-similar__card {
+  display: flex; flex-direction: column; overflow: hidden; color: inherit; text-decoration: none;
+  border: 1px solid var(--mdj-line, rgba(0, 0, 0, .14)); border-radius: var(--mdj-sim-radius, 10px);
+  background: var(--mdj-sim-bg, transparent); transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+.martin-dv-similar__card:hover, .martin-dv-similar__card:focus-visible {
+  border-color: var(--mdj-accent); box-shadow: 0 8px 24px rgba(0, 0, 0, .08); transform: translateY(-2px);
+}
+.martin-dv-similar__img { display: block; aspect-ratio: var(--mdj-sim-ratio, 4 / 3); overflow: hidden; background: rgba(0, 0, 0, .04); }
+.martin-dv-similar__img img { width: 100% !important; height: 100% !important; object-fit: cover; display: block; max-width: none; }
+.martin-dv-similar__body { display: flex; flex-direction: column; gap: 6px; padding: var(--mdj-sim-pad, 16px 18px); }
+.martin-dv-similar__top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.martin-dv-similar__title { font-weight: 700; font-size: 1.0625em; }
+.martin-dv-similar__meta { font-size: .9em; color: var(--mdj-muted, rgba(0, 0, 0, .6)); }
+.martin-dv-similar__price { font-weight: 700; }
+@media (max-width: 1023px) { .martin-dv-similar { grid-template-columns: repeat(min(var(--mdj-cols, 3), 2), minmax(0, 1fr)); } }
+@media (max-width: 767px) { .martin-dv-similar { grid-template-columns: minmax(0, 1fr); } .martin-dv-nav { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .martin-dv-similar__card { transition: none; } .martin-dv-similar__card:hover { transform: none; } }

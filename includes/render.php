@@ -13,8 +13,8 @@ if (!defined('ABSPATH')) {
 /* ---------- Assety ---------- */
 
 add_action('init', function () {
-    wp_register_style('martin-dv', MARTIN_DV_URL . 'assets/front/vyber-bytu.css', [], VERSION);
-    wp_register_script('martin-dv', MARTIN_DV_URL . 'assets/front/vyber-bytu.js', [], VERSION, ['in_footer' => true, 'strategy' => 'defer']);
+    wp_register_style('martin-dv', MARTIN_DV_URL . 'assets/front/vyber-bytu.css', [], asset_ver('assets/front/vyber-bytu.css'));
+    wp_register_script('martin-dv', MARTIN_DV_URL . 'assets/front/vyber-bytu.js', [], asset_ver('assets/front/vyber-bytu.js'), ['in_footer' => true, 'strategy' => 'defer']);
 }, 20);
 
 /**
@@ -54,7 +54,7 @@ function ensure_assets(): string
     }
     // Hlavička už je venku (typické u Breakdance a v náhledu builderu) → link přímo u komponenty.
     wp_styles()->done[] = 'martin-dv';
-    return '<link rel="stylesheet" id="martin-dv-css" href="' . esc_url(add_query_arg('ver', VERSION, MARTIN_DV_URL . 'assets/front/vyber-bytu.css')) . '" media="all">';
+    return '<link rel="stylesheet" id="martin-dv-css" href="' . esc_url(add_query_arg('ver', asset_ver('assets/front/vyber-bytu.css'), MARTIN_DV_URL . 'assets/front/vyber-bytu.css')) . '" media="all">';
 }
 
 /* ---------- Shortcode ---------- */
@@ -76,21 +76,13 @@ add_shortcode('martin_vyber_bytu', function ($atts) {
  * Když jednotka nic nemá, nevypíše nic.
  */
 add_shortcode('martin_dv_prislusenstvi', function ($atts) {
-    $atts = shortcode_atts(['id' => 0], $atts, 'martin_dv_prislusenstvi');
-    $id   = absint($atts['id']) ?: get_the_ID();
-    if (!$id || get_post_type($id) !== PT_UNIT) {
-        return '';
-    }
-    $list = unit_accessory_list($id);
-    if (!$list) {
-        return '';
-    }
-    $h = '<ul class="martin-dv-acc">';
-    foreach ($list as $item) {
-        $h .= '<li><span class="martin-dv-acc__label">' . esc_html($item['label']) . '</span> '
-            . '<span class="martin-dv-acc__price">' . esc_html($item['price']) . '</span></li>';
-    }
-    return $h . '</ul>';
+    // Od 0.17.0 přes render_accessories() (nový seznam s plochou a odkazem, jinak stará pole) – třídy zůstávají.
+    $atts = shortcode_atts(['id' => 0, 'plocha' => 'ano', 'cena' => 'ano', 'odkazy' => 'ano'], $atts, 'martin_dv_prislusenstvi');
+    return render_accessories(absint($atts['id']), [
+        'hide_area'  => $atts['plocha'] === 'ne',
+        'hide_price' => $atts['cena'] === 'ne',
+        'no_links'   => $atts['odkazy'] === 'ne',
+    ]);
 });
 
 /* ---------- Render ---------- */

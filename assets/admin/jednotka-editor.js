@@ -12,7 +12,7 @@
   var T = CFG.i18n;
   var S;
   try { S = JSON.parse(input.value || '{}') || {}; } catch (e) { S = {}; }
-  ['rooms', 'outdoors', 'params'].forEach(function (k) { if (!Array.isArray(S[k])) S[k] = []; });
+  ['rooms', 'outdoors', 'params', 'accessories'].forEach(function (k) { if (!Array.isArray(S[k])) S[k] = []; });
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -99,6 +99,29 @@
       '<th>' + esc(T.name) + '</th><th>' + esc(T.value) + '</th><th></th>', rows, 'params', T.addParam) + dl;
   }
 
+  /* Od 0.17.0: příslušenství (stání, garáž, sklep, jiné) s volitelnou vazbou na samostatnou jednotku. */
+  function accessoriesHTML() {
+    var units = CFG.accUnits || [];
+    var rows = S.accessories.map(function (a, i) {
+      var opts = '<option value="0">' + esc(T.accNoUnit) + '</option>' + units.map(function (u) {
+        return '<option value="' + u.id + '"' + (+a.jednotka === u.id ? ' selected' : '') + '>' + esc(u.label) + (u.parent ? ' ' + esc(T.accTaken.replace('%s', u.parent)) : '') + '</option>';
+      }).join('');
+      return '<tr>' +
+        '<td>' + select('accessories', i, 'typ', CFG.accTypes, a.typ || 'stani') + '</td>' +
+        '<td>' + txt('accessories', i, 'nazev', a.nazev, T.accNamePh) + '</td>' +
+        '<td>' + txt('accessories', i, 'oznaceni', a.oznaceni, T.accCodePh) + '</td>' +
+        '<td>' + num('accessories', i, a.plocha) + '</td>' +
+        '<td><input type="text" inputmode="numeric" class="mdu-num" data-list="accessories" data-i="' + i + '" data-k="cena" value="' + esc(a.cena ? String(a.cena) : '') + '"></td>' +
+        '<td class="mdu-c"><input type="checkbox" data-list="accessories" data-i="' + i + '" data-k="v_cene"' + (a.v_cene ? ' checked' : '') + '></td>' +
+        '<td><select data-list="accessories" data-i="' + i + '" data-k="jednotka">' + opts + '</select></td>' +
+        tools('accessories', i) + '</tr>';
+    }).join('');
+    return section(T.acc, T.accHelp,
+      '<th class="mdu-w-type">' + esc(T.type) + '</th><th>' + esc(T.accName) + '</th><th class="mdu-w-code">' + esc(T.accCode) + '</th><th class="mdu-w-num">' + esc(T.area) + '</th>' +
+      '<th class="mdu-w-num">' + esc(T.accPrice) + '</th><th class="mdu-c">' + esc(T.accIncluded) + '</th><th>' + esc(T.accUnit) + '</th><th></th>',
+      rows, 'accessories', T.addAcc);
+  }
+
   function section(title, help, head, rows, list, add) {
     return '<div class="mdu-sec"><h4>' + esc(title) + '</h4><p class="description">' + esc(help) + '</p>' +
       (rows ? '<table class="widefat mdu-table"><thead><tr>' + head + '</tr></thead><tbody>' + rows + '</tbody></table>' : '<p class="mdu-empty">' + esc(T.empty) + '</p>') +
@@ -139,13 +162,14 @@
 
   /* ---------- render a události ---------- */
   function render() {
-    root.innerHTML = roomsHTML() + outdoorsHTML() + paramsHTML();
+    root.innerHTML = roomsHTML() + outdoorsHTML() + paramsHTML() + accessoriesHTML();
     sync();
   }
 
   function blank(list) {
     if (list === 'rooms') return { nazev: '', plocha: 0, typ: 'obytna', zapocitat: true, poznamka: '' };
     if (list === 'outdoors') return { typ: Object.keys(CFG.outdoorTypes)[0], plocha: 0, orientace: [] };
+    if (list === 'accessories') return { typ: 'stani', nazev: '', oznaceni: '', plocha: 0, cena: 0, v_cene: false, jednotka: 0 };
     return { nazev: '', hodnota: '' };
   }
 
@@ -180,6 +204,8 @@
     } else {
       var k = t.getAttribute('data-k');
       if (k === 'plocha') row.plocha = toNum(t.value);
+      else if (k === 'cena') row.cena = parseInt(String(t.value).replace(/\D/g, ''), 10) || 0;
+      else if (k === 'jednotka') row.jednotka = parseInt(t.value, 10) || 0;
       else if (t.type === 'checkbox') row[k] = t.checked;
       else row[k] = t.value;
     }

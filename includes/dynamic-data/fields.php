@@ -11,6 +11,8 @@ use Breakdance\DynamicData\StringField;
 use Breakdance\DynamicData\StringData;
 use Breakdance\DynamicData\ImageField;
 use Breakdance\DynamicData\ImageData;
+use Breakdance\DynamicData\OembedField;
+use Breakdance\DynamicData\OembedData;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -115,5 +117,50 @@ class DynImage extends ImageField
     {
         $id = (int) call_user_func($this->cb);
         return $id ? ImageData::fromAttachmentId($id) : new ImageData();
+    }
+}
+
+if (class_exists('\Breakdance\DynamicData\OembedField')) {
+    /** Video (YouTube / Vimeo / MP4) pro element Video – od 0.16.0. */
+    class DynOembed extends OembedField
+    {
+        private $slug;
+        private $label;
+        private $sub;
+        private $cb;
+
+        public function __construct(string $slug, string $label, string $sub, callable $cb)
+        {
+            $this->slug  = $slug;
+            $this->label = $label;
+            $this->sub   = $sub;
+            $this->cb    = $cb;
+        }
+
+        public function label()
+        {
+            return $this->label;
+        }
+
+        public function category()
+        {
+            return __('Developerské projekty', 'martin-dev-vyber-bytu');
+        }
+
+        public function subcategory()
+        {
+            return $this->sub;
+        }
+
+        public function slug()
+        {
+            return $this->slug;
+        }
+
+        public function handler($attributes): OembedData
+        {
+            $url = (string) call_user_func($this->cb);
+            return $url !== '' ? OembedData::fromOembedUrl(esc_url_raw($url, ['http', 'https'])) : OembedData::emptyOembed();
+        }
     }
 }

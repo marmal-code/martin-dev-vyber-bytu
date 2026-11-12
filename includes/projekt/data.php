@@ -8,7 +8,7 @@
  *    se řídí cena, klikatelnost a filtr „Jen volné“; na webu mají vlastní barvu (--c).
  * 2) Informace o projektu: JSON v meta `_martin_dv_info` (box „Údaje projektu“):
  *    developer, dodavatel, lokalita, termin, predprodej_od/do (Y-m-d), prodejce {jmeno, firma, telefon, email, foto},
- *    texty {cena, plochy}, dokumenty [{nazev, soubor}].
+ *    texty {cena, plochy}, dokumenty [{nazev, popis (od 0.18.0), soubor}].
  */
 
 namespace MartinDV;
@@ -184,7 +184,7 @@ function sanitize_info($in): array
         }
         $file = clean_attachment($d['soubor'] ?? 0);
         if ($file) {
-            $out['dokumenty'][] = ['nazev' => clean_text($d['nazev'] ?? '', 120), 'soubor' => $file];
+            $out['dokumenty'][] = ['nazev' => clean_text($d['nazev'] ?? '', 120), 'popis' => clean_text($d['popis'] ?? '', 200), 'soubor' => $file];
         }
     }
     return $out;
