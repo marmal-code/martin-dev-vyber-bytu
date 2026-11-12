@@ -65,27 +65,45 @@
 }
 .martin-dv-badge--solid { background: var(--c); color: #fff; }
 
-/* ---- Dokumenty (od 0.15.0; od 0.18.0 řádek s tlačítkem Stáhnout) ---- */
-.martin-dv-docs { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--mdj-docs-gap, 12px); --mdj-accent: var(--bde-brand-primary-color, #2f6b4f); }
+/* ---- Dokumenty (od 0.15.0; od 0.18.0 karty se sloupci a rozložením) ----
+ * ul = mřížka (sloupce --mdj-docs-cols / -t tablet / -m mobil), li = karta (rámeček, pozadí, odsazení),
+ * __in = obsah karty. Rozložení: --radek (tlačítko vpravo), --pod (tlačítko pod textem přes celou šířku),
+ * --auto (podle šířky karty – container query, pod 520 px jako --pod). */
+.martin-dv-docs {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(var(--mdj-docs-cols, 1), minmax(0, 1fr));
+  gap: var(--mdj-docs-gap, 12px); --mdj-accent: var(--bde-brand-primary-color, #2f6b4f);
+}
+@media (max-width: 1023px) { .martin-dv-docs { grid-template-columns: repeat(var(--mdj-docs-cols-t, min(var(--mdj-docs-cols, 1), 2)), minmax(0, 1fr)); } }
+@media (max-width: 767px) { .martin-dv-docs { grid-template-columns: repeat(var(--mdj-docs-cols-m, 1), minmax(0, 1fr)); } }
 .martin-dv-docs__item {
-  display: flex; align-items: center; gap: 16px 18px; flex-wrap: wrap; margin: 0;
-  padding: var(--mdj-docs-pad, 16px 20px);
+  margin: 0; padding: var(--mdj-docs-pad, 16px 20px); container-type: inline-size; min-width: 0;
   border: 1px solid var(--mdj-line, rgba(0, 0, 0, .1)); border-radius: var(--mdj-docs-radius, 10px);
   background: var(--mdj-docs-bg, #fff); transition: border-color .15s, background-color .15s;
 }
 .martin-dv-docs__item:hover, .martin-dv-docs__item:focus-within { background: var(--mdj-docs-bg-hover, var(--mdj-docs-bg, #fff)); border-color: var(--mdj-docs-line-hover, var(--mdj-line, rgba(0, 0, 0, .1))); }
+/* Řádek: štítek | text | tlačítko */
+.martin-dv-docs__in { height: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 18px; row-gap: 16px; }
+.martin-dv-docs__in > .martin-dv-docs__text:first-child { grid-column: 1 / 3; } /* bez štítku */
+/* Pod sebou: štítek + text nahoře, tlačítko dole přes celou šířku (ve sloupcích zarovnané dolů) */
+.martin-dv-docs--pod .martin-dv-docs__in { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr auto; row-gap: 0; }
+.martin-dv-docs--pod .martin-dv-docs__btn { grid-column: 1 / -1; grid-row: 3; margin-top: var(--mdj-btn-gap, 16px); }
+@container (max-width: 519px) {
+  .martin-dv-docs--auto .martin-dv-docs__in { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr auto; row-gap: 0; }
+  .martin-dv-docs--auto .martin-dv-docs__btn { grid-column: 1 / -1; grid-row: 3; margin-top: var(--mdj-btn-gap, 16px); }
+}
 .martin-dv-docs__badge {
-  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  display: inline-flex; align-items: center; justify-content: center;
   width: var(--mdj-badge-size, 44px); height: var(--mdj-badge-size, 44px); border-radius: var(--mdj-badge-radius, 8px);
   background: var(--mdj-docs-badge-bg, color-mix(in srgb, var(--mdj-accent) 18%, #fff));
   color: var(--mdj-docs-badge-text, color-mix(in srgb, var(--mdj-accent) 30%, #1f2933));
   font-size: .6875rem; font-weight: 700; letter-spacing: .04em;
 }
-.martin-dv-docs__text { flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.martin-dv-docs__name { font-weight: 700; }
+.martin-dv-docs__text { min-width: 0; display: flex; flex-direction: column; gap: 2px; align-self: center; }
+.martin-dv-docs__name { font-weight: 700; overflow-wrap: anywhere; }
 .martin-dv-docs__desc { font-size: .875em; color: var(--mdj-muted, rgba(0, 0, 0, .6)); }
 .martin-dv-docs__btn {
-  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; white-space: nowrap;
   padding: var(--mdj-btn-pad, 12px 28px); border-radius: var(--mdj-btn-radius, 8px);
   background: var(--mdj-btn-bg, var(--mdj-accent)); color: var(--mdj-btn-text, #fff);
   font-weight: 600; text-decoration: none; line-height: 1.2; transition: background-color .15s, color .15s;
@@ -96,9 +114,6 @@
 }
 .martin-dv-docs__btn:focus-visible { outline: 2px solid var(--mdj-accent); outline-offset: 2px; }
 .martin-dv-docs__btn-icon { width: 20px; height: 20px; flex: 0 0 auto; }
-/* Úzký sloupec (podle šířky elementu, ne okna): tlačítko pod textem přes celou šířku. */
-.martin-dv-docs { container-type: inline-size; }
-@container (max-width: 520px) { .martin-dv-docs__btn { flex: 1 1 100%; } }
 
 /* ---- Příslušenství (od 0.17.0; třídy kompatibilní se starým shortcodem) ---- */
 .martin-dv-acc { list-style: none; margin: 0; padding: 0; }

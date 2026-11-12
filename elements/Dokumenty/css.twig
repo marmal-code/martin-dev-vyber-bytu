@@ -9,7 +9,10 @@
 
 {# Vzhled přes CSS proměnné (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
 %%SELECTOR%% .martin-dv-docs {
-  {% if design.vzhled.mezera.style %}--mdj-docs-gap: {{ design.vzhled.mezera.style }};{% endif %}
+  {% if design.mrizka.sloupce %}--mdj-docs-cols: {{ design.mrizka.sloupce }};{% endif %}
+  {% if design.mrizka.sloupce_tablet %}--mdj-docs-cols-t: {{ design.mrizka.sloupce_tablet }};{% endif %}
+  {% if design.mrizka.sloupce_mobil %}--mdj-docs-cols-m: {{ design.mrizka.sloupce_mobil }};{% endif %}
+  {% if design.mrizka.mezera.style %}--mdj-docs-gap: {{ design.mrizka.mezera.style }};{% endif %}
   {% if design.vzhled.zaobleni.style %}--mdj-docs-radius: {{ design.vzhled.zaobleni.style }};{% endif %}
   {% if design.vzhled.pozadi %}--mdj-docs-bg: {{ design.vzhled.pozadi }};{% endif %}
   {% if design.vzhled.pozadi_hover %}--mdj-docs-bg-hover: {{ design.vzhled.pozadi_hover }};{% endif %}

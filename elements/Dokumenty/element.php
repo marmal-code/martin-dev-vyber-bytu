@@ -135,8 +135,48 @@ class Dokumenty extends \Breakdance\Elements\Element
       "spacing",
        ['type' => 'popout']
      ), c(
+        "mrizka",
+        "Rozložení karet",
+        [c(
+        "sloupce",
+        "Sloupce na počítači (1–4, prázdné = 1)",
+        [],
+        ['type' => 'number', 'layout' => 'vertical', 'rangeOptions' => ['min' => 1, 'step' => 1]],
+        false,
+        false,
+        [],
+      ), c(
+        "sloupce_tablet",
+        "Sloupce na tabletu (prázdné = max. 2)",
+        [],
+        ['type' => 'number', 'layout' => 'vertical', 'rangeOptions' => ['min' => 1, 'step' => 1]],
+        false,
+        false,
+        [],
+      ), c(
+        "sloupce_mobil",
+        "Sloupce na mobilu (prázdné = 1)",
+        [],
+        ['type' => 'number', 'layout' => 'vertical', 'rangeOptions' => ['min' => 1, 'step' => 1]],
+        false,
+        false,
+        [],
+      ), c(
+        "mezera",
+        "Mezera mezi kartami",
+        [],
+        ['type' => 'unit', 'layout' => 'inline'],
+        true,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
         "vzhled",
-        "Řádky",
+        "Karty",
         [getPresetSection(
       "EssentialElements\\typography_with_effects_and_align",
       "Písmo názvu",
@@ -149,20 +189,12 @@ class Dokumenty extends \Breakdance\Elements\Element
        ['type' => 'popout']
      ), getPresetSection(
       "EssentialElements\\spacing_padding_all",
-      "Odsazení řádku",
+      "Odsazení karty",
       "odsazeni",
        ['type' => 'popout']
      ), c(
-        "mezera",
-        "Mezera mezi řádky",
-        [],
-        ['type' => 'unit', 'layout' => 'inline'],
-        true,
-        false,
-        [],
-      ), c(
         "zaobleni",
-        "Zaoblení řádku",
+        "Zaoblení karty",
         [],
         ['type' => 'unit', 'layout' => 'inline'],
         false,
@@ -170,7 +202,7 @@ class Dokumenty extends \Breakdance\Elements\Element
         [],
       ), c(
         "pozadi",
-        "Pozadí řádku",
+        "Pozadí karty",
         [],
         ['type' => 'color', 'layout' => 'inline'],
         false,
@@ -178,7 +210,7 @@ class Dokumenty extends \Breakdance\Elements\Element
         [],
       ), c(
         "pozadi_hover",
-        "Pozadí řádku po najetí",
+        "Pozadí karty po najetí",
         [],
         ['type' => 'color', 'layout' => 'inline'],
         false,
@@ -356,6 +388,14 @@ class Dokumenty extends \Breakdance\Elements\Element
         "Text tlačítka (prázdné = Stáhnout)",
         [],
         ['type' => 'text', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "rozlozeni",
+        "Rozložení karty",
+        [],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => [['value' => 'auto', 'text' => 'Automaticky podle šířky karty'], ['value' => 'radek', 'text' => 'Tlačítko vpravo vedle textu'], ['value' => 'pod', 'text' => 'Tlačítko pod textem přes celou šířku']]],
         false,
         false,
         [],

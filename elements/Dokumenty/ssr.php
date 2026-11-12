@@ -19,6 +19,7 @@ $martin_dv_html = \MartinDV\render_documents(absint($martin_dv_c['projekt_id'] ?
     'show_size'    => !empty($martin_dv_c['zobrazit_velikost']),
     'same_tab'     => !empty($martin_dv_c['stejne_okno']),
     'button_text'  => sanitize_text_field((string) ($martin_dv_c['text_tlacitka'] ?? '')),
+    'layout'       => sanitize_key((string) ($martin_dv_c['rozlozeni'] ?? 'auto')),
 ]);
 // render_documents() vrací hotové HTML, každá hodnota je escapovaná (esc_html/esc_attr/esc_url).
 echo $martin_dv_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
