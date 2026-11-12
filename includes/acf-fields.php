@@ -256,3 +256,26 @@ add_filter('acf/prepare_field/name=dv_budova', function ($field) {
     $field['instructions'] = __('Seznam budov upravíš v projektu → Nastavení zobrazení.', 'martin-dev-vyber-bytu');
     return $field;
 });
+
+/** Stav jednotky: nabídka stavů projektu (základní s přejmenováním + vlastní stavy, od 0.15.0). */
+add_filter('acf/prepare_field/name=dv_stav', function ($field) {
+    if (!is_array($field)) {
+        return $field;
+    }
+    $choices = [];
+    foreach (project_statuses(current_admin_project()) as $key => $st) {
+        $choices[$key] = $st['label'];
+    }
+    $current = is_string($field['value'] ?? null) ? $field['value'] : '';
+    if ($current !== '' && !isset($choices[$current])) {
+        $choices[$current] = $current; // stav smazaný v projektu – hodnota se neztratí, jen ji změň
+    }
+    $field['choices'] = $choices;
+    return $field;
+});
+
+/** Hodnota stavu v ACF dynamických datech (Breakdance) = název stavu podle projektu jednotky. */
+add_filter('acf/format_value/name=dv_stav', function ($value, $post_id) {
+    $id = is_numeric($post_id) ? (int) $post_id : 0;
+    return ($id && get_post_type($id) === PT_UNIT) ? unit_status($id)['label'] : $value;
+}, 10, 2);

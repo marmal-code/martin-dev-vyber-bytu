@@ -97,3 +97,15 @@
 .mdv-okicon:hover { border-color: #2271b1; }
 .mdv-okicon.on { border-color: #2271b1; background: #2271b1; color: #fff; }
 .mdv-okcode { display: block; padding: 6px 8px; font-size: 12px; word-break: break-all; user-select: all; }
+
+/* Stavy jednotek (od 0.15.0) */
+.mdv-sts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.mdv-st { display: grid; grid-template-columns: minmax(0, 1.4fr) 92px minmax(0, 1fr) 22px; gap: 6px; align-items: center; }
+.mdv-st input[type=text] { width: 100%; min-width: 0; }
+.mdv-st input[type=color] { width: 44px; height: 30px; padding: 2px; }
+.mdv-st .mdv-st-color { font-size: 11px; width: 100%; min-width: 0; }
+.mdv-st select { width: 100%; min-width: 0; font-size: 12px; }
+.mdv-st-base { color: #757575; font-size: 12px; }
+.mdv-st-del { color: #b32d2e; font-size: 16px; text-decoration: none; }
+.mdv-help { color: #646970; }
+.mdv-group > .button { align-self: flex-start; flex: 0 0 auto; }

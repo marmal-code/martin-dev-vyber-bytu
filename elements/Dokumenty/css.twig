@@ -1,0 +1,25 @@
+%%SELECTOR%% {
+  width: {{ design.container.width.style }};
+  {{ macros.backgroundColor(design.container.background) }}
+  {{ macros.borders(design.container.borders) }}
+  {{ macros.spacing_padding_all(design.container.padding) }}
+  {{ macros.typography(design.typography, globalSettings)  }}
+  {{ macros.spacing_margin_y(design.spacing) }}
+}
+
+{# Vzhled přes CSS proměnné (výchozí hodnoty v assets/front/jednotka.css; prázdný prvek nic nemění) #}
+%%SELECTOR%% .martin-dv-docs {
+  {% if design.vzhled.mezera.style %}--mdj-docs-gap: {{ design.vzhled.mezera.style }};{% endif %}
+  {% if design.vzhled.zaobleni.style %}--mdj-docs-radius: {{ design.vzhled.zaobleni.style }};{% endif %}
+  {% if design.vzhled.pozadi %}--mdj-docs-bg: {{ design.vzhled.pozadi }};{% endif %}
+  {% if design.vzhled.pozadi_hover %}--mdj-docs-bg-hover: {{ design.vzhled.pozadi_hover }};{% endif %}
+  {% if design.vzhled.ramecek %}--mdj-line: {{ design.vzhled.ramecek }};{% endif %}
+  {% if design.vzhled.zvyrazneni %}--mdj-accent: {{ design.vzhled.zvyrazneni }};{% endif %}
+  {% if design.vzhled.info %}--mdj-muted: {{ design.vzhled.info }};{% endif %}
+}
+%%SELECTOR%% .martin-dv-docs .martin-dv-docs__link {
+  {{ macros.spacing_padding_all(design.vzhled.odsazeni) }}
+}
+%%SELECTOR%% .martin-dv-docs .martin-dv-docs__name {
+  {{ macros.typography(design.vzhled.nazev, globalSettings) }}
+}

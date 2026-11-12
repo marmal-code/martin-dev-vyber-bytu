@@ -26,3 +26,28 @@
 #martin-dv-unit-editor .mdu-sumline { display: flex; flex-wrap: wrap; gap: 6px 22px; padding: 8px 10px; background: #f6f7f7; border-radius: 4px; }
 #martin-dv-unit-editor .mdu-warn { margin: 8px 0 0; padding: 8px 10px; background: #fcf9e8; border-left: 4px solid #dba617; }
 #martin-dv-unit-editor .mdu-ok { margin: 8px 0 0; color: #00703c; }
+
+/* Údaje projektu (od 0.15.0) – sdílí třídy mdu-* s editorem jednotky */
+#martin-dv-info-editor .mdu-sec { margin: 0 0 22px; }
+#martin-dv-info-editor h4 { margin: 14px 0 2px; font-size: 14px; }
+#martin-dv-info-editor .description { margin: 0 0 10px; }
+#martin-dv-info-editor .mdi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 16px; }
+#martin-dv-info-editor .mdi-fld { display: flex; flex-direction: column; gap: 4px; }
+#martin-dv-info-editor .mdi-fld > span { font-weight: 600; }
+#martin-dv-info-editor .mdi-fld small { color: #646970; }
+#martin-dv-info-editor .mdi-wide { grid-column: 1 / -1; }
+#martin-dv-info-editor .mdi-fld input,
+#martin-dv-info-editor .mdi-fld textarea { width: 100%; max-width: none; }
+#martin-dv-info-editor .mdi-photo { display: flex; align-items: center; gap: 10px; }
+#martin-dv-info-editor .mdi-photo img { width: 48px; height: 48px; object-fit: cover; border-radius: 50%; }
+#martin-dv-info-editor .mdu-table { border-collapse: collapse; }
+#martin-dv-info-editor .mdu-table td { padding: 4px 6px; vertical-align: middle; }
+#martin-dv-info-editor .mdu-table input[type="text"] { width: 100%; }
+#martin-dv-info-editor .mdi-file { white-space: nowrap; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
+#martin-dv-info-editor .mdi-file em { color: #b32d2e; }
+#martin-dv-info-editor .mdu-tools { width: 82px; white-space: nowrap; text-align: right; }
+#martin-dv-info-editor .mdu-tools button { padding: 2px 5px; font-size: 15px; line-height: 1; text-decoration: none; }
+#martin-dv-info-editor .mdu-tools button:disabled { opacity: .3; }
+#martin-dv-info-editor .mdu-del { color: #b32d2e; }
+#martin-dv-info-editor .mdu-empty { color: #757575; font-style: italic; }
+@media (max-width: 1100px) { #martin-dv-info-editor .mdi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

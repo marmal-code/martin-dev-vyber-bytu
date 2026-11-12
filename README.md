@@ -38,6 +38,15 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 - Výstup (detail jednotky): elementy **Marmal – Tabulka místností**, **Marmal – Parametry jednotky**, **Marmal – Schéma podlaží** (Add → Dynamic) nebo shortcody `[martin_dv_mistnosti]`, `[martin_dv_parametry]` (`cena="ano" sloupce="2" zakladni="ne" vlastni="ne"`), `[martin_dv_schema]` (`nazev="ne" ostatni="ne"`). Bez `id` berou aktuální jednotku.
 - Kód je v `includes/jednotka/`, `assets/admin/jednotka-editor.*`, `assets/front/jednotka.css`, `elements/Mistnosti|Parametry|SchemaPodlazi/`. Ovládací prvky elementů generuje `tools/unit_elements.py`.
 
+### Údaje projektu, stavy a dynamická data (od 0.15.0)
+
+- U projektu box **Údaje projektu**: developer, generální dodavatel, lokalita, termín dokončení (volný text, např. Q4 2027), předprodej od–do, kontakt prodejce (jméno, firma, telefon, e-mail, fotka), texty (text místo ceny, upozornění k plochám) a dokumenty (název + soubor z knihovny médií). JSON v meta `_martin_dv_info`.
+- **Stavy jednotek** v projektu → Nastavení zobrazení → Stavy jednotek: přejmenování a barvy tří základních stavů + vlastní stavy (pevný klíč `x…`, chovají se jako vybraný základní – cena, klikání, filtr „Jen volné“). U jednotky se vybírá ze stavů projektu.
+- Text místo ceny se ukáže u volné jednotky bez ceny (bublina, karta, tabulka, dynamická data).
+- **Dynamická data** Breakdance: Dynamic Data → „Developerské projekty“ → Jednotka (označení, plochy v českém formátu, venkovní plochy, podlaží, orientace, cena, cena za m², stav, …) a Projekt (developer, termín, předprodej, prodejce – jméno, telefon, odkaz tel:, e-mail, odkaz mailto:, fotka, počet volných, cena od, texty). Mimo detail jednotky se bere výchozí projekt (první publikovaný, filtr `martin_dv_default_project`).
+- Elementy **Marmal – Štítek stavu** a **Marmal – Dokumenty**, shortcody `[martin_dv_stav]`, `[martin_dv_dokumenty projekt="" info="ne" novy="ne"]`.
+- Kód: `includes/projekt/`, `includes/dynamic-data.php` (+ třídy v `includes/dynamic-data/fields.php`), `assets/admin/projekt-info.js`, elementy `StitekStavu`, `Dokumenty`.
+
 ### Společné
 
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
@@ -78,10 +87,13 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 | `martin_dv_okoli_icons` | ~20 ikon | sada ikon bodů (vnitřek SVG 24×24 z kódu – ne od uživatele) |
 | `martin_dv_okoli_detect_needles` | `MapaOkoli`, `martin_mapa_okoli` | podle čeho se pozná stránka s mapou okolí |
 | `martin_dv_param_suggestions` | výška stropů, PENB… | návrhy názvů vlastních parametrů v editoru jednotky |
+| `martin_dv_default_project` | první publikovaný projekt | projekt pro dynamická data a dokumenty mimo detail jednotky |
+| `martin_dv_date_format` | `j. n. Y` | formát data předprodeje |
 | `martin_dv_editor_config` | – | data pro editor projektu v administraci (používá mapa okolí) |
 
 ## Verze
 
+- **0.15.0** – údaje projektu (developer, dodavatel, lokalita, termín, předprodej, kontakt prodejce s fotkou, texty, dokumenty), vlastní stavy jednotek s barvou, Breakdance dynamická data (jednotka + projekt, český formát čísel), elementy Štítek stavu a Dokumenty, text místo ceny.
 - **0.14.0** – údaje jednotky: místnosti se součtem a kontrolou proti celkové ploše (součet smí být menší – příčky a zdi), seznam venkovních ploch s orientací, vlastní parametry, poloha v domě (budova, číslo podlaží, umístění, orientace, výhled); v projektu název hlavní plochy a seznam budov; nové elementy Tabulka místností, Parametry jednotky, Schéma podlaží a shortcody.
 - **0.13.0** – nová funkce **Mapa okolí** (projekt → Okolí, element „Marmal – Mapa okolí“, shortcode `[martin_mapa_okoli]`); plugin přejmenován na „Marmal – Developerské projekty“; oprava: tlačítka v levém panelu editoru se už neroztahují do výšky; menu v administraci „Výběr bytů“ přejmenováno na „Developerské projekty“.
 - **0.12.0** – režim „jen tabulka s filtrem“ (bez obrázků domu a půdorysů): v elementu Content → Projekt → Zobrazit jen tabulku s filtrem, v shortcodu `jen_tabulka="ano"`; má přednost před Skrýt tabulku.
