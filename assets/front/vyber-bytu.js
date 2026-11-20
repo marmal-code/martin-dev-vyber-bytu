@@ -109,7 +109,7 @@
         '</dl>' +
         (u.acc && u.acc.length
           ? '<div class="martin-dv__acc"><p class="martin-dv__acc-title">' + esc(D.i18n.acc) + '</p><dl class="martin-dv__dl">' +
-            u.acc.map(function (a) { return row(a.label, a.price); }).join('') + '</dl></div>'
+            u.acc.map(function (a) { return row(a.label, a.price || '✓'); }).join('') + '</dl></div>'
           : '') +
         (u.clickable
           ? '<a class="martin-dv__btn" href="' + esc(u.url) + '">' + esc(D.settings.button_text) + ' →</a>'
