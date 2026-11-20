@@ -85,12 +85,20 @@ function unit_accessory_rows(int $unit_id): array
 {
     $types = accessory_types();
     $out   = [];
+    /*
+     * Cena na dotaz u jednotky skryje i ceny jejího příslušenství (od 0.18.1) – ceny zůstanou
+     * uložené (administrace, CSV), jen se nevypíšou na webu. „V ceně“ se ukazuje dál.
+     */
+    $hide_prices = (bool) apply_filters('martin_dv_hide_accessory_prices', (bool) get_post_meta($unit_id, 'dv_cena_na_dotaz', true), $unit_id);
     foreach (unit_accessories_raw($unit_id) as $r) {
         $linked = $r['jednotka'] && get_post_status($r['jednotka']) === 'publish' ? $r['jednotka'] : 0;
         $code   = $r['oznaceni'] !== '' ? $r['oznaceni'] : ($linked ? (trim((string) get_post_meta($linked, 'dv_cislo', true)) ?: get_the_title($linked)) : '');
         $area   = $r['plocha'] > 0 ? $r['plocha'] : ($linked ? clean_area(get_post_meta($linked, 'dv_plocha', true)) : 0);
         $price  = $r['cena'] > 0 ? $r['cena'] : ($linked ? (int) get_post_meta($linked, 'dv_cena', true) : 0);
         $name   = $r['typ'] === 'jine' ? $r['nazev'] : $types[$r['typ']];
+        if ($hide_prices && !$r['v_cene']) {
+            $price = 0;
+        }
         if ($r['v_cene']) {
             $price_txt = __('v ceně', 'martin-dev-vyber-bytu');
         } elseif ($price > 0) {

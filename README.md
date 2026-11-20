@@ -63,6 +63,7 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 - U jednotky **Cena platná od** (`dv_cena_od`, na webu) a **Rezervace do** (`dv_rezervace_do`, jen interně – sloupec v přehledu jednotek, po termínu červeně).
 - Elementy **Marmal – Příslušenství**, **Marmal – Předchozí / další jednotka**, **Marmal – Podobné jednotky**; shortcody `[martin_dv_prislusenstvi plocha="ne" cena="ne" odkazy="ne"]`, `[martin_dv_navigace predchozi="" dalsi=""]`, `[martin_dv_podobne pocet="3" sloupce="3" prodane="ano" jen_shoda="ano" obrazek="ne"]`.
 - Pořadí jednotek (předchozí / další) jako v tabulce výběru: od nejnižšího podlaží, pak podle čísla; sklepy, garáže a stání mají vlastní řadu. Podobné: stejná dispozice a podlaží → stejná dispozice → stejné podlaží, uvnitř podle rozdílu plochy, bez prodaných (volba).
+- Od 0.18.1 skryje „Cena na dotaz“ u jednotky i ceny příslušenství (filtr `martin_dv_hide_accessory_prices`).
 - Dynamická data jednotky: Cena platná od, Příslušenství, Patří k jednotce (+ odkaz), Předchozí / Další jednotka (+ odkaz).
 - Kód: `includes/jednotka/prislusenstvi.php`, `includes/jednotka/render-dalsi.php`.
 
@@ -115,6 +116,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 | `martin_dv_param_suggestions` | výška stropů, PENB… | návrhy názvů vlastních parametrů v editoru jednotky |
 | `martin_dv_default_project` | první publikovaný projekt | projekt pro dynamická data a dokumenty mimo detail jednotky |
 | `martin_dv_date_format` | `j. n. Y` | formát data předprodeje |
+| `martin_dv_hide_accessory_prices` | podle „Cena na dotaz“ | skrýt ceny příslušenství jednotky na webu (`bool`, ID jednotky) |
 | `martin_dv_accessory_unit_types` | sklep, garaz, stani | typy jednotek, které jsou příslušenstvím (mimo navigaci a Podobné) |
 | `martin_dv_import_capability` | `manage_options` | kdo smí importovat / exportovat CSV |
 | `martin_dv_overridable_texts` | seznam textů | texty, které jde přepsat v Nastavení |
@@ -122,6 +124,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
+- **0.18.1** – „Cena na dotaz“ u jednotky skryje na webu i ceny jejího příslušenství (výběr bytů, element Příslušenství); ceny zůstávají uložené. Filtr `martin_dv_hide_accessory_prices`. Ve výběru bytů se příslušenství bez ceny ukáže s ✓ (dřív zůstal jen prázdný nadpis).
 - **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář; staré příslušenství odebráno a převedeno do seznamu; Dokumenty jako řádky s popisem a tlačítkem Stáhnout.
 - **0.17.0** – příslušenství jako seznam s vazbou na sklep / garáž, cena platná od, rezervace do (interně), elementy Příslušenství, Předchozí / další jednotka, Podobné jednotky, nová dynamická data.
 - **0.16.0** – fotky, vizualizace, video a dokumenty jednotky (galerie přes Galerii Plus, video přes dynamická data), element Dokumenty i s dokumenty jednotky, dynamická data Obrázek / Video / Karta jednotky.
