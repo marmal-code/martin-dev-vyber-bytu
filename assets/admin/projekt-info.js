@@ -14,6 +14,7 @@
   try { S = JSON.parse(input.value || '{}') || {}; } catch (e) { S = {}; }
   S.prodejce = S.prodejce || {};
   S.texty = S.texty || {};
+  S.seo = S.seo || {};
   if (!Array.isArray(S.dokumenty)) S.dokumenty = [];
 
   function esc(s) {
@@ -72,6 +73,16 @@
       '<p><button type="button" class="button" data-act="adddoc">+ ' + esc(T.addDoc) + '</button></p>';
   }
 
+  function seoHTML() {
+    var sym = T.seoSymbols || {};
+    var list = Object.keys(sym).map(function (k) { return '<code>' + esc(k) + '</code> ' + esc(sym[k]); }).join(' · ');
+    return '<div class="mdu-sec"><h4>' + esc(T.seo) + '</h4><p class="description">' + esc(T.seoHelp) + '</p><div class="mdi-grid">' +
+      fld('seo.text', T.seoText, { ph: T.seoTextPh, wide: true }) +
+      fld('seo.title', T.seoTitle, { ph: T.seoDefTitle, wide: true }) +
+      fld('seo.desc', T.seoDesc, { ph: T.seoDefDesc, area: true, wide: true }) +
+      '</div><p class="description">' + esc(T.seoPh) + ' ' + list + '</p></div>';
+  }
+
   function render() {
     root.innerHTML =
       '<div class="mdu-sec"><h4>' + esc(T.project) + '</h4><p class="description">' + esc(T.projectHelp) + '</p><div class="mdi-grid">' +
@@ -86,6 +97,7 @@
         fld('texty.cena', T.cena, { ph: T.cenaPh, help: T.cenaHelp, wide: true }) +
         fld('texty.plochy', T.plochy, { ph: T.plochyPh, area: true, wide: true }) +
       '</div></div>' +
+      seoHTML() +
       '<div class="mdu-sec"><h4>' + esc(T.docs) + '</h4><p class="description">' + esc(T.docsHelp) + '</p>' + docsHTML() + '</div>';
     sync();
   }

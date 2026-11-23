@@ -74,6 +74,9 @@ Stylizovaný obrázek mapy s očíslovanými body a seznamem vedle (nebo pod) ma
 - **Developerské projekty → Nastavení**: které typy jednotek se nabízejí (nově i Kancelář), adresa detailu (výchozí `/byty/`, např. `/domy/`), vlastní texty místo výchozích (Jednotka → Byt / Dům …, typy jednotek, texty výběru a detailu) – přes filtr `gettext_martin-dev-vyber-bytu`, zástupné symboly (%1$d) se kontrolují. Option `martin_dv_settings`.
 - Kód: `includes/csv.php`, `includes/hromadne.php`, `includes/nastaveni.php`.
 
+### SEO a sdílení jednotek (od 0.19.0)
+S modulem **SEO a sdílení** v pluginu Marmal – Breakdance Plus dostane každá jednotka titulek, popisek a obrázek pro Google a Facebook složený z jejích údajů (filtr `marmal_seo_data`) – po změně plochy nebo stavu se změní sám. Vzory a jedna věta o projektu se nastavují v projektu → Údaje projektu → SEO a sdílení jednotek; ručně vyplněné hodnoty v boxu „SEO a sdílení“ u jednotky mají přednost. Prodaná jednotka má v popisku „Prodáno“, cena jen přes `%cena%` a jen u volné jednotky bez „Cena na dotaz“. Obrázek: hlavní fotka → první vizualizace (půdorys ne). Bez Breakdance Plus se nic neděje.
+
 ### Společné
 
 - Řetězce jsou připravené k překladu (text domain `martin-dev-vyber-bytu`, např. Loco Translate). Podpora Polylang/WPML pro jednotky.
@@ -124,6 +127,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
+- **0.19.0-beta1** – titulky, popisky a obrázky jednotek pro modul SEO (Breakdance Plus 0.18.0+): vzory a text projektu v Údajích projektu, výchozí vzory pro byty / domy a pro sklepy, garáže a stání, „Prodáno“, cena jen bez „Cena na dotaz“.
 - **0.18.2** – oprava pádu při kontrole aktualizací: do balíčku se vrací knihovna Parsedown (složka `lib/plugin-update-checker/vendor/` byla v `.gitignore`). Vydání na GitHubu jsou bez poznámek (weby se starší verzí by na textu poznámek mohly spadnout), Action před vydáním ověří, že je knihovna v ZIPu. Oprava z větve `oprava-aktualizace`, která se dřív do `main` nedostala.
 - **0.18.1** – „Cena na dotaz“ u jednotky skryje na webu i ceny jejího příslušenství (výběr bytů, element Příslušenství); ceny zůstávají uložené. Filtr `martin_dv_hide_accessory_prices`. Ve výběru bytů se příslušenství bez ceny ukáže s ✓ (dřív zůstal jen prázdný nadpis). Výběr bytů (bublina, karta, sloupec tabulky) popisuje plochu názvem celkové plochy z projektu (výchozí „Celková plocha“) místo obecného „Plocha“.
 - **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář; staré příslušenství odebráno a převedeno do seznamu; Dokumenty jako řádky s popisem a tlačítkem Stáhnout.

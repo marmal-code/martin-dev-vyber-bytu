@@ -128,6 +128,7 @@ function info_defaults(): array
         'prodejce'      => ['jmeno' => '', 'firma' => '', 'telefon' => '', 'email' => '', 'foto' => 0],
         'texty'         => ['cena' => '', 'plochy' => ''],
         'dokumenty'     => [],
+        'seo'           => ['text' => '', 'title' => '', 'desc' => ''], // od 0.19.0 – vzory pro modul SEO
     ];
 }
 
@@ -176,6 +177,13 @@ function sanitize_info($in): array
     $out['texty'] = [
         'cena'   => clean_text($t['cena'] ?? '', 200),
         'plochy' => mb_substr(sanitize_textarea_field((string) ($t['plochy'] ?? '')), 0, 800, 'UTF-8'),
+    ];
+
+    $seo        = is_array($in['seo'] ?? null) ? $in['seo'] : [];
+    $out['seo'] = [
+        'text'  => clean_text($seo['text'] ?? '', 200),
+        'title' => clean_text($seo['title'] ?? '', 160),
+        'desc'  => clean_text($seo['desc'] ?? '', 400),
     ];
 
     foreach (array_slice(is_array($in['dokumenty'] ?? null) ? $in['dokumenty'] : [], 0, 30) as $d) {
