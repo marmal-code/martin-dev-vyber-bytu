@@ -124,7 +124,7 @@ Repozitář je veřejný. Kdyby byl soukromý, každý web potřebuje ve `wp-con
 
 ## Verze
 
-- **0.18.1** – „Cena na dotaz“ u jednotky skryje na webu i ceny jejího příslušenství (výběr bytů, element Příslušenství); ceny zůstávají uložené. Filtr `martin_dv_hide_accessory_prices`. Ve výběru bytů se příslušenství bez ceny ukáže s ✓ (dřív zůstal jen prázdný nadpis).
+- **0.18.1** – „Cena na dotaz“ u jednotky skryje na webu i ceny jejího příslušenství (výběr bytů, element Příslušenství); ceny zůstávají uložené. Filtr `martin_dv_hide_accessory_prices`. Ve výběru bytů se příslušenství bez ceny ukáže s ✓ (dřív zůstal jen prázdný nadpis). Výběr bytů (bublina, karta, sloupec tabulky) popisuje plochu názvem celkové plochy z projektu (výchozí „Celková plocha“) místo obecného „Plocha“.
 - **0.18.0** – import / export CSV (jednotky, místnosti) s náhledem změn, rychlé a hromadné úpravy stavu a ceny, stránka Nastavení (typy jednotek, adresa detailu, vlastní texty), nový typ Kancelář; staré příslušenství odebráno a převedeno do seznamu; Dokumenty jako řádky s popisem a tlačítkem Stáhnout.
 - **0.17.0** – příslušenství jako seznam s vazbou na sklep / garáž, cena platná od, rezervace do (interně), elementy Příslušenství, Předchozí / další jednotka, Podobné jednotky, nová dynamická data.
 - **0.16.0** – fotky, vizualizace, video a dokumenty jednotky (galerie přes Galerii Plus, video přes dynamická data), element Dokumenty i s dokumenty jednotky, dynamická data Obrázek / Video / Karta jednotky.
