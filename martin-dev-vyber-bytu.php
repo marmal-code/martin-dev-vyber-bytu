@@ -3,7 +3,7 @@
  * Plugin Name:       Marmal – Developerské projekty
  * Plugin URI:        https://marmal.cz
  * Description:       Plugin pro weby developerských projektů: interaktivní výběr podlaží a jednotek (byty, domy, sklepy, garáže) na obrázku domu a půdorysech a interaktivní mapa okolí s body. CPT Jednotky s ACF poli, místnostmi, venkovními plochami a parametry, Breakdance elementy a shortcody.
- * Version:           0.18.1
+ * Version:           0.19.0-beta1
  * Author:            Martin Malý – marmal.cz
  * Author URI:        https://marmal.cz
  * Requires at least: 6.5
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-const VERSION    = '0.18.1';
+const VERSION    = '0.19.0-beta1';
 const PT_UNIT    = 'martin_dv_jednotka';
 const PT_PROJECT = 'martin_dv_projekt';
 const META_DATA  = '_martin_dv_data';
@@ -81,6 +81,7 @@ require_once MARTIN_DV_DIR . 'includes/jednotka/render-dalsi.php';
 require_once MARTIN_DV_DIR . 'includes/projekt/admin.php';
 require_once MARTIN_DV_DIR . 'includes/projekt/render.php';
 require_once MARTIN_DV_DIR . 'includes/dynamic-data.php';
+require_once MARTIN_DV_DIR . 'includes/seo.php';
 // Import / export CSV a hromadné úpravy (od 0.18.0) – jen v administraci.
 if (is_admin()) {
     require_once MARTIN_DV_DIR . 'includes/csv.php';

@@ -92,6 +92,16 @@ add_action('admin_enqueue_scripts', function ($hook) {
             'down'         => __('Posunout dolů', 'martin-dev-vyber-bytu'),
             'remove'       => __('Odebrat řádek', 'martin-dev-vyber-bytu'),
             'empty'        => __('Zatím žádné dokumenty.', 'martin-dev-vyber-bytu'),
+            'seo'          => __('SEO a sdílení jednotek', 'martin-dev-vyber-bytu'),
+            'seoHelp'      => __('Titulek a popisek každé jednotky pro Google a sdílení na Facebooku se složí z jejích údajů – po změně plochy nebo stavu se změní sám. Funguje se zapnutým modulem SEO v pluginu Marmal – Breakdance Plus; ručně vyplněný titulek u jednotky má přednost. Část v [hranatých závorkách] se vynechá, když v ní chybí údaj. Sklepy, garáže a stání mají vlastní jednodušší vzor.', 'martin-dev-vyber-bytu'),
+            'seoText'      => __('Text projektu (do popisku)', 'martin-dev-vyber-bytu'),
+            'seoTextPh'    => __('např. Novostavba v Kamenných Žehrovicích u Kladna, dokončení Q4 2028.', 'martin-dev-vyber-bytu'),
+            'seoTitle'     => __('Vzor titulku', 'martin-dev-vyber-bytu'),
+            'seoDesc'      => __('Vzor popisku', 'martin-dev-vyber-bytu'),
+            'seoPh'        => __('Zástupné symboly:', 'martin-dev-vyber-bytu'),
+            'seoDefTitle'  => seo_default_patterns(false)[0],
+            'seoDefDesc'   => seo_default_patterns(false)[1],
+            'seoSymbols'   => seo_placeholders(),
         ],
     ];
     wp_add_inline_script('martin-dv-info-editor', 'window.martinDvInfoEditor = ' . wp_json_encode($cfg, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) . ';', 'before');
