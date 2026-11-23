@@ -408,7 +408,8 @@ function render_project(int $project_id, array $args = []): string
         'i18n'     => [
             'clickArea'  => __('Klikněte pro zobrazení', 'martin-dev-vyber-bytu'),
             'clickUnit'  => __('Klikněte pro detail', 'martin-dev-vyber-bytu'),
-            'area'       => __('Plocha', 'martin-dev-vyber-bytu'),
+            // Od 0.18.1 název celkové plochy z projektu (Nastavení zobrazení → Údaje jednotek), výchozí „Celková plocha“.
+            'area'       => total_label($project_id),
             'disp'       => __('Dispozice', 'martin-dev-vyber-bytu'),
             'floor'      => __('Podlaží', 'martin-dev-vyber-bytu'),
             'price'      => __('Cena', 'martin-dev-vyber-bytu'),
@@ -586,6 +587,8 @@ function table_html(array $units, array $floors, array $floor_units, array $unit
 
     // Sloupce podle nastavení projektu (pořadí + zapnuté); Podlaží se skryje, když ho žádná jednotka nemá.
     $labels  = table_columns();
+    // Od 0.18.1 sloupec plochy podle názvu celkové plochy v projektu (výchozí „Celková plocha“).
+    $labels['plocha'] = (string) ($settings['label_total'] ?? '') !== '' ? (string) $settings['label_total'] : __('Celková plocha', 'martin-dev-vyber-bytu');
     $columns = [];
     foreach (sanitize_table_columns($settings['table_columns'] ?? null) as $c) {
         if ($c['on'] && ($c['key'] !== 'podlazi' || $show_floor)) {
